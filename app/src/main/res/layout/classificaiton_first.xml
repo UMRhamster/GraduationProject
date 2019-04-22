@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <View
+        android:id="@+id/classification_first_v"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#e6e6e6"/>
+    <TextView
+        android:id="@+id/classification_first_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:text="应试教育"
+        android:textColor="@android:color/black"/>
+
+</LinearLayout>

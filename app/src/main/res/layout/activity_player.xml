@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/player_root"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PlayerActivity">
+    <TextureView
+        android:id="@+id/player_txv"
+        android:layout_width="match_parent"
+        android:layout_height="202dp"
+        android:clickable="true"
+        android:focusable="true"/>
+    <include layout="@layout/ac_player_controller_top_port"
+        android:id="@+id/player_top_controller"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/player_txv"/>
+    <include layout="@layout/ac_player_controller_bottom_port"
+        android:id="@+id/player_bottom_controller"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/player_txv"/>
+    <android.support.design.widget.TabLayout
+        android:id="@+id/player_tl"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/player_txv">
+    </android.support.design.widget.TabLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/player_vp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/player_tl">
+
+    </android.support.v4.view.ViewPager>
+
+</RelativeLayout>

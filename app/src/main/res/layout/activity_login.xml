@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    android:id="@+id/aty_main_cl"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f1f1f1"
+    tools:context=".LoginActivity">
+    <FrameLayout
+        android:id="@+id/ac_login_fl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+    <!--<android.support.v7.widget.Toolbar-->
+        <!--android:id="@+id/ac_login_tb"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="?android:attr/actionBarSize"-->
+        <!--android:layout_marginBottom="50dp"-->
+        <!--app:contentInsetStart="0dp"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="parent"-->
+        <!--app:layout_constraintVertical_bias="0.0">-->
+
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+
+            <!--<ImageView-->
+                <!--android:layout_width="20dp"-->
+                <!--android:layout_height="20dp"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginStart="16dp"-->
+                <!--android:src="@drawable/back" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerInParent="true"-->
+                <!--android:text="免密登录"-->
+                <!--android:textSize="18sp" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginEnd="16dp"-->
+                <!--android:text="密码登录" />-->
+
+            <!--<View-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="1px"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:background="@android:color/darker_gray" />-->
+        <!--</RelativeLayout>-->
+    <!--</android.support.v7.widget.Toolbar>-->
+
+    <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/aty_main_logo_iv"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="80dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="80dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:src="@mipmap/logo"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_constraintBottom_toTopOf="@+id/aty_main_account_til"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_constraintTop_toTopOf="parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_constraintVertical_bias="0.8" />&ndash;&gt;-->
+
+    <!--<android.support.design.widget.TextInputLayout-->
+        <!--android:id="@+id/aty_main_account_til"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:layout_marginStart="24dp"-->
+        <!--android:layout_marginEnd="24dp"-->
+        <!--android:hint="请输入用户名"-->
+        <!--android:textColorHint="@android:color/darker_gray"-->
+        <!--android:theme="@style/LoginTheme"-->
+        <!--app:errorEnabled="false"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/ac_login_tb"-->
+        <!--app:layout_constraintVertical_bias="0.1">-->
+
+        <!--&lt;!&ndash;backgroundTint可用于修改输入下划线颜色&ndash;&gt;-->
+        <!--<android.support.design.widget.TextInputEditText-->
+            <!--android:id="@+id/aty_main_account_tiet"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:backgroundTint="@android:color/darker_gray"-->
+            <!--android:textColor="@android:color/white"-->
+            <!--android:textCursorDrawable="@drawable/login_cursor" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/aty_main_account_error_tv"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:lines="2"-->
+            <!--android:paddingStart="4dp"-->
+            <!--android:paddingEnd="4dp"-->
+            <!--android:textColor="@color/textErrorColor"-->
+            <!--android:textSize="12sp" />-->
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+    <!--<android.support.design.widget.TextInputLayout-->
+        <!--android:id="@+id/aty_main_password_til"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/aty_main_account_til"-->
+        <!--android:layout_marginStart="24dp"-->
+        <!--android:layout_marginEnd="24dp"-->
+        <!--android:hint="请输入密码"-->
+        <!--android:textColorHint="@android:color/darker_gray"-->
+        <!--android:theme="@style/LoginTheme"-->
+        <!--app:errorEnabled="false"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/aty_main_account_til"-->
+        <!--app:layout_constraintVertical_bias="0.0">-->
+
+        <!--<android.support.design.widget.TextInputEditText-->
+            <!--android:id="@+id/aty_main_password_tiet"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:backgroundTint="@android:color/darker_gray"-->
+            <!--android:textColor="@android:color/white"-->
+            <!--android:textCursorDrawable="@drawable/login_cursor"-->
+            <!--android:lines="1"-->
+            <!--android:drawableEnd="@drawable/pw_see"/>-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/aty_main_password_error_tv"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:lines="2"-->
+            <!--android:paddingStart="4dp"-->
+            <!--android:paddingEnd="4dp"-->
+            <!--android:textColor="@color/textErrorColor"-->
+            <!--android:textSize="12sp" />-->
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+    <!--&lt;!&ndash;<Button&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/button"&ndash;&gt;-->
+        <!--&lt;!&ndash;style="?android:attr/borderlessButtonStyle"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginStart="24dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginTop="8dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginEnd="24dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginBottom="8dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:background="@drawable/login_btn_round_bg"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:text="SIGN IN"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:textSize="16sp"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_constraintTop_toBottomOf="@id/aty_main_password_til"&ndash;&gt;-->
+        <!--&lt;!&ndash;app:layout_constraintVertical_bias="0.0" />&ndash;&gt;-->
+    <!--<com.dd.CircularProgressButton-->
+        <!--android:id="@+id/ac_main_login_cpb"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="24dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:layout_marginEnd="24dp"-->
+        <!--android:layout_marginBottom="8dp"-->
+        <!--android:textColor="@android:color/white"-->
+        <!--android:textSize="18sp"-->
+        <!--style="?android:attr/borderlessButtonStyle"-->
+        <!--app:cpb_cornerRadius="48dp"-->
+        <!--app:cpb_textIdle="@string/login_words"-->
+        <!--app:cpb_iconComplete="@drawable/complete"-->
+        <!--app:cpb_iconError="@drawable/error"-->
+        <!--app:cpb_selectorIdle="@drawable/cpb_idle_state_selector"-->
+        <!--app:cpb_selectorComplete="@drawable/cpb_complete_state_selector"-->
+        <!--app:cpb_selectorError="@drawable/cpb_error_state_selector"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/aty_main_password_til"-->
+        <!--app:layout_constraintVertical_bias="0.0"/>-->
+
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/ac_login_su_ll"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="24dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:layout_marginEnd="24dp"-->
+        <!--android:layout_marginBottom="8dp"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/ac_main_login_cpb"-->
+        <!--app:layout_constraintVertical_bias="0.0">-->
+        <!--<TextView-->
+            <!--android:id="@+id/textView"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:padding="8dp"-->
+            <!--android:layout_alignParentStart="true"-->
+            <!--android:text="注册新账号" />-->
+        <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_alignParentEnd="true"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:padding="8dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:text="注册账号" />&ndash;&gt;-->
+    <!--</RelativeLayout>-->
+
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="8dp"-->
+        <!--app:layout_constraintBottom_toTopOf="@+id/ac_login_other_qq_iv"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/ac_login_su_ll"-->
+        <!--app:layout_constraintVertical_bias="1.0">-->
+
+        <!--<View-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="1px"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:layout_marginStart="16dp"-->
+            <!--android:layout_toStartOf="@+id/ac_login_other_tv"-->
+            <!--android:background="#8b92a0" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/ac_login_other_tv"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:layout_marginStart="8dp"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:layout_marginEnd="8dp"-->
+            <!--android:layout_marginBottom="8dp"-->
+            <!--android:gravity="center"-->
+            <!--android:text="其他方式登录" />-->
+
+        <!--<View-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="1px"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:layout_marginEnd="16dp"-->
+            <!--android:layout_toEndOf="@id/ac_login_other_tv"-->
+            <!--android:background="#9b92a0" />-->
+    <!--</RelativeLayout>-->
+
+
+    <!--<ImageView-->
+        <!--android:id="@+id/ac_login_other_weixin_iv"-->
+        <!--android:layout_width="48dp"-->
+        <!--android:layout_height="48dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginBottom="24dp"-->
+        <!--android:src="@drawable/icon_login_weixin"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toStartOf="@+id/ac_login_other_qq_iv"-->
+        <!--app:layout_constraintHorizontal_bias="1.0"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/ac_login_su_ll"-->
+        <!--app:layout_constraintVertical_bias="1.0" />-->
+
+    <!--<ImageView-->
+        <!--android:id="@+id/ac_login_other_qq_iv"-->
+        <!--android:layout_width="48dp"-->
+        <!--android:layout_height="48dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginBottom="24dp"-->
+        <!--android:src="@drawable/icon_login_qq"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/ac_login_su_ll"-->
+        <!--app:layout_constraintVertical_bias="1.0" />-->
+
+    <!--<ImageView-->
+        <!--android:id="@+id/ac_login_other_xinlang_iv"-->
+        <!--android:layout_width="48dp"-->
+        <!--android:layout_height="48dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginBottom="24dp"-->
+        <!--android:src="@drawable/icon_login_xinlang"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintHorizontal_bias="0.0"-->
+        <!--app:layout_constraintStart_toEndOf="@+id/ac_login_other_qq_iv"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/ac_login_su_ll"-->
+        <!--app:layout_constraintVertical_bias="1.0" />-->
+</android.support.constraint.ConstraintLayout>

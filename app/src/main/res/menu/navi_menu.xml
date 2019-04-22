@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/home"
+            android:title="首页"
+            android:icon="@drawable/custom_tab_iv_home" />
+        <item
+            android:id="@+id/history"
+            android:title="历史记录"
+            android:icon="@drawable/navi_menu_history"/>
+        <item
+            android:id="@+id/watch"
+            android:title="我的关注"
+            android:icon="@drawable/custom_tab_iv_watch"/>
+        <item
+            android:id="@+id/collect"
+            android:title="我的收藏"
+            android:icon="@drawable/navi_menu_collect"/>
+        <item
+            android:id="@+id/setting"
+            android:title="设置"
+            android:icon="@drawable/navi_menu_setting"/>
+    </group>
+
+</menu>

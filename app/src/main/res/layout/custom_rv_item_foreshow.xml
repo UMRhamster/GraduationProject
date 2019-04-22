@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/custom_rv_item_foreshow_bg"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--16:10-->
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/custom_rv_item_foreshow_riv_cover"
+        android:layout_width="120dp"
+        android:layout_height="75dp"
+        android:scaleType="fitXY"
+        android:src="@mipmap/test_itembg"
+        app:riv_corner_radius_top_left="4dp"
+        app:riv_corner_radius_bottom_left="4dp"/>
+    <com.whut.umrhamster.graduationproject.view.CircleImageView
+        android:id="@+id/custom_rv_item_foreshow_civ_icon"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="14dp"
+        android:layout_toEndOf="@id/custom_rv_item_foreshow_riv_cover"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_user_blackwidow"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/custom_rv_item_foreshow_civ_icon"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="8dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/custom_rv_item_foreshow_tv_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:text="张老师"/>
+        <TextView
+            android:id="@+id/custom_rv_item_foreshow_tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="高等数学习题课直播"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <!--主题色-->
+    <color name="themeColor">#40b9b0</color>
+    <color name="textErrorColor">#c90739</color>
+
+    <color name="defaultGrey">#fafafa</color>
+    <color name="popularRed">#f74d61</color>
+    <color name="popularGreen">#2edba2</color>
+
+    <color name="textGrey">#505050</color>
+
+</resources>

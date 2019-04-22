@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">GraduationProject</string>
+    <string name="login_words">登 录</string>
+    <string name="verification">| 取验证码</string>
+
+    <string name="open">open</string>
+    <string name="close">close</string>
+
+</resources>

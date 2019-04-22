@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/player_frame_top_bg">
+    <ImageView
+        android:id="@+id/ac_live_room_player_back"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/player_back"
+        android:padding="12dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"/>
+    <TextView
+        android:id="@+id/ac_live_room_player_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:textColor="@android:color/white"
+        android:gravity="left"
+        android:text="张老师的直播间"
+        android:layout_toStartOf="@+id/ac_live_room_player_more"
+        android:lines="1"
+        android:ellipsize="end"
+        android:layout_toEndOf="@id/ac_live_room_player_back"/>
+    <ImageView
+        android:id="@+id/ac_live_room_player_more"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/player_top_menu"
+        android:padding="12dp"
+        android:layout_alignParentEnd="true"/>
+</RelativeLayout>

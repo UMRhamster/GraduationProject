@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/player_frame_bottom_bg">
+    <ImageView
+        android:id="@+id/ac_live_room_player_play"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/pause"
+        android:layout_centerVertical="true"
+        android:padding="16dp"
+        android:layout_alignParentStart="true"/>
+    <TextView
+        android:id="@+id/ac_live_room_player_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:text="01:35:59"
+        android:layout_toEndOf="@id/ac_live_room_player_play"/>
+    <ImageView
+        android:id="@+id/ac_live_room_player_fulls"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/fullscreen"
+        android:padding="14dp"
+        android:layout_alignParentEnd="true"/>
+</RelativeLayout>
