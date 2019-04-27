@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.whut.umrhamster.graduationproject.R;
 import com.whut.umrhamster.graduationproject.model.bean.Classify;
+import com.whut.umrhamster.graduationproject.model.bean.History;
 
 import java.util.List;
 

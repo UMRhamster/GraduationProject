@@ -5,5 +5,12 @@
 
     <string name="open">open</string>
     <string name="close">close</string>
+    <string name="login_tip">点击头像登录</string>
+    <string name="header_study_time">学习时间：%1$s</string>
 
+
+    <!--历史记录-->
+    <string name="history_last_time_today">今天%1$s:%2$s</string>
+    <string name="history_last_time_yesterday">昨天%1$s:%2$s</string>
+    <string name="history_last_time_early">%1$s-%2$s %3$s:%4$s</string>
 </resources>

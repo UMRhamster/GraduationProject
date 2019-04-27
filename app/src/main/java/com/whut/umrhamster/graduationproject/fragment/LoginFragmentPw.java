@@ -1,6 +1,7 @@
 package com.whut.umrhamster.graduationproject.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -168,10 +170,20 @@ public class LoginFragmentPw extends Fragment implements ILoginView {
 
     @Override
     public void onSuccess(Student student) {
-        Toast.makeText(getActivity(),student.getNickname(),Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(),student.getNickname(),Toast.LENGTH_SHORT).show();
         cpbLogin.setProgress(100);
         isLogining = !isLogining;
-        startActivity(new Intent(getActivity(),MainActivity.class));
+        Intent intent = new Intent();
+        intent.putExtra("student",student);
+        getActivity().setResult(1,intent);
+        InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (manager != null){
+            manager.toggleSoftInput(0,InputMethodManager.HIDE_NOT_ALWAYS);
+//            manager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),0);
+        }
+
+        getActivity().finish();
+//        startActivity(intent);
     }
 
     @Override

@@ -4,13 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Student implements Parcelable {
-    public int id;
-    public String nickname;
-    public String avatar;
-    public String phone;
-    public String email;
-
-
+    private int id;
+    private String nickname;
+    private String avatar;
+    private String phone;
+    private String email;
+    private int duration;
 
     public Student(){}
 
@@ -54,6 +53,14 @@ public class Student implements Parcelable {
         this.email = email;
     }
 
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -66,6 +73,7 @@ public class Student implements Parcelable {
         dest.writeString(this.avatar);
         dest.writeString(this.phone);
         dest.writeString(this.email);
+        dest.writeInt(this.duration);
     }
 
     protected Student(Parcel in) {
@@ -74,6 +82,7 @@ public class Student implements Parcelable {
         this.avatar = in.readString();
         this.phone = in.readString();
         this.email = in.readString();
+        this.duration = in.readInt();
     }
 
     public static final Parcelable.Creator<Student> CREATOR = new Parcelable.Creator<Student>() {

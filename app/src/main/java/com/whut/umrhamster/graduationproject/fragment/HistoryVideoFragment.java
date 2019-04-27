@@ -13,19 +13,29 @@ import android.view.ViewGroup;
 
 import com.whut.umrhamster.graduationproject.R;
 import com.whut.umrhamster.graduationproject.adapter.HistoryAdapter;
+import com.whut.umrhamster.graduationproject.model.bean.History;
+import com.whut.umrhamster.graduationproject.model.bean.Student;
 import com.whut.umrhamster.graduationproject.model.bean.Teacher;
 import com.whut.umrhamster.graduationproject.model.bean.Video;
+import com.whut.umrhamster.graduationproject.presenter.HistoryPresenter;
+import com.whut.umrhamster.graduationproject.presenter.IHistoryPresenter;
+import com.whut.umrhamster.graduationproject.utils.save.SPUtil;
+import com.whut.umrhamster.graduationproject.view.IHistoryView;
 import com.whut.umrhamster.graduationproject.view.IInitWidgetView;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class HistoryVideoFragment extends Fragment implements IInitWidgetView {
-    private List<Object> videoList;
+public class HistoryVideoFragment extends Fragment implements IInitWidgetView,IHistoryView {
+    private List<History> historyList;
     private RecyclerView recyclerView;
     private HistoryAdapter adapter;
+
+    private IHistoryPresenter historyPresenter;
+    private int start;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -47,34 +57,30 @@ public class HistoryVideoFragment extends Fragment implements IInitWidgetView {
 
     @Override
     public void initView(View view) {
-        videoList = new ArrayList<>();
-        for (int i =0;i<10;i++){
-            videoList.add(new Video("标题1标题1",new Teacher(0,"张老师"),Calendar.getInstance(),923,374));
-        }
-        Calendar calendar = Calendar.getInstance();
-//        Log.d("test",calendar.get(Calendar.MONTH)+" "+calendar.get(Calendar.DAY_OF_MONTH));
-        calendar.set(Calendar.MONTH,calendar.get(Calendar.MONTH));
-        calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH)-1);
-        calendar.add(Calendar.HOUR_OF_DAY,3);
-//        Log.d("test",calendar.get(Calendar.MONTH)+" "+calendar.get(Calendar.DAY_OF_MONTH));
-//        calendar.add(Calendar.HOUR_OF_DAY,-20);
-//        calendar.add(Calendar.MINUTE,-4);
-        videoList.add(new Video("标题1标题1",new Teacher(0,"张老师"),calendar,1000,454));
-        videoList.add(new Video("标题1标题1",new Teacher(0,"张老师"),calendar,900,454));
-        videoList.add(new Video("标题1标题1",new Teacher(0,"张老师"),calendar,1000,784));
-        videoList.add(new Video("标题1标题1",new Teacher(0,"张老师"),calendar,1000,954));
-        videoList.add(new Video("标题1标题1",new Teacher(0,"张老师"),calendar,100,24));
-        Calendar calendar1 = Calendar.getInstance();
-        calendar1.add(Calendar.DAY_OF_MONTH,-4);
-        videoList.add(new Video("标题1标题1",new Teacher(0,"张老师"),calendar1,1000,454));
-        videoList.add(new Video("标题1标题1",new Teacher(0,"张老师"),calendar1,900,454));
-        videoList.add(new Video("标题1标题1",new Teacher(0,"张老师"),calendar1,1000,784));
-        videoList.add(new Video("标题1标题1",new Teacher(0,"张老师"),calendar1,1000,954));
-        videoList.add(new Video("标题1标题1",new Teacher(0,"张老师"),calendar1,100,24));
-
+        historyList = new ArrayList<>();
         recyclerView = view.findViewById(R.id.history_video_rv);
-        adapter = new HistoryAdapter(videoList,HistoryAdapter.VIDEO);
+        adapter = new HistoryAdapter(historyList,getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+        initData();
+    }
+    private void initData(){
+        start = 0;
+        historyPresenter = new HistoryPresenter(this);
+        Student student = SPUtil.loadStudent(getActivity());
+        if (student != null){
+            historyPresenter.doHistory(start,student.getId(),1);
+        }
+    }
+
+    @Override
+    public void onHistorySuccess(List<History> historyList) {
+        start+=historyList.size();
+        adapter.addAll(historyList);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onHistoryFail(int code) {
     }
 }

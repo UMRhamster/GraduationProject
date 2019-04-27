@@ -1,11 +1,16 @@
 package com.whut.umrhamster.graduationproject.utils.http;
 
+import android.util.Log;
+
+import com.whut.umrhamster.graduationproject.model.bean.History;
 import com.whut.umrhamster.graduationproject.model.bean.Live;
 import com.whut.umrhamster.graduationproject.model.bean.Student;
 import com.whut.umrhamster.graduationproject.model.bean.Verification;
+import com.whut.umrhamster.graduationproject.model.biz.IHistoryBiz;
 import com.whut.umrhamster.graduationproject.model.biz.ILiveBiz;
 import com.whut.umrhamster.graduationproject.model.biz.IUserBiz;
 import com.whut.umrhamster.graduationproject.model.biz.IVerificationBiz;
+import com.whut.umrhamster.graduationproject.utils.service.HistoryService;
 import com.whut.umrhamster.graduationproject.utils.service.LiveService;
 import com.whut.umrhamster.graduationproject.utils.service.StudentService;
 import com.whut.umrhamster.graduationproject.utils.service.VerificationService;
@@ -22,7 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitUtil {
     public  static  Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://192.168.1.106:8080/api/v1/")
+            .baseUrl("http://192.168.1.233:8080/api/v1/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
@@ -53,6 +58,7 @@ public class RetrofitUtil {
         });
     }
 
+    //向指定邮箱发送邮件验证码
     public static void getVerificationFromEmail(String email, final IVerificationBiz.OnVerifyListener onVerifyListener){
         VerificationService service = retrofit.create(VerificationService.class);
         Call<HttpData<Verification>> call = service.getVerificationFromEmail(email);
@@ -72,6 +78,7 @@ public class RetrofitUtil {
         });
     }
 
+    //通过邮箱直接获取学员信息，前提需要进行邮件验证
     public static void loginWithoutPassword(String email, final IUserBiz.OnLoginListener onLoginListener){
         StudentService service = retrofit.create(StudentService.class);
         Call<HttpData<Student>> call = service.getStudentByEmail(email);
@@ -136,6 +143,36 @@ public class RetrofitUtil {
             @Override
             public void onFailure(Call<HttpData<List<Live>>> call, Throwable t) {
                 onLiveListener.onLiveFail(1);
+            }
+        });
+    }
+
+    /*
+     *获取历史记录
+     *@Param:studenId
+     */
+    //根据学员id获取所有历史记录(包含视频与直播)
+    public static void getHistory(int start, int studentId, int type, final IHistoryBiz.OnHistoryListener onHistoryListener){
+        HistoryService service = retrofit.create(HistoryService.class);
+        Call<HttpData<List<History>>> call = service.getHistory(start,studentId,type);
+        call.enqueue(new Callback<HttpData<List<History>>>() {
+            @Override
+            public void onResponse(Call<HttpData<List<History>>> call, Response<HttpData<List<History>>> response) {
+                HttpData<List<History>> data = response.body();
+//                Log.d("dsa","aaaa"+data.getMsg());
+                if (data != null){
+                    onHistoryListener.onHistorySuccess(data.getData());
+                }else {
+//                    Log.d("dsa","aaaa"+data.getMsg());
+                    onHistoryListener.onHistoryFail(0);
+//                    Log.d("dsa","aaaa"+data.getMsg());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HttpData<List<History>>> call, Throwable t) {
+                t.printStackTrace();
+                onHistoryListener.onHistoryFail(0);
             }
         });
     }

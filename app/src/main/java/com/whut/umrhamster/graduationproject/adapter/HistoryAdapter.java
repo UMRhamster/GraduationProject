@@ -1,5 +1,6 @@
 package com.whut.umrhamster.graduationproject.adapter;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -12,14 +13,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.squareup.picasso.Picasso;
 import com.whut.umrhamster.graduationproject.R;
 import com.whut.umrhamster.graduationproject.comparator.AllComparator;
+import com.whut.umrhamster.graduationproject.comparator.HistoryComparator;
 import com.whut.umrhamster.graduationproject.comparator.LiveComparator;
 import com.whut.umrhamster.graduationproject.comparator.VideoComparator;
+import com.whut.umrhamster.graduationproject.model.bean.History;
 import com.whut.umrhamster.graduationproject.model.bean.Live;
 import com.whut.umrhamster.graduationproject.model.bean.Video;
 import com.whut.umrhamster.graduationproject.utils.other.TimeUtil;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -27,18 +32,58 @@ import java.util.Date;
 import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    public static final int ALL = 0, VIDEO = 1, LIVE = 2;
     private static final int SIGN = 0, ITEM = 1;
 
-    private List<Object> objectList;
-    private List<Object> resultList;
-    private int type;
+//    private List<History> historyList;
+    private List<History> resultList;
     private int timeDecor = 0;
 
-    public HistoryAdapter(List<Object> objectList, int type){
-        this.objectList = objectList;
-        this.type = type;
+    private Context context;
+
+    public HistoryAdapter(List<History> historyList, Context context){
+        this.resultList = historyList;
+        this.context = context;
         initAdapter();
+    }
+
+    public void add(History history){
+        resultList.add(history);
+    }
+
+    public void addAll(List<History> historyList){
+        Log.d("test",""+historyList.size()+this.resultList.size());
+        Collections.sort(historyList,new HistoryComparator());
+        Calendar todayC = Calendar.getInstance();
+        todayC.set(Calendar.HOUR_OF_DAY,0);
+        todayC.set(Calendar.MINUTE,0);
+        todayC.set(Calendar.SECOND,0);
+
+        Calendar yesterdayC = Calendar.getInstance();
+        yesterdayC.set(Calendar.DAY_OF_MONTH,yesterdayC.get(Calendar.DAY_OF_MONTH)-1);
+        yesterdayC.set(Calendar.HOUR_OF_DAY,0);
+        yesterdayC.set(Calendar.MINUTE,0);
+        yesterdayC.set(Calendar.SECOND,0);
+//        resultList.addAll(historyList);
+        for (History history : historyList){
+            if (history.getLastTime().after(todayC.getTime())){
+                if (timeDecor == 0) {
+                    resultList.add(new History("今天",-1));
+                    timeDecor++;
+                }
+            }else if (history.getLastTime().after(yesterdayC.getTime())){
+                if (timeDecor == 0 || timeDecor == 1){
+                    resultList.add(new History("昨天",-1));
+                    timeDecor+=2;
+                }
+            }else {
+                if (timeDecor == 0 || timeDecor == 1 || timeDecor == 2 || timeDecor == 3){
+                    resultList.add(new History("更早",-1));
+                    timeDecor+=4;
+                }
+            }
+            resultList.add(history);
+        }
+        Log.d("test",""+historyList.size()+this.resultList.size());
     }
 
     @NonNull
@@ -53,148 +98,76 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        Object obj = resultList.get(position);
-        if (obj instanceof Video){
-            if (((Video)resultList.get(position)).getTotalTime() == -1){
-                return SIGN;
-            }else {
-                return ITEM;
-            }
+        if (resultList.get(position).getTotalTime() == -1){
+            return SIGN;
         }else {
-            if (((Live)resultList.get(position)).getStatus() == -1){
-                return SIGN;
-            }else {
-                return ITEM;
-            }
+            return ITEM;
         }
     }
 
     private void initAdapter(){
         resultList = new ArrayList<>();
-        Calendar todayC = Calendar.getInstance();
-        todayC.set(Calendar.HOUR_OF_DAY,0);
-        todayC.set(Calendar.MINUTE,0);
-        todayC.set(Calendar.SECOND,0);
-
-        Calendar yesterdayC = Calendar.getInstance();
-        yesterdayC.set(Calendar.DAY_OF_MONTH,yesterdayC.get(Calendar.DAY_OF_MONTH)-1);
-        yesterdayC.set(Calendar.HOUR_OF_DAY,0);
-        yesterdayC.set(Calendar.MINUTE,0);
-        yesterdayC.set(Calendar.SECOND,0);
-        switch (type){
-            case ALL:
-                Collections.sort(objectList,new AllComparator());
-                break;
-            case VIDEO:
-                Collections.sort(objectList,new VideoComparator());
-                break;
-            case LIVE:
-                Collections.sort(objectList,new LiveComparator());
-                break;
-            default:
-                break;
-        }
-        for (Object object : objectList){
-            if (object instanceof  Video){
-                if (((Video)object).getDate().after(todayC)){
-                    if (timeDecor == 0){
-                        resultList.add(new Video("今天",-1));
-                        timeDecor++;
-                    }
-                }else if (((Video)object).getDate().after(yesterdayC)){
-                    if (timeDecor == 0 || timeDecor == 1){
-                        resultList.add(new Video("昨天",-1));
-                        timeDecor+=2;
-                    }
-                }else {
-                    if (timeDecor == 0 || timeDecor == 1 || timeDecor == 2 || timeDecor == 3){
-                        resultList.add(new Video("更早",-1));
-                        timeDecor+=4;
-                    }
-                }
-            }else {
-                if (((Live)object).getCalendar().after(todayC)){
-                    if (timeDecor == 0){
-                        resultList.add(new Video("今天",-1));
-                        timeDecor++;
-                    }
-                }else if (((Live)object).getCalendar().after(yesterdayC)){
-                    if (timeDecor == 0 || timeDecor == 1){
-                        resultList.add(new Video("昨天",-1));
-                        timeDecor+=2;
-                    }
-                }else {
-                    if (timeDecor == 0 || timeDecor == 1 || timeDecor == 2 || timeDecor == 3){
-                        resultList.add(new Video("更早",-1));
-                        timeDecor+=4;
-                    }
-                }
-            }
-            resultList.add(object);
-        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+//        Log.d("dasd","11");
         if (holder instanceof SignViewHolder){
-            ((SignViewHolder) holder).textView.setText(((Video)resultList.get(position)).getTitle());
+            ((SignViewHolder) holder).textView.setText(resultList.get(position).getTitle());
         }else if (holder instanceof ViewHolder){
-            Object obj =  resultList.get(position);
-            if (obj instanceof Video){
-                Video tmp = (Video) obj;
+            History history = resultList.get(position);
+            if (history.getType() == 1){  //视频
                 ((ViewHolder)holder).tvStatus.setVisibility(View.INVISIBLE);
                 ((ViewHolder)holder).progressBar.setVisibility(View.VISIBLE);
                 ((ViewHolder)holder).tvTime.setVisibility(View.VISIBLE);
                 ((ViewHolder)holder).view.setVisibility(View.VISIBLE);
-                ((ViewHolder)holder).tvTitle.setText(tmp.getTitle());
-                ((ViewHolder)holder).tvTime.setText(TimeUtil.int2String(tmp.getWatchedTime())+"/"+TimeUtil.int2String(tmp.getTotalTime()));
+                ((ViewHolder)holder).tvTitle.setText(history.getTitle());
+                ((ViewHolder)holder).tvTime.setText(TimeUtil.int2String(history.getWatchedTime())+"/"+TimeUtil.int2String(history.getTotalTime()));
 
-                Calendar todayC = Calendar.getInstance();
-                todayC.set(Calendar.HOUR_OF_DAY,0);
-                todayC.set(Calendar.MINUTE,0);
-                todayC.set(Calendar.SECOND,0);
-
-                Calendar yesterdayC = Calendar.getInstance();
-                yesterdayC.set(Calendar.DAY_OF_MONTH,yesterdayC.get(Calendar.DAY_OF_MONTH)-1);
-                yesterdayC.set(Calendar.HOUR_OF_DAY,0);
-                yesterdayC.set(Calendar.MINUTE,0);
-                yesterdayC.set(Calendar.SECOND,0);
-                if (tmp.getDate().after(todayC)){
-                    ((ViewHolder)holder).tvDate.setText("今天"+tmp.getDate().get(Calendar.HOUR_OF_DAY)+":"+tmp.getDate().get(Calendar.MINUTE));
-                }else if (tmp.getDate().after(yesterdayC)){
-                    ((ViewHolder)holder).tvDate.setText("昨天"+tmp.getDate().get(Calendar.HOUR_OF_DAY)+":"+tmp.getDate().get(Calendar.MINUTE));
-                }else {
-                    ((ViewHolder)holder).tvDate.setText((tmp.getDate().get(Calendar.MONTH)+1)+"-"+tmp.getDate().get(Calendar.DAY_OF_MONTH)+" "
-                            +tmp.getDate().get(Calendar.HOUR_OF_DAY)+":"+tmp.getDate().get(Calendar.MINUTE));
-                }
-                ((ViewHolder)holder).progressBar.setMax(tmp.getTotalTime());
-                ((ViewHolder)holder).progressBar.setProgress(tmp.getWatchedTime());
-            }else if (obj instanceof Live){
-                Live tmp = (Live) obj;
+                ((ViewHolder)holder).progressBar.setMax(history.getTotalTime());
+                ((ViewHolder)holder).progressBar.setProgress(history.getWatchedTime());
+            }else if (history.getType() == 0){  //直播
                 ((ViewHolder)holder).tvStatus.setVisibility(View.VISIBLE);
                 ((ViewHolder)holder).progressBar.setVisibility(View.INVISIBLE);
                 ((ViewHolder)holder).tvTime.setVisibility(View.INVISIBLE);
                 ((ViewHolder)holder).view.setVisibility(View.INVISIBLE);
-                ((ViewHolder)holder).tvTitle.setText(tmp.getTitle());
-
-                Calendar todayC = Calendar.getInstance();
-                todayC.set(Calendar.HOUR_OF_DAY,0);
-                todayC.set(Calendar.MINUTE,0);
-                todayC.set(Calendar.SECOND,0);
-
-                Calendar yesterdayC = Calendar.getInstance();
-                yesterdayC.set(Calendar.DAY_OF_MONTH,yesterdayC.get(Calendar.DAY_OF_MONTH)-1);
-                yesterdayC.set(Calendar.HOUR_OF_DAY,0);
-                yesterdayC.set(Calendar.MINUTE,0);
-                yesterdayC.set(Calendar.SECOND,0);
-                if (tmp.getCalendar().after(todayC)){
-                    ((ViewHolder)holder).tvDate.setText("今天"+tmp.getCalendar().get(Calendar.HOUR_OF_DAY)+":"+tmp.getCalendar().get(Calendar.MINUTE));
-                }else if (tmp.getCalendar().after(yesterdayC)){
-                    ((ViewHolder)holder).tvDate.setText("昨天"+tmp.getCalendar().get(Calendar.HOUR_OF_DAY)+":"+tmp.getCalendar().get(Calendar.MINUTE));
+                ((ViewHolder)holder).tvTitle.setText(history.getTitle());
+                if (history.getStatus() == 0){
+                    ((ViewHolder) holder).tvStatus.setText("未开播");
                 }else {
-                    ((ViewHolder)holder).tvDate.setText((tmp.getCalendar().get(Calendar.MONTH)+1)+"-"+tmp.getCalendar().get(Calendar.DAY_OF_MONTH)+" "
-                            +tmp.getCalendar().get(Calendar.HOUR_OF_DAY)+":"+tmp.getCalendar().get(Calendar.MINUTE));
+                    ((ViewHolder) holder).tvStatus.setText("直播中");
                 }
+            }
+            Picasso.get().load(history.getCover()).into(((ViewHolder) holder).rivCover);
+            //今天
+            Calendar todayC = Calendar.getInstance();
+            todayC.set(Calendar.HOUR_OF_DAY,0);
+            todayC.set(Calendar.MINUTE,0);
+            todayC.set(Calendar.SECOND,0);
+            //昨天
+            Calendar yesterdayC = Calendar.getInstance();
+            yesterdayC.set(Calendar.DAY_OF_MONTH,yesterdayC.get(Calendar.DAY_OF_MONTH)-1);
+            yesterdayC.set(Calendar.HOUR_OF_DAY,0);
+            yesterdayC.set(Calendar.MINUTE,0);
+            yesterdayC.set(Calendar.SECOND,0);
+
+            Calendar date = Calendar.getInstance();
+            date.setTime(history.getLastTime());
+            if (date.after(todayC)){
+//                ((ViewHolder)holder).tvDate.setText("今天"+date.get(Calendar.HOUR_OF_DAY)+":"+date.get(Calendar.MINUTE));
+                ((ViewHolder)holder).tvDate.setText(String.format(context.getResources().getString(R.string.history_last_time_today),
+                        TimeUtil.fix0(date.get(Calendar.HOUR_OF_DAY)),
+                        TimeUtil.fix0(date.get(Calendar.MINUTE))));
+            }else if (date.after(yesterdayC)){
+                ((ViewHolder)holder).tvDate.setText(String.format(context.getResources().getString(R.string.history_last_time_yesterday),
+                        TimeUtil.fix0(date.get(Calendar.HOUR_OF_DAY)),
+                        TimeUtil.fix0(date.get(Calendar.MINUTE))));
+            }else {
+                ((ViewHolder)holder).tvDate.setText(String.format(context.getResources().getString(R.string.history_last_time_early),
+                        TimeUtil.fix0(date.get(Calendar.MONTH)+1),
+                        TimeUtil.fix0(date.get(Calendar.DAY_OF_MONTH)),
+                        TimeUtil.fix0(date.get(Calendar.HOUR_OF_DAY)),
+                        TimeUtil.fix0(date.get(Calendar.MINUTE))));
             }
         }
     }
