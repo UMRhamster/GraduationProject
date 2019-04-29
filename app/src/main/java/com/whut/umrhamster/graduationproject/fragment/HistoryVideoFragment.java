@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.whut.umrhamster.graduationproject.R;
 import com.whut.umrhamster.graduationproject.adapter.HistoryAdapter;
 import com.whut.umrhamster.graduationproject.comparator.HistoryComparator;
+import com.whut.umrhamster.graduationproject.interfaces.AllSelectedListener;
 import com.whut.umrhamster.graduationproject.interfaces.TextEditListener;
 import com.whut.umrhamster.graduationproject.model.bean.History;
 import com.whut.umrhamster.graduationproject.model.bean.Student;
@@ -47,13 +48,14 @@ public class HistoryVideoFragment extends Fragment implements IInitWidgetView,IH
     private IHistoryPresenter historyPresenter;
     private int start;
     private int timeDecor;
-
+    private int NumOfDecor;
 
     private int scrollState = RecyclerView.SCROLL_STATE_IDLE;
     private int lastItemPosition = -1;
     private boolean isLoading = false;
 
     private TextEditListener textEditListener;
+    private AllSelectedListener allSelectedListener;
 
 
     private View rootView;
@@ -65,11 +67,16 @@ public class HistoryVideoFragment extends Fragment implements IInitWidgetView,IH
             initView(rootView);
             initEvent();
         }
+        adapter.outEditing();
         return rootView;
     }
 
     public void setTextEditListener(TextEditListener textEditListener){
         this.textEditListener = textEditListener;
+    }
+
+    public void setAllSelectedListener(AllSelectedListener allSelectedListener){
+        this.allSelectedListener = allSelectedListener;
     }
 
     public void edit(){
@@ -111,6 +118,10 @@ public class HistoryVideoFragment extends Fragment implements IInitWidgetView,IH
         return adapter.isAllSelected();
     }
 
+    public void setAllSelectedState(boolean isAll){
+        adapter.setAllSelected(isAll);
+    }
+
     @Override
     public void initView() {
 
@@ -121,12 +132,23 @@ public class HistoryVideoFragment extends Fragment implements IInitWidgetView,IH
         adapter.setOnItemClickListener(new HistoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Toast.makeText(getActivity(),"dianji  "+position,Toast.LENGTH_SHORT).show();
+                if (position == -1){ //编辑状态中的点击事件，用于判断是否全选
+                    if (checkSet.size() == historyList.size()-NumOfDecor){
+                        allSelectedListener.onAllSelected(true);
+                        setAllSelectedState(true);
+                    }else {
+                        allSelectedListener.onAllSelected(false);
+                        setAllSelectedState(false);
+                    }
+                }
+//                Toast.makeText(getActivity(),"dianji  "+checkSet.size()+" "+historyList.size()+" "+NumOfDecor,Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onItemLongClick(int position) {
-                Toast.makeText(getActivity(),"changan  "+position,Toast.LENGTH_SHORT).show();
+                edit();
+                ((HistoryFragment)getParentFragment()).relativeLayout.setVisibility(View.VISIBLE);
+                ((HistoryFragment)getParentFragment()).tvEdit.setText("取消");
             }
         });
         //下拉刷新事件
@@ -135,7 +157,7 @@ public class HistoryVideoFragment extends Fragment implements IInitWidgetView,IH
             public void onRefresh() {
                 Student student = SPUtil.loadStudent(getActivity());
                 if (student != null){
-                    start = 0;timeDecor = 0;
+                    start = 0;timeDecor = 0;NumOfDecor=0;
                     adapter.outEditing();
                     historyList.clear();
                     historyPresenter.doHistory(start,student.getId(),1);
@@ -148,15 +170,9 @@ public class HistoryVideoFragment extends Fragment implements IInitWidgetView,IH
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                scrollState = newState;
                 LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 lastItemPosition = manager.findLastVisibleItemPosition();
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (scrollState != RecyclerView.SCROLL_STATE_IDLE && !isLoading && lastItemPosition == historyList.size()-1 && dy > 0){
+                if (newState != RecyclerView.SCROLL_STATE_IDLE && !isLoading && lastItemPosition == historyList.size()-1){
                     isLoading = true;
                     Student student = SPUtil.loadStudent(getActivity());
                     if (student != null){
@@ -165,6 +181,11 @@ public class HistoryVideoFragment extends Fragment implements IInitWidgetView,IH
                         isLoading = false;
                     }
                 }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
             }
         });
     }
@@ -179,11 +200,12 @@ public class HistoryVideoFragment extends Fragment implements IInitWidgetView,IH
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         initData();
-        adapter.outEditing();
+//        adapter.outEditing();
     }
     private void initData(){
         start = 0;
         timeDecor = 0;
+        NumOfDecor=0;
         historyPresenter = new HistoryPresenter(this);
         Student student = SPUtil.loadStudent(getActivity());
         if (student != null){
@@ -210,19 +232,25 @@ public class HistoryVideoFragment extends Fragment implements IInitWidgetView,IH
                 if (timeDecor == 0) {
                     this.historyList.add(new History("今天",-1));
                     timeDecor++;
+                    NumOfDecor++;
                 }
             }else if (history.getLastTime().after(yesterdayC.getTime())){
                 if (timeDecor == 0 || timeDecor == 1){
                     this.historyList.add(new History("昨天",-1));
                     timeDecor+=2;
+                    NumOfDecor++;
                 }
             }else {
                 if (timeDecor == 0 || timeDecor == 1 || timeDecor == 2 || timeDecor == 3){
                     this.historyList.add(new History("更早",-1));
                     timeDecor+=4;
+                    NumOfDecor++;
                 }
             }
             this.historyList.add(history);
+            if (isAllSelected()){
+                checkSet.add(historyList.size()-1);
+            }
         }
         adapter.notifyDataSetChanged();
         sRefresh.setRefreshing(false);
@@ -230,6 +258,7 @@ public class HistoryVideoFragment extends Fragment implements IInitWidgetView,IH
 
     @Override
     public void onHistoryFail(int code) {
+        sRefresh.setRefreshing(false);
     }
 
     @Override
@@ -262,6 +291,7 @@ public class HistoryVideoFragment extends Fragment implements IInitWidgetView,IH
                 }
             }
             timeDecor = 0;
+            NumOfDecor=0;
             checkSet.clear();
             Log.d("size",historyList.size()+"");
             //删除之后 时间标志需要重新显示
@@ -281,18 +311,21 @@ public class HistoryVideoFragment extends Fragment implements IInitWidgetView,IH
                         this.historyList.add(i,new History("今天",-1));
                         i++;
                         timeDecor++;
+                        NumOfDecor++;
                     }
                 }else if (history.getLastTime().after(yesterdayC.getTime())){
                     if (timeDecor == 0 || timeDecor == 1){
                         this.historyList.add(i,new History("昨天",-1));
                         i++;
                         timeDecor+=2;
+                        NumOfDecor++;
                     }
                 }else {
                     if (timeDecor == 0 || timeDecor == 1 || timeDecor == 2 || timeDecor == 3){
                         this.historyList.add(i,new History("更早",-1));
                         i++;
                         timeDecor+=4;
+                        NumOfDecor++;
                     }
                 }
 //            this.historyList.add(history);

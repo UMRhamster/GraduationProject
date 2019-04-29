@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.whut.umrhamster.graduationproject.R;
 import com.whut.umrhamster.graduationproject.adapter.HistoryFragmentPagerAdapter;
+import com.whut.umrhamster.graduationproject.interfaces.AllSelectedListener;
 import com.whut.umrhamster.graduationproject.interfaces.TextEditListener;
 import com.whut.umrhamster.graduationproject.view.IInitWidgetView;
 import com.whut.umrhamster.graduationproject.widget.NoScrollViewPager;
@@ -26,8 +27,8 @@ import com.whut.umrhamster.graduationproject.widget.SmoothCheckBox;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistoryFragment extends Fragment implements IInitWidgetView,TextEditListener {
-    private TextView tvEdit;
+public class HistoryFragment extends Fragment implements IInitWidgetView,TextEditListener,AllSelectedListener {
+    TextView tvEdit;
 
     private NoScrollViewPager viewPager;
     private RadioGroup radioGroup;
@@ -36,7 +37,7 @@ public class HistoryFragment extends Fragment implements IInitWidgetView,TextEdi
     private List<Fragment> fragmentList;
 
     //底部工具栏
-    private RelativeLayout relativeLayout;
+    RelativeLayout relativeLayout;
     private SmoothCheckBox scb;
     private TextView tvAll;
     private TextView tvDelete;
@@ -245,10 +246,13 @@ public class HistoryFragment extends Fragment implements IInitWidgetView,TextEdi
         fragmentList = new ArrayList<>(3);
         HistoryAllFragment historyAllFragment = new HistoryAllFragment();
         historyAllFragment.setTextEditListener(this);
+        historyAllFragment.setAllSelectedListener(this);
         HistoryVideoFragment historyVideoFragment = new HistoryVideoFragment();
         historyVideoFragment.setTextEditListener(this);
+        historyVideoFragment.setAllSelectedListener(this);
         HistoryLiveFragment historyLiveFragment = new HistoryLiveFragment();
         historyLiveFragment.setTextEditListener(this);
+        historyLiveFragment.setAllSelectedListener(this);
         fragmentList.add(historyAllFragment);
         fragmentList.add(historyVideoFragment);
         fragmentList.add(historyLiveFragment);
@@ -263,4 +267,8 @@ public class HistoryFragment extends Fragment implements IInitWidgetView,TextEdi
         scb.setChecked(false);
     }
 
+    @Override
+    public void onAllSelected(boolean isAll) {
+        scb.setChecked(isAll);
+    }
 }

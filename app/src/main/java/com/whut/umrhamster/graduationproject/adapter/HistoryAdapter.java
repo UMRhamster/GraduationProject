@@ -82,11 +82,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             holder.checkBox.setChecked(true);
                             checkSet.add(position);
                         }
-//                        if (activeAllSelected && !passiveAllSelected){
-//                            onItemClickListener.onItemClick(-1);
-//                        }else {
-//                            onItemClickListener.onItemClick(-2);
-//                        }
+                        onItemClickListener.onItemClick(-1);
                     }else {
                         onItemClickListener.onItemClick(position);
                     }
@@ -101,6 +97,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     if (isEdit){
                         return false;
                     }else {
+                        checkSet.add(position);
+//                        inEditing();
                         onItemClickListener.onItemLongClick(position);
                         return true;
                     }
@@ -156,10 +154,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
             if (isEdit){
                 ((ViewHolder) holder).checkBox.setVisibility(View.VISIBLE);
-                if (checkSet.contains(position)){
+                if (isAllSelected){
                     ((ViewHolder) holder).checkBox.setChecked(true);
                 }else {
-                    ((ViewHolder) holder).checkBox.setChecked(false);
+                    if (checkSet.contains(position)){
+                        ((ViewHolder) holder).checkBox.setChecked(true);
+                    }else {
+                        ((ViewHolder) holder).checkBox.setChecked(false);
+                    }
                 }
             }else {
                 ((ViewHolder) holder).checkBox.setVisibility(View.GONE);
@@ -180,7 +182,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             Calendar date = Calendar.getInstance();
             date.setTime(history.getLastTime());
             if (date.after(todayC)){
-//                ((ViewHolder)holder).tvDate.setText("今天"+date.get(Calendar.HOUR_OF_DAY)+":"+date.get(Calendar.MINUTE));
                 ((ViewHolder)holder).tvDate.setText(String.format(context.getResources().getString(R.string.history_last_time_today),
                         TimeUtil.fix0(date.get(Calendar.HOUR_OF_DAY)),
                         TimeUtil.fix0(date.get(Calendar.MINUTE))));
@@ -196,7 +197,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         TimeUtil.fix0(date.get(Calendar.MINUTE))));
             }
         }else {
-//            ((FootViewHolder)holder).linearLayout.setVisibility(View.GONE);
             if (position == resultList.size() && isEdit){
                 ((FootViewHolder)holder).linearLayout.setVisibility(View.VISIBLE);
             }else {
@@ -216,7 +216,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 //        activeAllSelected = true;
         if (isEdit){
             for (int i=0;i<resultList.size();i++){
-                checkSet.add(i);
+                if (resultList.get(i).getTotalTime() != -1){
+                    checkSet.add(i);
+                }
             }
         }
         notifyDataSetChanged();
@@ -236,12 +238,17 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public void outEditing(){
         isEdit = false;
+        isAllSelected = false;
         checkSet.clear();
         notifyDataSetChanged();
     }
 
     public boolean isAllSelected() {
         return isAllSelected;
+    }
+
+    public void setAllSelected(boolean allSelected) {
+        isAllSelected = allSelected;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

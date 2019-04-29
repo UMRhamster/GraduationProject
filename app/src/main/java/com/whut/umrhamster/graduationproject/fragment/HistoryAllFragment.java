@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.whut.umrhamster.graduationproject.R;
 import com.whut.umrhamster.graduationproject.adapter.HistoryAdapter;
 import com.whut.umrhamster.graduationproject.comparator.HistoryComparator;
+import com.whut.umrhamster.graduationproject.interfaces.AllSelectedListener;
 import com.whut.umrhamster.graduationproject.interfaces.TextEditListener;
 import com.whut.umrhamster.graduationproject.model.bean.History;
 import com.whut.umrhamster.graduationproject.model.bean.Live;
@@ -48,12 +49,14 @@ public class HistoryAllFragment extends Fragment implements IInitWidgetView,IHis
     private IHistoryPresenter historyPresenter;
     private int start;
     private int timeDecor;
+    private int NumOfDecor;
 
     private int scrollState = RecyclerView.SCROLL_STATE_IDLE;
     private int lastItemPosition = -1;
     private boolean isLoading = false;
 
     private TextEditListener textEditListener;
+    private AllSelectedListener allSelectedListener;
 
     //复用
     private View rootView;
@@ -67,11 +70,17 @@ public class HistoryAllFragment extends Fragment implements IInitWidgetView,IHis
             initEvent();
         }
 //        View view = inflater.inflate(R.layout.fg_history_all,container,false);
+//        Log.d("dasda","dddd");
+        adapter.outEditing();
         return rootView;
     }
 
     public void setTextEditListener(TextEditListener textEditListener){
         this.textEditListener = textEditListener;
+    }
+
+    public void setAllSelectedListener(AllSelectedListener allSelectedListener){
+        this.allSelectedListener = allSelectedListener;
     }
 
 
@@ -114,6 +123,10 @@ public class HistoryAllFragment extends Fragment implements IInitWidgetView,IHis
         return adapter.isAllSelected();
     }
 
+    public void setAllSelectedState(boolean isAll){
+        adapter.setAllSelected(isAll);
+    }
+
     @Override
     public void initView() {
 
@@ -124,17 +137,25 @@ public class HistoryAllFragment extends Fragment implements IInitWidgetView,IHis
         adapter.setOnItemClickListener(new HistoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                if (position == -1){
-                    ((HistoryFragment)getParentFragment()).setScb(true);
-                }else if (position == -2){
-                    ((HistoryFragment)getParentFragment()).setScb(false);
+                if (position == -1){ //编辑状态中的点击事件，用于判断是否全选
+                    if (checkSet.size() == historyList.size()-NumOfDecor){
+                        allSelectedListener.onAllSelected(true);
+                        setAllSelectedState(true);
+                    }else {
+                        allSelectedListener.onAllSelected(false);
+                        setAllSelectedState(false);
+                    }
                 }
-                Toast.makeText(getActivity(),"dianji  "+position,Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(),"dianji  "+checkSet.size()+" "+historyList.size()+" "+NumOfDecor,Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onItemLongClick(int position) {
-                Toast.makeText(getActivity(),"changan  "+position,Toast.LENGTH_SHORT).show();
+                edit();
+                ((HistoryFragment)getParentFragment()).relativeLayout.setVisibility(View.VISIBLE);
+                ((HistoryFragment)getParentFragment()).tvEdit.setText("取消");
+//                relativeLayout.setVisibility(View.VISIBLE);
+//                tvEdit.setText("取消");
             }
         });
         //下拉刷新事件
@@ -143,7 +164,7 @@ public class HistoryAllFragment extends Fragment implements IInitWidgetView,IHis
             public void onRefresh() {
                 Student student = SPUtil.loadStudent(getActivity());
                 if (student != null){
-                    start = 0;timeDecor = 0;
+                    start = 0;timeDecor = 0;NumOfDecor=0;
                     adapter.outEditing();
                     historyList.clear();
                     historyPresenter.doHistory(start,student.getId(),0);
@@ -155,29 +176,22 @@ public class HistoryAllFragment extends Fragment implements IInitWidgetView,IHis
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                scrollState = newState;
+                LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                lastItemPosition = manager.findLastVisibleItemPosition();
+                if (newState != RecyclerView.SCROLL_STATE_IDLE && !isLoading && lastItemPosition == historyList.size()-1){
+                    isLoading = true;
+                    Student student = SPUtil.loadStudent(getActivity());
+                    if (student != null){
+                        historyPresenter.doHistory(start,student.getId(),0);
+                    }else {
+                        isLoading = false;
+                    }
+                }
             }
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-//                if (scrollState != RecyclerView.SCROLL_STATE_IDLE){
-//                    LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
-//                    lastItemPosition = manager.findLastVisibleItemPosition();
-//                }
-                if (scrollState != RecyclerView.SCROLL_STATE_IDLE && !isLoading && dy > 0){
-                    LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                    lastItemPosition = manager.findLastVisibleItemPosition();
-                    if (lastItemPosition == historyList.size()-1){
-                        isLoading = true;
-                        Student student = SPUtil.loadStudent(getActivity());
-                        if (student != null){
-                            historyPresenter.doHistory(start,student.getId(),0);
-                        }else {
-                            isLoading = false;
-                        }
-                    }
-                }
             }
         });
     }
@@ -193,12 +207,12 @@ public class HistoryAllFragment extends Fragment implements IInitWidgetView,IHis
 //        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(adapter);
         initData();
-        adapter.outEditing();
     }
     private void initData(){
         historyPresenter = new HistoryPresenter(this);
         start=0;
         timeDecor=0;
+        NumOfDecor = 0;
         Student student = SPUtil.loadStudent(getActivity());
         if (student != null){
             historyPresenter.doHistory(start,student.getId(),0);
@@ -225,19 +239,25 @@ public class HistoryAllFragment extends Fragment implements IInitWidgetView,IHis
                 if (timeDecor == 0) {
                     this.historyList.add(new History("今天",-1));
                     timeDecor++;
+                    NumOfDecor++;
                 }
             }else if (history.getLastTime().after(yesterdayC.getTime())){
                 if (timeDecor == 0 || timeDecor == 1){
                     this.historyList.add(new History("昨天",-1));
                     timeDecor+=2;
+                    NumOfDecor++;
                 }
             }else {
                 if (timeDecor == 0 || timeDecor == 1 || timeDecor == 2 || timeDecor == 3){
                     this.historyList.add(new History("更早",-1));
                     timeDecor+=4;
+                    NumOfDecor++;
                 }
             }
             this.historyList.add(history);
+            if (isAllSelected()){
+                checkSet.add(historyList.size()-1);
+            }
         }
         adapter.notifyDataSetChanged();
         sRefresh.setRefreshing(false);
@@ -246,6 +266,7 @@ public class HistoryAllFragment extends Fragment implements IInitWidgetView,IHis
 
     @Override
     public void onHistoryFail(int code) {
+        sRefresh.setRefreshing(false);
         Toast.makeText(getActivity(),"获取历史记录失败 ",Toast.LENGTH_SHORT).show();
     }
 
@@ -279,6 +300,7 @@ public class HistoryAllFragment extends Fragment implements IInitWidgetView,IHis
                 }
             }
             timeDecor = 0;
+            NumOfDecor=0;
             checkSet.clear();
             Log.d("size",historyList.size()+"");
             //删除之后 时间标志需要重新显示
@@ -298,18 +320,21 @@ public class HistoryAllFragment extends Fragment implements IInitWidgetView,IHis
                         this.historyList.add(i,new History("今天",-1));
                         i++;
                         timeDecor++;
+                        NumOfDecor++;
                     }
                 }else if (history.getLastTime().after(yesterdayC.getTime())){
                     if (timeDecor == 0 || timeDecor == 1){
                         this.historyList.add(i,new History("昨天",-1));
                         i++;
                         timeDecor+=2;
+                        NumOfDecor++;
                     }
                 }else {
                     if (timeDecor == 0 || timeDecor == 1 || timeDecor == 2 || timeDecor == 3){
                         this.historyList.add(i,new History("更早",-1));
                         i++;
                         timeDecor+=4;
+                        NumOfDecor++;
                     }
                 }
 //            this.historyList.add(history);
@@ -325,4 +350,5 @@ public class HistoryAllFragment extends Fragment implements IInitWidgetView,IHis
             ((ViewGroup)rootView.getParent()).removeView(rootView);
         }
     }
+
 }
