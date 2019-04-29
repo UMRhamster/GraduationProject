@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.whut.umrhamster.graduationproject.widget.SmoothCheckBox
+        android:id="@+id/custom_rv_item_history_cb"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="12dp"
+        app:stroke_width="1dp"
+        app:color_checked="@color/themeColor"
+        app:color_unchecked="#fafafa"
+        android:layout_centerVertical="true"/>
     <RelativeLayout
+        android:layout_marginStart="12dp"
+        android:id="@+id/custom_rv_item_history_rl_s"
+        android:layout_toEndOf="@id/custom_rv_item_history_cb"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <RelativeLayout
@@ -69,6 +80,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="12dp"
             android:layout_toEndOf="@id/custom_rv_item_history_rl"
             android:layout_centerVertical="true"
             android:orientation="vertical">
@@ -117,5 +131,11 @@
                 android:ellipsize="end"/>
         </LinearLayout>
     </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignBottom="@+id/custom_rv_item_history_rl_s"
+        android:layout_marginStart="12dp"
+        android:background="#eaeaea"/>
 
-</LinearLayout>
+</RelativeLayout>

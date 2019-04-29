@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -23,67 +24,41 @@ import com.whut.umrhamster.graduationproject.model.bean.History;
 import com.whut.umrhamster.graduationproject.model.bean.Live;
 import com.whut.umrhamster.graduationproject.model.bean.Video;
 import com.whut.umrhamster.graduationproject.utils.other.TimeUtil;
+import com.whut.umrhamster.graduationproject.widget.SmoothCheckBox;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.TreeSet;
 
 public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final int SIGN = 0, ITEM = 1;
+    private static final int SIGN = 0, ITEM = 1, FOOT = 2;
 
-//    private List<History> historyList;
     private List<History> resultList;
-    private int timeDecor = 0;
+//    private List<Boolean> checkList;
+    private TreeSet<Integer> checkSet;
+//    private int timeDecor = 0;
 
     private Context context;
+    private OnItemClickListener onItemClickListener;
 
-    public HistoryAdapter(List<History> historyList, Context context){
+    private boolean isEdit = false;
+    private boolean isAllSelected = false;
+//    private boolean passiveAllSelected = false;
+//    private boolean activeAllSelected = false;
+
+    public HistoryAdapter(List<History> historyList, TreeSet<Integer> checkSet, Context context){
         this.resultList = historyList;
+        this.checkSet = checkSet;
         this.context = context;
-        initAdapter();
     }
 
-    public void add(History history){
-        resultList.add(history);
-    }
-
-    public void addAll(List<History> historyList){
-        Log.d("test",""+historyList.size()+this.resultList.size());
-        Collections.sort(historyList,new HistoryComparator());
-        Calendar todayC = Calendar.getInstance();
-        todayC.set(Calendar.HOUR_OF_DAY,0);
-        todayC.set(Calendar.MINUTE,0);
-        todayC.set(Calendar.SECOND,0);
-
-        Calendar yesterdayC = Calendar.getInstance();
-        yesterdayC.set(Calendar.DAY_OF_MONTH,yesterdayC.get(Calendar.DAY_OF_MONTH)-1);
-        yesterdayC.set(Calendar.HOUR_OF_DAY,0);
-        yesterdayC.set(Calendar.MINUTE,0);
-        yesterdayC.set(Calendar.SECOND,0);
-//        resultList.addAll(historyList);
-        for (History history : historyList){
-            if (history.getLastTime().after(todayC.getTime())){
-                if (timeDecor == 0) {
-                    resultList.add(new History("今天",-1));
-                    timeDecor++;
-                }
-            }else if (history.getLastTime().after(yesterdayC.getTime())){
-                if (timeDecor == 0 || timeDecor == 1){
-                    resultList.add(new History("昨天",-1));
-                    timeDecor+=2;
-                }
-            }else {
-                if (timeDecor == 0 || timeDecor == 1 || timeDecor == 2 || timeDecor == 3){
-                    resultList.add(new History("更早",-1));
-                    timeDecor+=4;
-                }
-            }
-            resultList.add(history);
-        }
-        Log.d("test",""+historyList.size()+this.resultList.size());
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -91,13 +66,57 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == SIGN){
             return new SignViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_rv_item_history_sign,parent,false));
+        }else if (viewType == ITEM){
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_rv_item_history,parent,false);
+            final ViewHolder  holder = new ViewHolder(view);
+            //点击事件处理
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = (int) v.getTag();
+                    if (isEdit){
+                        if (holder.checkBox.isChecked()){
+                            holder.checkBox.setChecked(false);
+                            checkSet.remove(position);
+                        }else {
+                            holder.checkBox.setChecked(true);
+                            checkSet.add(position);
+                        }
+//                        if (activeAllSelected && !passiveAllSelected){
+//                            onItemClickListener.onItemClick(-1);
+//                        }else {
+//                            onItemClickListener.onItemClick(-2);
+//                        }
+                    }else {
+                        onItemClickListener.onItemClick(position);
+                    }
+                }
+            });
+            //长按点击事件处理
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int position = (int) v.getTag();
+
+                    if (isEdit){
+                        return false;
+                    }else {
+                        onItemClickListener.onItemLongClick(position);
+                        return true;
+                    }
+                }
+            });
+            return holder;
         }else {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_rv_item_history,parent,false));
+            return new FootViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_rv_item_history_foot,parent,false));
         }
     }
 
     @Override
     public int getItemViewType(int position) {
+        if (position == resultList.size()){
+            return FOOT;
+        }
         if (resultList.get(position).getTotalTime() == -1){
             return SIGN;
         }else {
@@ -105,13 +124,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    private void initAdapter(){
-        resultList = new ArrayList<>();
-    }
-
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-//        Log.d("dasd","11");
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof SignViewHolder){
             ((SignViewHolder) holder).textView.setText(resultList.get(position).getTitle());
         }else if (holder instanceof ViewHolder){
@@ -122,7 +136,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 ((ViewHolder)holder).tvTime.setVisibility(View.VISIBLE);
                 ((ViewHolder)holder).view.setVisibility(View.VISIBLE);
                 ((ViewHolder)holder).tvTitle.setText(history.getTitle());
-                ((ViewHolder)holder).tvTime.setText(TimeUtil.int2String(history.getWatchedTime())+"/"+TimeUtil.int2String(history.getTotalTime()));
+                ((ViewHolder)holder).tvTime.setText(String.format(context.getResources().getString(R.string.history_progress),
+                        TimeUtil.int2String(history.getWatchedTime()),
+                        TimeUtil.int2String(history.getTotalTime())));
 
                 ((ViewHolder)holder).progressBar.setMax(history.getTotalTime());
                 ((ViewHolder)holder).progressBar.setProgress(history.getWatchedTime());
@@ -137,6 +153,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }else {
                     ((ViewHolder) holder).tvStatus.setText("直播中");
                 }
+            }
+            if (isEdit){
+                ((ViewHolder) holder).checkBox.setVisibility(View.VISIBLE);
+                if (checkSet.contains(position)){
+                    ((ViewHolder) holder).checkBox.setChecked(true);
+                }else {
+                    ((ViewHolder) holder).checkBox.setChecked(false);
+                }
+            }else {
+                ((ViewHolder) holder).checkBox.setVisibility(View.GONE);
             }
             Picasso.get().load(history.getCover()).into(((ViewHolder) holder).rivCover);
             //今天
@@ -169,12 +195,53 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         TimeUtil.fix0(date.get(Calendar.HOUR_OF_DAY)),
                         TimeUtil.fix0(date.get(Calendar.MINUTE))));
             }
+        }else {
+//            ((FootViewHolder)holder).linearLayout.setVisibility(View.GONE);
+            if (position == resultList.size() && isEdit){
+                ((FootViewHolder)holder).linearLayout.setVisibility(View.VISIBLE);
+            }else {
+                ((FootViewHolder)holder).linearLayout.setVisibility(View.GONE);
+            }
         }
+        holder.itemView.setTag(position);
     }
 
     @Override
     public int getItemCount() {
-        return resultList == null ? 0 : resultList.size();
+        return resultList == null ? 0 : resultList.size()+1;
+    }
+
+    public void chooseAll(){
+        isAllSelected = true;
+//        activeAllSelected = true;
+        if (isEdit){
+            for (int i=0;i<resultList.size();i++){
+                checkSet.add(i);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public void cancelAll(){
+        isAllSelected = false;
+//        activeAllSelected = false;
+        checkSet.clear();
+        notifyDataSetChanged();
+    }
+
+    public void inEditing(){
+        isEdit = true;
+        notifyDataSetChanged();
+    }
+
+    public void outEditing(){
+        isEdit = false;
+        checkSet.clear();
+        notifyDataSetChanged();
+    }
+
+    public boolean isAllSelected() {
+        return isAllSelected;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -187,6 +254,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         TextView tvNickname;        //作者名
         TextView tvDate;            //记录时间
         TextView tvIdentify;        //身份
+        SmoothCheckBox checkBox;
         public ViewHolder(View itemView) {
             super(itemView);
             rivCover = itemView.findViewById(R.id.custom_rv_item_history_rl_riv_cover);
@@ -198,15 +266,30 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             tvNickname = itemView.findViewById(R.id.custom_rv_item_history_rl_tv_nickname);
             tvDate = itemView.findViewById(R.id.custom_rv_item_history_rl_tv_date);
             tvIdentify = itemView.findViewById(R.id.custom_rv_item_history_rl_tv_icon);
+            checkBox = itemView.findViewById(R.id.custom_rv_item_history_cb);
 
         }
     }
-
+    //时间标志ViewHolder
     public class SignViewHolder extends RecyclerView.ViewHolder{
         TextView textView;
         public SignViewHolder(View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.custom_rv_item_history_sign_tv);
         }
+    }
+    //上拉加载ViewHolder
+    public class FootViewHolder extends RecyclerView.ViewHolder{
+        LinearLayout linearLayout;
+        public FootViewHolder(View itemView) {
+            super(itemView);
+            linearLayout = itemView.findViewById(R.id.custom_rv_item_history_foot_ll);
+        }
+    }
+
+    //点击事件处理
+    public interface OnItemClickListener{
+        void onItemClick(int position);
+        void onItemLongClick(int position);
     }
 }
