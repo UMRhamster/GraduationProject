@@ -61,5 +61,7 @@ dependencies {
     //网络请求框架
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    //二级列表
+    implementation 'com.hgDendi:expandable-recyclerview-adapter:1.0.1'
 
 }

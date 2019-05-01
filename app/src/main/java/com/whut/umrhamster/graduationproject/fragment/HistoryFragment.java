@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -16,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.whut.umrhamster.graduationproject.MainActivity;
 import com.whut.umrhamster.graduationproject.R;
 import com.whut.umrhamster.graduationproject.adapter.HistoryFragmentPagerAdapter;
 import com.whut.umrhamster.graduationproject.interfaces.AllSelectedListener;
@@ -29,6 +31,7 @@ import java.util.List;
 
 public class HistoryFragment extends Fragment implements IInitWidgetView,TextEditListener,AllSelectedListener {
     TextView tvEdit;
+    private ImageView ivMenu;
 
     private NoScrollViewPager viewPager;
     private RadioGroup radioGroup;
@@ -189,6 +192,12 @@ public class HistoryFragment extends Fragment implements IInitWidgetView,TextEdi
 //                Toast.makeText(getActivity(),"shanchu",Toast.LENGTH_SHORT).show();
             }
         });
+        ivMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).openDrawer();
+            }
+        });
     }
 
     public void bottomControl(){
@@ -232,6 +241,7 @@ public class HistoryFragment extends Fragment implements IInitWidgetView,TextEdi
 
     @Override
     public void initView(View view) {
+        ivMenu = view.findViewById(R.id.history_tb_menu);
         tvEdit = view.findViewById(R.id.history_tb_tv_edit);
         radioGroup = view.findViewById(R.id.history_rg);
         rbAll = view.findViewById(R.id.history_rg_rb_all);

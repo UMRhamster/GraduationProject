@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:paddingEnd="14dp"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/rv_info_child_iv_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="4dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_classify_dxwl"/>
+    <TextView
+        android:id="@+id/rv_info_child_tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="大学物理"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/rv_info_child_iv_icon"/>
+
+    <TextView
+        android:id="@+id/rv_info_child_tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:text="11分钟"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#dbdbdb"
+        android:layout_alignBottom="@id/rv_info_child_iv_icon"
+        android:layout_alignStart="@id/rv_info_child_tv_title"/>
+
+</RelativeLayout>

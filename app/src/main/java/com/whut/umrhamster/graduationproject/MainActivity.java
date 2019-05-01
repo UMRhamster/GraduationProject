@@ -189,7 +189,8 @@ public class MainActivity extends AppCompatActivity implements IInitWidgetView {
                 if (student == null){
                     startActivityForResult(new Intent(MainActivity.this,LoginActivity.class),1);
                 }else {
-                    Toast.makeText(MainActivity.this,"显示信息",Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(MainActivity.this,StudentInfoActivity.class));
+//                    Toast.makeText(MainActivity.this,"显示信息",Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -199,7 +200,8 @@ public class MainActivity extends AppCompatActivity implements IInitWidgetView {
                 if (student == null){
                     startActivityForResult(new Intent(MainActivity.this,LoginActivity.class),1);
                 }else {
-                    Toast.makeText(MainActivity.this,"显示信息",Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(MainActivity.this,StudentInfoActivity.class));
+//                    Toast.makeText(MainActivity.this,"显示信息",Toast.LENGTH_SHORT).show();
                 }
             }
         });
