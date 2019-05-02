@@ -13,13 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.whut.umrhamster.graduationproject.MainActivity;
 import com.whut.umrhamster.graduationproject.R;
 import com.whut.umrhamster.graduationproject.adapter.CollectAdapter;
 import com.whut.umrhamster.graduationproject.model.bean.Collection;
 import com.whut.umrhamster.graduationproject.model.bean.Student;
-import com.whut.umrhamster.graduationproject.model.bean.Video;
 import com.whut.umrhamster.graduationproject.presenter.CollectionPresenter;
 import com.whut.umrhamster.graduationproject.presenter.ICollectionPresenter;
 import com.whut.umrhamster.graduationproject.utils.save.SPUtil;
@@ -29,10 +30,14 @@ import com.whut.umrhamster.graduationproject.view.IInitWidgetView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InfoCollectFragment extends Fragment implements IInitWidgetView,ICollectionView {
+//该收藏界面是侧边菜单栏的收藏，与个人信息界面的收藏显示内容一致，由于需要显示顶部菜单栏，所以复制一遍
+public class CollectionFragment extends Fragment implements IInitWidgetView,ICollectionView {
     private RecyclerView recyclerView;
     private CollectAdapter adapter;
     private List<Collection> videoList;
+
+    //
+    private ImageView ivMenu;
 
     //sj
     private ICollectionPresenter collectionPresenter;
@@ -40,7 +45,7 @@ public class InfoCollectFragment extends Fragment implements IInitWidgetView,ICo
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fg_info_collect,container,false);
+        View view = inflater.inflate(R.layout.fg_collection,container,false);
         initView(view);
         initEvent();
         return view;
@@ -69,15 +74,23 @@ public class InfoCollectFragment extends Fragment implements IInitWidgetView,ICo
 
             @Override
             public void onMenuClick(int position) {
-//                Toast.makeText(getActivity(),"testmenu",Toast.LENGTH_SHORT).show();
                 showBottomDialog(position);
+            }
+        });
+
+        ivMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).openDrawer();
             }
         });
     }
 
     @Override
     public void initView(View view) {
-        recyclerView = view.findViewById(R.id.fg_info_collection_rv);
+        recyclerView = view.findViewById(R.id.fg_collection_rv);
+        ivMenu = view.findViewById(R.id.fg_collection_iv_menu);
+
         videoList = new ArrayList<>();
         adapter = new CollectAdapter(videoList,getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -112,17 +125,8 @@ public class InfoCollectFragment extends Fragment implements IInitWidgetView,ICo
 
     @Override
     public void onCollectionSuccess(List<Collection> videoList) {
-        Log.d("dsa",""+videoList.size());
         this.videoList.addAll(videoList);
         adapter.notifyDataSetChanged();
-//        for (int i=0;i<videoList.size();i++){
-//            Video video = videoList.get(i);
-//            Log.d("test",""+video.getCover());
-//            Log.d("test",""+video.getPath());
-//            Log.d("test",""+video.getTitle());
-//            Log.d("test",""+video.getNofw());
-//            Log.d("test",""+video.getTotalTime());
-//        }
     }
 
     @Override

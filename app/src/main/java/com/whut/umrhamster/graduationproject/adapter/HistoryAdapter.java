@@ -1,11 +1,8 @@
 package com.whut.umrhamster.graduationproject.adapter;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,22 +13,11 @@ import android.widget.TextView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 import com.whut.umrhamster.graduationproject.R;
-import com.whut.umrhamster.graduationproject.comparator.AllComparator;
-import com.whut.umrhamster.graduationproject.comparator.HistoryComparator;
-import com.whut.umrhamster.graduationproject.comparator.LiveComparator;
-import com.whut.umrhamster.graduationproject.comparator.VideoComparator;
 import com.whut.umrhamster.graduationproject.model.bean.History;
-import com.whut.umrhamster.graduationproject.model.bean.Live;
-import com.whut.umrhamster.graduationproject.model.bean.Video;
 import com.whut.umrhamster.graduationproject.utils.other.TimeUtil;
 import com.whut.umrhamster.graduationproject.widget.SmoothCheckBox;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
 

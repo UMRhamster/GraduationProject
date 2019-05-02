@@ -116,10 +116,10 @@ public class StudentInfoActivity extends AppCompatActivity implements IInitWidge
         appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
             @Override
             public void onStateChanged(AppBarLayout appBarLayout, State state) {
-                if (state == State.EXPANDED){
-                    tvTopNickname.setVisibility(View.INVISIBLE);
-                }else if (state == State.COLLAPSED){
+                if (state == State.COLLAPSED){
                     tvTopNickname.setVisibility(View.VISIBLE);
+                }else{
+                    tvTopNickname.setVisibility(View.INVISIBLE);
                 }
             }
         });

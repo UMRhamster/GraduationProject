@@ -77,26 +77,6 @@ public class MainFragment extends Fragment implements IInitWidgetView {
     }
 
     private void initData(){
-//        student = SPUtil.loadStudent(getActivity());
-//        if (student != null){
-//            textViewNickname.setText(student.getNickname());
-//            textViewInfo.setVisibility(View.VISIBLE);
-//            textViewInfo.setText(String.format(getString(R.string.header_study_time),TimeUtil.int2header(student.getDuration())));
-//            RetrofitUtil.loginWithoutPassword(student.getEmail(), new IUserBiz.OnLoginListener() {
-//                @Override
-//                public void onLoginSuccess(Student student) {
-//                    textViewNickname.setText(student.getNickname());
-//                    textViewInfo.setVisibility(View.VISIBLE);
-//                    textViewInfo.setText(String.format(getString(R.string.header_study_time),TimeUtil.int2header(student.getDuration())));
-//                    SPUtil.saveStudent(getActivity(),student);
-//                }
-//
-//                @Override
-//                public void onLoginFail(int code) {
-//
-//                }
-//            });
-//        }
     }
 
     @Override
@@ -106,34 +86,6 @@ public class MainFragment extends Fragment implements IInitWidgetView {
 
     @Override
     public void initEvent() {
-//        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-//            @Override
-//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//                switch (item.getItemId()){
-//                    case R.id.home:
-//                        Toast.makeText(getActivity(),"ceshi",Toast.LENGTH_SHORT).show();
-//                        break;
-//                    case R.id.history:
-//                        startActivity(new Intent(getActivity(),HistoryActivity.class));
-//                        break;
-//                }
-//                return true;
-//            }
-//        });
-//        civIcon.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivityForResult(new Intent(getActivity(),LoginActivity.class),1);
-////                startActivity(new Intent(MainActivity.this,LoginActivity.class));
-//            }
-//        });
-//        textViewNickname.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivityForResult(new Intent(getActivity(),LoginActivity.class),1);
-////                startActivity(new Intent(MainActivity.this,LoginActivity.class));
-//            }
-//        });
 
         //顶部工具栏
         imageViewMenu.setOnClickListener(new View.OnClickListener() {

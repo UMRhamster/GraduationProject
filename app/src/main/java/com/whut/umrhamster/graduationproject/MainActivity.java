@@ -31,9 +31,11 @@ import android.widget.Toast;
 
 import com.whut.umrhamster.graduationproject.adapter.MainFragmentPagerAdapter;
 import com.whut.umrhamster.graduationproject.fragment.ClassifyFragment;
+import com.whut.umrhamster.graduationproject.fragment.CollectionFragment;
 import com.whut.umrhamster.graduationproject.fragment.ForeshowFragment;
 import com.whut.umrhamster.graduationproject.fragment.HistoryFragment;
 import com.whut.umrhamster.graduationproject.fragment.HomeFragment;
+import com.whut.umrhamster.graduationproject.fragment.InfoCollectFragment;
 import com.whut.umrhamster.graduationproject.fragment.MainFragment;
 import com.whut.umrhamster.graduationproject.fragment.WatchFragment;
 import com.whut.umrhamster.graduationproject.model.bean.Student;
@@ -54,7 +56,7 @@ import tv.danmaku.ijk.media.exo.IjkExoMediaPlayer;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 
 public class MainActivity extends AppCompatActivity implements IInitWidgetView {
-    public static final int MAIN=0,HISTORY=-1;
+    public static final int MAIN=0,HISTORY=1,COLLECTION=2;
     ConstraintLayout constraintLayout;
     private DrawerLayout drawerLayout;      //菜单栏控制
     private NavigationView navigationView;  //左边菜单栏
@@ -67,9 +69,9 @@ public class MainActivity extends AppCompatActivity implements IInitWidgetView {
     private TextView textViewInfo;
 
     //fragment
-    private MainFragment mainFragment;
-    private HistoryFragment historyFragment;
-
+    private MainFragment mainFragment;        //主界面
+    private HistoryFragment historyFragment;  //历史记录界面
+    private CollectionFragment collectFragment;//收藏界面-与个人信息界面下的收藏一致所以不做修改，直接复用
     //顶部工具栏控件
 //    private Toolbar toolbar;
 //    private ImageView imageViewMenu;
@@ -131,6 +133,13 @@ public class MainActivity extends AppCompatActivity implements IInitWidgetView {
                 transaction.replace(R.id.main_cl_root,historyFragment);
                 transaction.commit();
                 break;
+            case COLLECTION:
+                if (collectFragment == null){
+                    collectFragment = new CollectionFragment();
+                }
+                transaction.replace(R.id.main_cl_root,collectFragment);
+                transaction.commit();
+                break;
         }
     }
 
@@ -178,6 +187,9 @@ public class MainActivity extends AppCompatActivity implements IInitWidgetView {
                         break;
                     case R.id.history:
                         changeFragment(HISTORY);
+                        break;
+                    case R.id.collect:
+                        changeFragment(COLLECTION);
                         break;
                 }
                 return true;
