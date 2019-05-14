@@ -40,4 +40,9 @@ public class SPUtil {
         Type type = new TypeToken<Student>(){}.getType();
         return gson.fromJson(json,type);
     }
+
+    public static void clearStudent(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("student",Context.MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
+    }
 }

@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -28,8 +29,11 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity android:name=".HistoryActivity" />
         <activity android:name=".WatchedActivity" />
-        <activity android:name=".StudentInfoActivity"
-            android:theme="@style/FullScreenTheme"/>
+        <activity
+            android:name=".StudentInfoActivity"
+            android:theme="@style/FullScreenTheme" />
+        <activity android:name=".VideoPlayerActivity" />
+        <activity android:name=".ClassifyActivity"></activity>
     </application>
 
 </manifest>

@@ -1,10 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <com.whut.umrhamster.graduationproject.view.CircleImageView
+        android:id="@+id/fg_player_host_civ_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:padding="4dp"
+        android:src="@mipmap/test_itembg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
+        android:id="@+id/fg_player_host_tv_nickname"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="丢丢恍若梦呓"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toStartOf="@+id/fg_player_host_tv_watch"
+        app:layout_constraintStart_toEndOf="@+id/fg_player_host_civ_icon"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/fg_player_host_tv_liveid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="房间号:54321"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/fg_player_host_civ_icon"
+        app:layout_constraintStart_toEndOf="@+id/fg_player_host_civ_icon"
+        app:layout_constraintTop_toBottomOf="@+id/fg_player_host_tv_nickname" />
+
+    <TextView
+        android:id="@+id/fg_player_host_tv_students"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="学员:7445"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/fg_player_host_civ_icon"
+        app:layout_constraintEnd_toStartOf="@+id/fg_player_host_tv_watch"
+        app:layout_constraintStart_toEndOf="@+id/fg_player_host_tv_liveid"
+        app:layout_constraintTop_toBottomOf="@+id/fg_player_host_tv_nickname" />
+
+    <TextView
+        android:id="@+id/fg_player_host_tv_watch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="主播信息"/>
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="    + 关注   "
+        android:background="@drawable/text_round_bg_color_theme"
+        android:padding="2dp"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/fg_player_host_civ_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="ccccssss"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fg_player_host_civ_icon" />
+
+</android.support.constraint.ConstraintLayout>

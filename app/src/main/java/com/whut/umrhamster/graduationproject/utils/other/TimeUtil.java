@@ -5,8 +5,16 @@ import android.util.Log;
 public class TimeUtil {
     public static String int2String(int time){
         int minutes = time/60;
-        int seconds = time&60;
+        int seconds = time%60;
         return fix0(minutes)+":"+fix0(seconds);
+    }
+
+    public static String millint2String(int mills){
+        return int2String(mills/1000);
+    }
+
+    public static String millint2String(long mills){
+        return int2String((int) (mills/1000));
     }
 
     public static String int2header(int duration){

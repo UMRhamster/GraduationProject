@@ -125,7 +125,7 @@ public class MainFragment extends Fragment implements IInitWidgetView {
         fragmentList = new ArrayList<>(4);
         fragmentList.add(new HomeFragment());
         fragmentList.add(new ClassifyFragment());
-        fragmentList.add(new WatchFragment());
+        fragmentList.add(new VideoFragment());
         fragmentList.add(new ForeshowFragment());
 
 //        navigationView.getMenu().getItem(0).setChecked(true);

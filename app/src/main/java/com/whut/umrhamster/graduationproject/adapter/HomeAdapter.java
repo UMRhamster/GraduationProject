@@ -60,9 +60,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                 .load(liveList.get(position).getCover())
                 .into(holder.rivCover);
         holder.tvTitle.setText(liveList.get(position).getTitle());
-        holder.tvTeacher.setText(liveList.get(position).getOwnername());
+        holder.tvTeacher.setText(liveList.get(position).getTeacher().getNickname());
         holder.tvViewers.setText(""+liveList.get(position).getViewers());
-        holder.tvClssify.setText(liveList.get(position).getLevelname());
+        holder.tvClssify.setText(liveList.get(position).getClassify().getName());
         holder.itemView.setTag(position);
 
     }

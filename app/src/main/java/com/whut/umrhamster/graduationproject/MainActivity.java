@@ -37,6 +37,7 @@ import com.whut.umrhamster.graduationproject.fragment.HistoryFragment;
 import com.whut.umrhamster.graduationproject.fragment.HomeFragment;
 import com.whut.umrhamster.graduationproject.fragment.InfoCollectFragment;
 import com.whut.umrhamster.graduationproject.fragment.MainFragment;
+import com.whut.umrhamster.graduationproject.fragment.SettingFragment;
 import com.whut.umrhamster.graduationproject.fragment.WatchFragment;
 import com.whut.umrhamster.graduationproject.model.bean.Student;
 import com.whut.umrhamster.graduationproject.model.biz.IUserBiz;
@@ -56,7 +57,7 @@ import tv.danmaku.ijk.media.exo.IjkExoMediaPlayer;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 
 public class MainActivity extends AppCompatActivity implements IInitWidgetView {
-    public static final int MAIN=0,HISTORY=1,COLLECTION=2;
+    public static final int MAIN=0,HISTORY=1,COLLECTION=2,WATCH=3,SETTING=4;
     ConstraintLayout constraintLayout;
     private DrawerLayout drawerLayout;      //菜单栏控制
     private NavigationView navigationView;  //左边菜单栏
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements IInitWidgetView {
     private MainFragment mainFragment;        //主界面
     private HistoryFragment historyFragment;  //历史记录界面
     private CollectionFragment collectFragment;//收藏界面-与个人信息界面下的收藏一致所以不做修改，直接复用
+    private WatchFragment watchFragment;
+    private SettingFragment settingFragment;
     //顶部工具栏控件
 //    private Toolbar toolbar;
 //    private ImageView imageViewMenu;
@@ -140,6 +143,21 @@ public class MainActivity extends AppCompatActivity implements IInitWidgetView {
                 transaction.replace(R.id.main_cl_root,collectFragment);
                 transaction.commit();
                 break;
+            case WATCH:
+                if (watchFragment == null){
+                    watchFragment = new WatchFragment();
+                }
+                transaction.replace(R.id.main_cl_root,watchFragment);
+                transaction.commit();
+                break;
+            case SETTING:
+                if (settingFragment == null){
+                    settingFragment = new SettingFragment();
+                }
+                transaction.replace(R.id.main_cl_root,settingFragment);
+                transaction.commit();
+                break;
+
         }
     }
 
@@ -190,6 +208,12 @@ public class MainActivity extends AppCompatActivity implements IInitWidgetView {
                         break;
                     case R.id.collect:
                         changeFragment(COLLECTION);
+                        break;
+                    case R.id.watch:
+                        changeFragment(WATCH);
+                        break;
+                    case R.id.setting:
+                        changeFragment(SETTING);
                         break;
                 }
                 return true;

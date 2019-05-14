@@ -126,12 +126,9 @@ public class PlayerActivity extends AppCompatActivity implements IInitWidgetView
         PlayerInteractFragment interactFragment = new PlayerInteractFragment();
         if (live != null){
             Bundle bundle = new Bundle();
-            Teacher teacher = new Teacher();
-            teacher.setId(live.getOwner());
-            teacher.setNickname(live.getOwnername());
-            teacher.setAvatar(live.getAvatar());
-            bundle.putParcelable("teacher",teacher);
+            bundle.putParcelable("teacher",live.getTeacher());
             bundle.putInt("viewers",live.getViewers());
+            bundle.putInt("liveId",live.getId());
             interactFragment.setArguments(bundle);
         }
         fragmentList.add(interactFragment);
@@ -164,17 +161,6 @@ public class PlayerActivity extends AppCompatActivity implements IInitWidgetView
 
     @Override
     public void initEvent() {
-//        keyboardHeightProvider = new KeyboardHeightProvider(this);
-//        View view = findViewById(R.id.player_root);
-//        view.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                keyboardHeightProvider.start();
-//            }
-//        });
-//        View decorView = getWindow().getDecorView();
-//        View contentView = findViewById(Window.ID_ANDROID_CONTENT);
-//        decorView.getViewTreeObserver().addOnGlobalLayoutListener(getGlobalLayoutListener(decorView,contentView));
         //播放/暂停按钮
         ivPause.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -265,16 +251,6 @@ public class PlayerActivity extends AppCompatActivity implements IInitWidgetView
 
     }
 
-    public int getStatusBarHeight() {
-        int result = 0;
-        //获取状态栏高度的资源id
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
-    }
-
 //    @Override
 //    public void onKeyboardHeightChanged(int height, int orientation, boolean status) {
 //        if (status){
@@ -284,15 +260,4 @@ public class PlayerActivity extends AppCompatActivity implements IInitWidgetView
 //        }
 //    }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        keyboardHeightProvider.setKeyboardHeightObserver(null);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        keyboardHeightProvider.setKeyboardHeightObserver(this);
-    }
 }

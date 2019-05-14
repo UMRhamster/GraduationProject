@@ -1,15 +1,19 @@
 package com.whut.umrhamster.graduationproject.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,20 +22,29 @@ import com.squareup.picasso.Picasso;
 import com.whut.umrhamster.graduationproject.R;
 import com.whut.umrhamster.graduationproject.adapter.InteractAdapter;
 import com.whut.umrhamster.graduationproject.model.bean.Interact;
+import com.whut.umrhamster.graduationproject.model.bean.Student;
 import com.whut.umrhamster.graduationproject.model.bean.Teacher;
 import com.whut.umrhamster.graduationproject.utils.other.KeyboardHeightObserver;
 import com.whut.umrhamster.graduationproject.utils.other.KeyboardHeightProvider;
+import com.whut.umrhamster.graduationproject.utils.save.SPUtil;
 import com.whut.umrhamster.graduationproject.view.CircleImageView;
 import com.whut.umrhamster.graduationproject.view.IInitWidgetView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
+
 public class PlayerInteractFragment extends Fragment implements IInitWidgetView {
     private TextView tvTeachername;
     private TextView tvViewers;
     private CircleImageView civAvatar;
     private EditText etMessage;
+    private ImageView ivSend;//消息发送按钮
 
 
     private RecyclerView recyclerView;
@@ -41,6 +54,11 @@ public class PlayerInteractFragment extends Fragment implements IInitWidgetView 
     private KeyboardHeightProvider keyboardHeightProvider;
 
     private Teacher teacher;
+    private Student student;
+
+    private WebSocket webSocket;
+    private Handler handler = new Handler(Looper.getMainLooper());
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,38 +76,23 @@ public class PlayerInteractFragment extends Fragment implements IInitWidgetView 
 
     @Override
     public void initEvent() {
-//        View decorView = getActivity().getWindow().getDecorView();
-//        View contentView = getActivity().findViewById(Window.ID_ANDROID_CONTENT);
-//        decorView.getViewTreeObserver().addOnGlobalLayoutListener(getGlobalLayoutListener(decorView,contentView));
-
+        ivSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (webSocket != null){
+                    if (!etMessage.getText().toString().isEmpty()){
+                        webSocket.send(etMessage.getText().toString());
+                        etMessage.setText("");
+                    }
+                }
+            }
+        });
     }
-
-//    private ViewTreeObserver.OnGlobalLayoutListener getGlobalLayoutListener(final View decorView, final View contentView) {
-//        return new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//                Rect r = new Rect();
-//                decorView.getWindowVisibleDisplayFrame(r);
-//
-//                int height = decorView.getContext().getResources().getDisplayMetrics().heightPixels;
-//                int diff = height - r.bottom;
-//
-//                if (diff > 0) {
-//                    if (contentView.getPaddingBottom() != diff) {
-//                        contentView.setPadding(0, 0, 0, diff);
-//                    }
-//                } else {
-//                    if (contentView.getPaddingBottom() != 0) {
-//                        contentView.setPadding(0, 0, 0, 0);
-//                    }
-//                }
-//            }
-//        };
-//    }
 
     private void initData(){
         teacher = getArguments().getParcelable("teacher");
         if (teacher != null){
+            Log.d("test",teacher.getAvatar()+" "+teacher.getNickname());
             Picasso.get().load(teacher.getAvatar()).into(civAvatar);
             tvTeachername.setText(teacher.getNickname());
             tvViewers.setText("观看人数:"+getArguments().getInt("viewers"));
@@ -105,37 +108,61 @@ public class PlayerInteractFragment extends Fragment implements IInitWidgetView 
         tvViewers = view.findViewById(R.id.player_interact_tb_tv_nof);
         civAvatar = view.findViewById(R.id.player_interact_tb_civ_icon);
         etMessage = view.findViewById(R.id.player_interact_et);
+        ivSend = view.findViewById(R.id.player_interact_iv_send);
         initData();
 
         interactList = new ArrayList<>();
-        interactList.add(new Interact("测试人员1","测试测试人员1弹幕1"));
-        interactList.add(new Interact("测试人员1","测试弹幕测试人员11"));
-        interactList.add(new Interact("测试人员测试人员1测试人员1测试人员11","测试测试人员1测试人员1测试人员1弹幕1"));
-        interactList.add(new Interact("测试人测试人员1员1","测试弹幕1"));
-        interactList.add(new Interact("测测试人员1试人员1","测试弹测试人员1测试人员1幕1"));
-        interactList.add(new Interact("测试人123员1","测试弹幕1"));
-        interactList.add(new Interact("测试人dsfsdfsd员1","测试弹测试人员1测试人员1幕1"));
-        interactList.add(new Interact("测试人员sdfsdf1","测试弹幕1"));
-        interactList.add(new Interact("测试人员1","测试弹幕1"));
-        interactList.add(new Interact("测试人员fdsfsd1","测试弹测试人员1测试人员1幕1"));
-        interactList.add(new Interact("测试人员测试人员11","测试弹幕1"));
-        interactList.add(new Interact("测试人员1","测试弹测试人员1测试人员1幕1"));
-        interactList.add(new Interact("测试s人员1","测试弹幕1"));
-        interactList.add(new Interact("测试测试人员1测试人员1测试人员1人员1","测试弹幕1"));
-        interactList.add(new Interact("测试人员1","测试弹幕1"));
-        interactList.add(new Interact("测试sddsaas人员1","测试测试人员1测试人员1弹幕1"));
-        interactList.add(new Interact("测试人员1","测试弹幕1"));
-        interactList.add(new Interact("测试人员sad1","测试弹测试人员1测试人员1幕1"));
-        interactList.add(new Interact("测试人员sda1","测试弹幕1"));
-        interactList.add(new Interact("测试人ss员1","测试弹测试人员1测试人员1测试人员1幕1"));
-        interactList.add(new Interact("测试人ssssss员1","测试弹测试人员1测试人员1测试人员1幕1"));
-        interactList.add(new Interact("测试人员1","测试弹幕1"));
-
-
-
-
         adapter = new InteractAdapter(interactList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+        initChatRoom();
+    }
+
+    public void initChatRoom(){
+        student = SPUtil.loadStudent(getActivity());
+        int liveId = getArguments().getInt("liveId");
+        OkHttpClient client = new OkHttpClient.Builder().build();
+        Request request;
+        if (student != null){
+            request = new Request.Builder()
+                    .url("ws://192.168.1.233:8080/websocket/"+liveId+"≡"+student.getNickname())
+                    .build();
+        }else {
+            request = new Request.Builder()
+                    .url("ws://192.168.1.233:8080/websocket/"+liveId+"≡guest"+System.currentTimeMillis())
+                    .build();
+        }
+        webSocket = client.newWebSocket(request, new WebSocketListener() {
+            @Override
+            public void onOpen(WebSocket webSocket, Response response) {
+                super.onOpen(webSocket, response);
+            }
+
+            @Override
+            public void onMessage(WebSocket webSocket, final String text) {
+                super.onMessage(webSocket, text);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        String[] datas = text.split("≡");
+                        interactList.add(new Interact(datas[0],datas[1]));
+                        adapter.notifyItemChanged(interactList.size()-1);
+                        recyclerView.scrollToPosition(interactList.size()-1);
+                    }
+                });
+            }
+
+            @Override
+            public void onClosed(WebSocket webSocket, int code, String reason) {
+                super.onClosed(webSocket, code, reason);
+            }
+        });
+        webSocket.request();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        webSocket.cancel();
     }
 }

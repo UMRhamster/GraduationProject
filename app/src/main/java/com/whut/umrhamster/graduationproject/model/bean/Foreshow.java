@@ -1,47 +1,43 @@
 package com.whut.umrhamster.graduationproject.model.bean;
 
+import java.util.Date;
+
 public class Foreshow {
-    private String cover;
-    private int icon;
-    private String title;
-    private String nickname;
+    private int id;
+    private Live live;
+    private Date startTime;
+    private int duration;
     public Foreshow(){}
-    public Foreshow(String cover, int icon, String nickname, String title){
-        this.cover = cover;
-        this.icon = icon;
-        this.title = title;
-        this.nickname = nickname;
+
+    public int getId() {
+        return id;
     }
 
-    public String getCover() {
-        return cover;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setCover(String cover) {
-        this.cover = cover;
+    public Live getLive() {
+        return live;
     }
 
-    public int getIcon() {
-        return icon;
+    public void setLive(Live live) {
+        this.live = live;
     }
 
-    public void setIcon(int icon) {
-        this.icon = icon;
+    public Date getStartTime() {
+        return startTime;
     }
 
-    public String getTitle() {
-        return title;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public int getDuration() {
+        return duration;
     }
 
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }

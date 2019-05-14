@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <!--10.5:7        1.6:1-->
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/custom_rv_item_classify_video_riv_cover"
+        android:layout_width="128dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="fitXY"
+        android:src="@mipmap/test_itembg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:riv_corner_radius="2dp" />
+
+    <TextView
+        android:id="@+id/custom_rv_item_classify_video_tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="【国美杂谈】国产动漫究竟是在进步还是在退步？！浅谈中国动漫发展史"
+        android:textColor="@android:color/black"
+        android:ellipsize="end"
+        android:lines="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/custom_rv_item_classify_video_riv_cover"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/custom_rv_item_classify_rv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/custom_rv_item_classify_video_tv_nop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/custom_rv_item_classify_video_riv_cover"
+        app:layout_constraintTop_toBottomOf="@+id/custom_rv_item_classify_video_tv_title"
+        app:layout_constraintVertical_bias="1.0">
+
+        <TextView
+            android:id="@+id/custom_rv_item_classify_video_tv_idf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@drawable/custom_rv_item_history_tv_bg"
+            android:paddingStart="3dp"
+            android:paddingEnd="3dp"
+            android:text="师"
+            android:textSize="9sp" />
+
+        <TextView
+            android:id="@+id/custom_rv_item_classify_video_tv_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/custom_rv_item_classify_video_tv_idf"
+            android:gravity="center_vertical"
+            android:layout_marginStart="4dp"
+            android:text="python学习者"
+            android:textSize="12sp" />
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/custom_rv_item_classify_video_tv_nop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:drawableStart="@drawable/number_of_play"
+        android:drawablePadding="3dp"
+        android:text="5306"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/custom_rv_item_classify_video_riv_cover"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/custom_rv_item_classify_video_riv_cover" />
+
+</android.support.constraint.ConstraintLayout>

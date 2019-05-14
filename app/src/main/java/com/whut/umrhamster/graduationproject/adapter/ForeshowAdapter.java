@@ -11,6 +11,7 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 import com.whut.umrhamster.graduationproject.R;
 import com.whut.umrhamster.graduationproject.model.bean.Foreshow;
+import com.whut.umrhamster.graduationproject.model.bean.Live;
 import com.whut.umrhamster.graduationproject.view.CircleImageView;
 
 import java.util.List;
@@ -30,12 +31,13 @@ public class ForeshowAdapter extends RecyclerView.Adapter<ForeshowAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 //        holder.civIcon.setImageResource(foreshowList.get(position).getCover());
+        Live live = foreshowList.get(position).getLive();
         Picasso.get()
-                .load(foreshowList.get(position).getCover())
+                .load(live.getCover())
                 .into(holder.rivCover);
-        holder.civIcon.setImageResource(foreshowList.get(position).getIcon());
-        holder.tvNickname.setText(foreshowList.get(position).getNickname());
-        holder.tvTitle.setText(foreshowList.get(position).getTitle());
+        Picasso.get().load(live.getTeacher().getAvatar()).into(holder.civIcon);
+        holder.tvNickname.setText(live.getTeacher().getNickname());
+        holder.tvTitle.setText(live.getTitle());
     }
 
     @Override

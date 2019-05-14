@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.whut.umrhamster.graduationproject.R;
 import com.whut.umrhamster.graduationproject.model.bean.Classify;
 import com.whut.umrhamster.graduationproject.model.bean.History;
+import com.whut.umrhamster.graduationproject.utils.other.ClassifyUtil;
 
 import java.util.List;
 
@@ -22,15 +23,29 @@ public class ClassifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private List<Classify> classifyList;
 
+    private OnItemClickListener onItemClickListener;
+
+
     public ClassifyAdapter(List<Classify> classifyList){
         this.classifyList = classifyList;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM){
-            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_rv_item_classify,parent,false));
+            final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_rv_item_classify,parent,false);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onItemClick((Integer) view.getTag());
+                }
+            });
+            return new ViewHolder(view);
         }else {
             return new TitleViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.classificaiton_first,parent,false));
         }
@@ -39,14 +54,15 @@ public class ClassifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolder){
-            ((ViewHolder)holder).icon.setImageResource(classifyList.get(position).getIcon());
-            ((ViewHolder)holder).title.setText(classifyList.get(position).getTitle());
+            ((ViewHolder)holder).icon.setImageResource(ClassifyUtil.id2res(classifyList.get(position).getId()));
+            ((ViewHolder)holder).title.setText(classifyList.get(position).getName());
         }else if (holder instanceof TitleViewHolder){
             if (position == 0){
                 ((TitleViewHolder)holder).view.setVisibility(View.GONE);
             }
-            ((TitleViewHolder)holder).title.setText(classifyList.get(position).getTitle());
+            ((TitleViewHolder)holder).title.setText(classifyList.get(position).getName());
         }
+        holder.itemView.setTag(position);
     }
 
     @Override
@@ -56,7 +72,7 @@ public class ClassifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemViewType(int position) {
-        if (classifyList.get(position).getIcon() == -1){
+        if (classifyList.get(position).getParent() == 0){
             return TYPE_TITLE;
         }else {
             return TYPE_ITEM;
@@ -105,5 +121,9 @@ public class ClassifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             view = itemView.findViewById(R.id.classification_first_v);
             title = itemView.findViewById(R.id.classification_first_tv);
         }
+    }
+
+    public interface OnItemClickListener{
+        void onItemClick(int position);
     }
 }

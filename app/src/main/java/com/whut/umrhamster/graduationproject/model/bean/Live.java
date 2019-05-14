@@ -8,25 +8,16 @@ import java.util.Calendar;
 public class Live implements Parcelable {
     private int id;
     private String title;
+    private String brief;
     private String path;
     private String cover;
-    private int owner;
-    private String ownername;
-    private String avatar;
-    private String levelname;
-    private Calendar calendar;
+    private Teacher teacher;
+    private Classification classify;
     private int viewers;
-
-    private int status;  //0未开播，//1正在播
+    private int status;
+//    private Timestamp start_time;
 
     public Live(){}
-
-    public Live(String title, Calendar calendar, String cover){
-        this.title = title;
-        this.calendar = calendar;
-        this.cover = cover;
-    }
-
 
     public int getId() {
         return id;
@@ -42,6 +33,14 @@ public class Live implements Parcelable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getBrief() {
+        return brief;
+    }
+
+    public void setBrief(String brief) {
+        this.brief = brief;
     }
 
     public String getPath() {
@@ -60,44 +59,20 @@ public class Live implements Parcelable {
         this.cover = cover;
     }
 
-    public Calendar getCalendar() {
-        return calendar;
+    public Teacher getTeacher() {
+        return teacher;
     }
 
-    public void setCalendar(Calendar calendar) {
-        this.calendar = calendar;
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
     }
 
-    public int getOwner() {
-        return owner;
+    public Classification getClassify() {
+        return classify;
     }
 
-    public void setOwner(int owner) {
-        this.owner = owner;
-    }
-
-    public String getOwnername() {
-        return ownername;
-    }
-
-    public void setOwnername(String ownername) {
-        this.ownername = ownername;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getLevelname() {
-        return levelname;
-    }
-
-    public void setLevelname(String levelname) {
-        this.levelname = levelname;
+    public void setClassify(Classification classify) {
+        this.classify = classify;
     }
 
     public int getViewers() {
@@ -116,7 +91,6 @@ public class Live implements Parcelable {
         this.status = status;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -126,13 +100,11 @@ public class Live implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.id);
         dest.writeString(this.title);
+        dest.writeString(this.brief);
         dest.writeString(this.path);
         dest.writeString(this.cover);
-        dest.writeInt(this.owner);
-        dest.writeString(this.ownername);
-        dest.writeString(this.avatar);
-        dest.writeString(this.levelname);
-        dest.writeSerializable(this.calendar);
+        dest.writeParcelable(this.teacher, flags);
+        dest.writeParcelable(this.classify, flags);
         dest.writeInt(this.viewers);
         dest.writeInt(this.status);
     }
@@ -140,13 +112,11 @@ public class Live implements Parcelable {
     protected Live(Parcel in) {
         this.id = in.readInt();
         this.title = in.readString();
+        this.brief = in.readString();
         this.path = in.readString();
         this.cover = in.readString();
-        this.owner = in.readInt();
-        this.ownername = in.readString();
-        this.avatar = in.readString();
-        this.levelname = in.readString();
-        this.calendar = (Calendar) in.readSerializable();
+        this.teacher = in.readParcelable(Teacher.class.getClassLoader());
+        this.classify = in.readParcelable(Classification.class.getClassLoader());
         this.viewers = in.readInt();
         this.status = in.readInt();
     }
