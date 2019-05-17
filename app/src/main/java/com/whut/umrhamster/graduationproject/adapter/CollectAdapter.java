@@ -58,7 +58,7 @@ public class CollectAdapter extends RecyclerView.Adapter<CollectAdapter.ItemView
         holder.tvTitle.setText(video.getTitle());
 //        holder.tvNickname.setText(video.getAuthor().getNickname());
         holder.tvNofw.setText(""+video.getViewers());
-        holder.tvDuration.setText(TimeUtil.int2String(video.getTotaltime()));
+        holder.tvDuration.setText(TimeUtil.millint2String(video.getTotaltime()));
         holder.itemView.setTag(position);
 
         holder.ivOp.setOnClickListener(new View.OnClickListener() {

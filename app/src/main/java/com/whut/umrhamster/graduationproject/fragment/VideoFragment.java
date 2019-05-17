@@ -19,6 +19,7 @@ import com.whut.umrhamster.graduationproject.adapter.VideoAdapter;
 import com.whut.umrhamster.graduationproject.model.bean.Video;
 import com.whut.umrhamster.graduationproject.presenter.IVideoPresenter;
 import com.whut.umrhamster.graduationproject.presenter.VideoPresenter;
+import com.whut.umrhamster.graduationproject.utils.other.AdaptionUtil;
 import com.whut.umrhamster.graduationproject.view.IInitWidgetView;
 import com.whut.umrhamster.graduationproject.view.IVideoView;
 
@@ -36,6 +37,7 @@ public class VideoFragment extends Fragment implements IInitWidgetView,IVideoVie
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        AdaptionUtil.setCustomDensity(getActivity(),getActivity().getApplication());
         View view = inflater.inflate(R.layout.fg_video,container,false);
         initView(view);
         initEvent();
@@ -73,7 +75,7 @@ public class VideoFragment extends Fragment implements IInitWidgetView,IVideoVie
     public void initView(View view) {
         recyclerView = view.findViewById(R.id.fg_video_rv);
         videoList = new ArrayList<>();
-        adapter = new VideoAdapter(videoList);
+        adapter = new VideoAdapter(videoList,getActivity());
         GridLayoutManager manager = new GridLayoutManager(getActivity(),2);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
@@ -94,6 +96,11 @@ public class VideoFragment extends Fragment implements IInitWidgetView,IVideoVie
 
     @Override
     public void onVideoTypeSuccess(List<Video> videoList) {
+
+    }
+
+    @Override
+    public void onVideoTeacherSuccess(List<Video> videoList) {
 
     }
 }

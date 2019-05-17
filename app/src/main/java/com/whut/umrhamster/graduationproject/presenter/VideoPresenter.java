@@ -70,6 +70,31 @@ public class VideoPresenter implements IVideoPresenter {
     }
 
     @Override
+    public void doGetVideoByTeacher(int teacherId) {
+        videoBiz.getVideoByTeacher(teacherId, new IVideoBiz.OnVideoListener() {
+            @Override
+            public void onSuccess(final List<Video> videoList) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        videoView.onVideoTeacherSuccess(videoList);
+                    }
+                });
+            }
+
+            @Override
+            public void onFail(final int code) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        videoView.onVideoFail(code);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
     public void onDestroy() {
         videoView = null;
     }

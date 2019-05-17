@@ -1,5 +1,6 @@
 package com.whut.umrhamster.graduationproject;
 
+import android.graphics.Bitmap;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -23,19 +24,24 @@ import com.whut.umrhamster.graduationproject.interfaces.AppBarStateChangeListene
 import com.whut.umrhamster.graduationproject.interfaces.InfoGetListener;
 import com.whut.umrhamster.graduationproject.model.bean.InfoGroupBean;
 import com.whut.umrhamster.graduationproject.model.bean.Student;
+import com.whut.umrhamster.graduationproject.model.bean.Watch;
 import com.whut.umrhamster.graduationproject.presenter.ITimeKeepPresenter;
+import com.whut.umrhamster.graduationproject.presenter.IWatchPresenter;
 import com.whut.umrhamster.graduationproject.presenter.TimeKeepPresenter;
+import com.whut.umrhamster.graduationproject.presenter.WatchPresenter;
+import com.whut.umrhamster.graduationproject.utils.other.AdaptionUtil;
 import com.whut.umrhamster.graduationproject.utils.other.IconUtil;
 import com.whut.umrhamster.graduationproject.utils.other.TimeUtil;
 import com.whut.umrhamster.graduationproject.utils.save.SPUtil;
 import com.whut.umrhamster.graduationproject.view.CircleImageView;
 import com.whut.umrhamster.graduationproject.view.IInitWidgetView;
 import com.whut.umrhamster.graduationproject.view.ITimeKeepView;
+import com.whut.umrhamster.graduationproject.view.IWatchView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudentInfoActivity extends AppCompatActivity implements IInitWidgetView,InfoGetListener {
+public class StudentInfoActivity extends AppCompatActivity implements IInitWidgetView,InfoGetListener,IWatchView {
     private ViewPager viewPager;
     private TabLayout tabLayout;
 
@@ -54,10 +60,12 @@ public class StudentInfoActivity extends AppCompatActivity implements IInitWidge
     private List<Fragment> fragmentList;
 
 //    private ITimeKeepPresenter timeKeepPresenter;
+    private IWatchPresenter watchPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AdaptionUtil.setCustomDensity(StudentInfoActivity.this,getApplication());
         setContentView(R.layout.activity_student_info);
         initView();
         initEvent();
@@ -93,14 +101,18 @@ public class StudentInfoActivity extends AppCompatActivity implements IInitWidge
 
     public void initData(){
         Student student = SPUtil.loadStudent(this);
+        watchPresenter = new WatchPresenter(this);
         if (student != null){
 //            加载学习时长数据
 //            timeKeepPresenter.doGetTimeKeepById(student.getId());
             //加载用户信息数据
-            Picasso.get().load(student.getAvatar()).placeholder(R.drawable.default_user_icon).into(civIcon); //加载头像
+            Picasso.get().load(student.getAvatar()).placeholder(R.drawable.default_user_icon).error(R.drawable.default_user_icon)
+                    .config(Bitmap.Config.RGB_565).into(civIcon); //加载头像
             tvNickname.setText(student.getNickname());
             tvTopNickname.setText(student.getNickname());
+            watchPresenter.doGetNumOfWatch(1,student.getId());
         }
+
     }
 
     @Override
@@ -142,5 +154,40 @@ public class StudentInfoActivity extends AppCompatActivity implements IInitWidge
     @Override
     public void onWatchNum(int num) {
 
+    }
+
+    @Override
+    public void onWatchSuccess(List<Watch> watchList) {
+
+    }
+
+    @Override
+    public void onWatchFail(int code) {
+
+    }
+
+    @Override
+    public void onWatchExist(boolean exist) {
+
+    }
+
+    @Override
+    public void onAddWatchSuccess() {
+
+    }
+
+    @Override
+    public void onDeleteWatchSuccess() {
+
+    }
+
+    @Override
+    public void onGetNumStudents(List<Watch> watchList) {
+
+    }
+
+    @Override
+    public void onGetNumTeachers(List<Watch> watchList) {
+        tvWatch.setText(watchList.size()+"关注");
     }
 }

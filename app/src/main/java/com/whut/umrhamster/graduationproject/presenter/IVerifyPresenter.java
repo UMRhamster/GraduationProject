@@ -1,6 +1,6 @@
 package com.whut.umrhamster.graduationproject.presenter;
 
 public interface IVerifyPresenter {
-    void doEmailVerify(String email);
+    void doEmailVerify(int type, String email);
     void doPhoneVerify(String phone);
 }

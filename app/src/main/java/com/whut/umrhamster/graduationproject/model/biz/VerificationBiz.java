@@ -4,8 +4,8 @@ import com.whut.umrhamster.graduationproject.utils.http.RetrofitUtil;
 
 public class VerificationBiz implements IVerificationBiz {
     @Override
-    public void emailVerification(String email, OnVerifyListener onVerifyListener) {
-        RetrofitUtil.getVerificationFromEmail(email,onVerifyListener);
+    public void emailVerification(int type, String email, OnVerifyListener onVerifyListener) {
+        RetrofitUtil.getVerificationFromEmail(type,email,onVerifyListener);
     }
 
     @Override

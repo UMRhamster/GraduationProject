@@ -1,15 +1,18 @@
 package com.whut.umrhamster.graduationproject.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.whut.umrhamster.graduationproject.ForeshowActivity;
 import com.whut.umrhamster.graduationproject.ForeshowDecoration;
 import com.whut.umrhamster.graduationproject.R;
 import com.whut.umrhamster.graduationproject.adapter.ForeshowAdapter;
@@ -43,10 +46,7 @@ public class ForeshowFragment extends Fragment implements IInitWidgetView,IFores
 
     public void initData(){
         foreshowPresenter = new ForeshowPresenter(this);
-        Student student = SPUtil.loadStudent(getActivity());
-        if (student != null){
-            foreshowPresenter.doGetForeshowLimit10(0);
-        }
+        foreshowPresenter.doGetForeshowLimit10(0);
     }
 
     @Override
@@ -56,7 +56,14 @@ public class ForeshowFragment extends Fragment implements IInitWidgetView,IFores
 
     @Override
     public void initEvent() {
-
+        adapter.setOnItemClickListener(new ForeshowAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Intent intent = new Intent(getActivity(),ForeshowActivity.class);
+                intent.putExtra("foreshow",foreshowList.get(position));
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -64,7 +71,7 @@ public class ForeshowFragment extends Fragment implements IInitWidgetView,IFores
         recyclerView = view.findViewById(R.id.foreshow_rv_show);
         foreshowList = new ArrayList<>();
 
-        adapter = new ForeshowAdapter(foreshowList);
+        adapter = new ForeshowAdapter(foreshowList,getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new ForeshowDecoration(getActivity()));
         recyclerView.setAdapter(adapter);
@@ -73,12 +80,13 @@ public class ForeshowFragment extends Fragment implements IInitWidgetView,IFores
 
     @Override
     public void onGetForeshowSuccess(List<Foreshow> foreshowList) {
+//        Log.d("test",""+foreshowList.size());
         this.foreshowList.addAll(foreshowList);
         adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onGetForeshowFail(int code) {
-
+//        Log.d("tes","shibai"+code);
     }
 }

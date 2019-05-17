@@ -21,14 +21,24 @@ public class VerifyPresenter implements IVerifyPresenter {
     }
 
     @Override
-    public void doEmailVerify(String email) {
-        iVerificationBiz.emailVerification(email, new IVerificationBiz.OnVerifyListener() {
+    public void doEmailVerify(int type, String email) {
+        iVerificationBiz.emailVerification(type,email, new IVerificationBiz.OnVerifyListener() {
             @Override
-            public void onVerifyResult(final int code) {
+            public void onVerifySuccess(final int verifycode) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        iVerifyView.onVerification(code);
+                        iVerifyView.onVerification(verifycode);
+                    }
+                });
+            }
+
+            @Override
+            public void onVerifyFail(final int code) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        iVerifyView.onVerifyFail(code);
                     }
                 });
             }

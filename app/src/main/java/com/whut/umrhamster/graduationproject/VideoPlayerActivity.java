@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -24,10 +25,16 @@ import android.widget.TextView;
 import com.whut.umrhamster.graduationproject.adapter.VideoPlayerFragmentPagerAdapter;
 import com.whut.umrhamster.graduationproject.fragment.VideoPlayerBriefFragment;
 import com.whut.umrhamster.graduationproject.fragment.VideoPlayerCommentFragment;
+import com.whut.umrhamster.graduationproject.model.bean.InfoGroupBean;
+import com.whut.umrhamster.graduationproject.model.bean.Student;
 import com.whut.umrhamster.graduationproject.model.bean.Video;
+import com.whut.umrhamster.graduationproject.presenter.ITimeKeepPresenter;
+import com.whut.umrhamster.graduationproject.presenter.TimeKeepPresenter;
 import com.whut.umrhamster.graduationproject.utils.other.AdaptionUtil;
 import com.whut.umrhamster.graduationproject.utils.other.TimeUtil;
+import com.whut.umrhamster.graduationproject.utils.save.SPUtil;
 import com.whut.umrhamster.graduationproject.view.IInitWidgetView;
+import com.whut.umrhamster.graduationproject.view.ITimeKeepView;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -35,17 +42,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkTimedText;
 
-public class VideoPlayerActivity extends AppCompatActivity implements IInitWidgetView {
+public class VideoPlayerActivity extends AppCompatActivity implements IInitWidgetView,ITimeKeepView {
     private final static int TAG = 0;
 
     private RelativeLayout topController;       //顶部播放控制器
     private ConstraintLayout bottomController;  //底部播放控制器
 
+    private TextView tvTopTitle;
     private TextureView textureView;
     private ImageView ivPlay;
     private SeekBar seekBar;
@@ -63,16 +73,20 @@ public class VideoPlayerActivity extends AppCompatActivity implements IInitWidge
 
     //shipin
     Video video;
+    private int delay = 0; //观看时间记录
 
     //状态
     private boolean isPlay = false;
     private boolean isDestroy = false;
     private boolean seeController = true;
-    //屏幕常亮控制
-    PowerManager.WakeLock mWakeLock;
+    //presenter
+    private ITimeKeepPresenter timeKeepPresenter;
+
+    Student student;
 
     MyHandler handler;
 
+    //更新视频播放进度
     Timer timer = new Timer();
     TimerTask timerTask = new TimerTask() {
         @Override
@@ -81,7 +95,50 @@ public class VideoPlayerActivity extends AppCompatActivity implements IInitWidge
 //            Log.d("timer",""+ijkMediaPlayer.getCurrentPosition());
         }
     };
+    //纪录观看时长
+    Timer countTimer;
+    TimerTask countTask;
 
+    public void startCountTimer(){
+        if (countTimer == null){
+            countTimer = new Timer();
+        }
+        if (countTask == null){
+            countTask = new TimerTask() {
+                @Override
+                public void run() {
+                    delay++;
+                    Log.d("计时测试:","delay "+delay);
+                }
+            };
+        }
+        if (countTimer != null && countTask != null){
+            countTimer.scheduleAtFixedRate(countTask,delay,1000);
+        }
+
+    }
+
+    public void stopCountTimer(){
+        if (countTimer != null){
+            countTimer.cancel();
+            countTimer = null;
+        }
+        if (countTask != null){
+            countTask.cancel();
+            countTask = null;
+        }
+
+    }
+
+    @Override
+    public void onTimeKeepSuccess(List<InfoGroupBean> groupBeanList) {
+
+    }
+
+    @Override
+    public void onTimeKeepFail(int code) {
+        Log.d("VideoPlayerAcivity","计时处理异常"+code);
+    }
 
 
     static class MyHandler extends Handler{
@@ -113,10 +170,12 @@ public class VideoPlayerActivity extends AppCompatActivity implements IInitWidge
         AdaptionUtil.setCustomDensity(VideoPlayerActivity.this,getApplication());
         setContentView(R.layout.activity_video_player);
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag"); // in onResume() call
         video = getIntent().getParcelableExtra("video");
         initView();
         initEvent();
+//        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+//        scheduledExecutorService.
+
 //        mWakeLock.acquire(); // in onPause() call
 //
 //        mWakeLock.release();
@@ -132,6 +191,8 @@ public class VideoPlayerActivity extends AppCompatActivity implements IInitWidge
         ivFullscreen = findViewById(R.id.video_player_iv_fullscreen);
         viewPager = findViewById(R.id.video_player_vp);
         tabLayout = findViewById(R.id.video_player_tl);
+        tvTopTitle = findViewById(R.id.ac_live_room_player_title);
+        tvTopTitle.setVisibility(View.GONE);
 
         topController = findViewById(R.id.video_player_top_controller);
         bottomController = findViewById(R.id.video_player_cl_bottom);
@@ -140,7 +201,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements IInitWidge
 
         VideoPlayerBriefFragment briefFragment = new VideoPlayerBriefFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable("teacher",video.getUploader());
+//        bundle.putParcelable("teacher",video.getUploader());
         bundle.putParcelable("video",video);
         briefFragment.setArguments(bundle);
         VideoPlayerCommentFragment commentFragment = new VideoPlayerCommentFragment();
@@ -156,6 +217,8 @@ public class VideoPlayerActivity extends AppCompatActivity implements IInitWidge
     }
 
     public void initData(){
+        student = SPUtil.loadStudent(VideoPlayerActivity.this);
+        timeKeepPresenter = new TimeKeepPresenter(this);
         seekBar.setMax(video.getTotaltime());
     }
 
@@ -186,13 +249,15 @@ public class VideoPlayerActivity extends AppCompatActivity implements IInitWidge
                     ivPlay.setImageResource(R.drawable.play);
                     ijkMediaPlayer.pause();
                     isPlay = false;
-                    mWakeLock.release();
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                    stopCountTimer();
                 }else {
                     ivPlay.setImageResource(R.drawable.pause);
                     ijkMediaPlayer.start();
                     view.setVisibility(View.GONE);
                     isPlay = true;
-                    mWakeLock.acquire();
+                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                    startCountTimer();
                 }
             }
         });
@@ -256,6 +321,13 @@ public class VideoPlayerActivity extends AppCompatActivity implements IInitWidge
                     Log.d("test",ijkTimedText.getText());
                 }
             });
+            ijkMediaPlayer.setOnErrorListener(new IMediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
+                    stopCountTimer();
+                    return false;
+                }
+            });
 
             ijkMediaPlayer.prepareAsync();
 //            handler.sendEmptyMessage(TAG);
@@ -280,8 +352,30 @@ public class VideoPlayerActivity extends AppCompatActivity implements IInitWidge
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+//        if (ijkMediaPlayer != null && !ijkMediaPlayer.isPlaying())
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopCountTimer();
+        if (student != null){
+            timeKeepPresenter.doUploadTimeKeep(student.getId(),video.getClassify().getId(),delay);
+        }
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        if (ijkMediaPlayer != null && ijkMediaPlayer.isPlaying()){
+            ijkMediaPlayer.pause();
+            ivPlay.setImageResource(R.drawable.play);
+            isPlay = false;
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+
         release();
         isDestroy = false;
         timer.cancel();

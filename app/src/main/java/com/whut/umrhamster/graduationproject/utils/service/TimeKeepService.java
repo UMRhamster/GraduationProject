@@ -12,4 +12,9 @@ import retrofit2.http.Query;
 public interface TimeKeepService {
     @GET("timekeep")
     Call<HttpData<List<InfoGroupBean>>> getTimeKeepById(@Query("studentId")int studentId);
+
+    @GET("timekeep")
+    Call<HttpData<List<InfoGroupBean>>> uploadTimeKeep(@Query("studentId")int studentId,@Query("typeId")int typeId,@Query("time")int time);
+
+//    Call<HttpData<List<InfoGroupBean>>> updateTimeKeep(@Q)
 }

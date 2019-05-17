@@ -59,21 +59,27 @@ public class RetrofitUtil {
     }
 
     //向指定邮箱发送邮件验证码
-    public static void getVerificationFromEmail(String email, final IVerificationBiz.OnVerifyListener onVerifyListener){
+    public static void getVerificationFromEmail(int type, String email, final IVerificationBiz.OnVerifyListener onVerifyListener){
         VerificationService service = retrofit.create(VerificationService.class);
-        Call<HttpData<Verification>> call = service.getVerificationFromEmail(email);
+        Call<HttpData<Verification>> call = service.getVerificationFromEmail(type,email);
         call.enqueue(new Callback<HttpData<Verification>>() {
             @Override
             public void onResponse(Call<HttpData<Verification>> call, Response<HttpData<Verification>> response) {
-                Verification verification = response.body().getData();
-                if (verification != null){
-                    onVerifyListener.onVerifyResult(verification.getVerifycode());
+                HttpData<Verification> data = response.body();
+                if (data != null){
+                    if (data.getData() != null){
+                        onVerifyListener.onVerifySuccess(data.getData().getVerifycode());//返回6位验证码
+                    }else {
+                        onVerifyListener.onVerifyFail(data.getCode()); //错误状态码，2043-邮箱未注册，2044邮箱错误
+                    }
+                }else {
+                    onVerifyListener.onVerifyFail(-1);
                 }
             }
 
             @Override
             public void onFailure(Call<HttpData<Verification>> call, Throwable t) {
-
+                onVerifyListener.onVerifyFail(-1);
             }
         });
     }

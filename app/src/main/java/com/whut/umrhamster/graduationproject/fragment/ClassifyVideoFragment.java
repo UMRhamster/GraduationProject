@@ -93,4 +93,9 @@ public class ClassifyVideoFragment extends Fragment implements IInitWidgetView,I
         this.videoList.addAll(videoList);
         adapter.notifyDataSetChanged();
     }
+
+    @Override
+    public void onVideoTeacherSuccess(List<Video> videoList) {
+
+    }
 }

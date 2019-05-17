@@ -2,11 +2,28 @@ package com.whut.umrhamster.graduationproject.utils.other;
 
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class TimeUtil {
     public static String int2String(int time){
         int minutes = time/60;
         int seconds = time%60;
         return fix0(minutes)+":"+fix0(seconds);
+    }
+
+    public static String minute2ham(int minute){
+        int hours = minute/60;
+        int minutes = minute%60;
+        String result = "";
+        if (minutes > 0){
+            result=minutes+"分钟"+result;
+        }
+        if (hours > 0){
+            result=hours+"小时"+result;
+        }
+        return result;
     }
 
     public static String millint2String(int mills){
@@ -41,6 +58,32 @@ public class TimeUtil {
             return "0"+value;
         }
         return ""+value;
+    }
+
+    public static String uptime2string(Date date){
+        Calendar now = Calendar.getInstance();
+        Calendar upDate = Calendar.getInstance();
+        upDate.setTime(date);
+        long dif = now.getTimeInMillis()-date.getTime();
+        if (dif < 1000*60*60*24){
+            if (dif/(1000*60) < 60){
+                return dif/(1000*60)+"分钟前";
+            }else {
+                return dif/(1000*60*60)+"小时前";
+            }
+        }else {
+            Calendar thisYear = Calendar.getInstance();
+            thisYear.set(Calendar.MONTH,0);
+            thisYear.set(Calendar.DAY_OF_MONTH,1);
+            thisYear.set(Calendar.HOUR_OF_DAY,0);
+            thisYear.set(Calendar.MINUTE,0);
+            thisYear.set(Calendar.SECOND,0);
+            if (upDate.after(thisYear)){ //jinnian
+                return upDate.get(Calendar.MONTH)+1+"-"+upDate.get(Calendar.DAY_OF_MONTH); // ex:5-12
+            }else {
+                return new SimpleDateFormat("yyyy-MM-dd").format(date);
+            }
+        }
     }
 
     //个人信息界面学习时长等级分级

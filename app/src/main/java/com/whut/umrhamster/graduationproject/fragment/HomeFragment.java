@@ -20,6 +20,7 @@ import com.whut.umrhamster.graduationproject.model.bean.Live;
 import com.whut.umrhamster.graduationproject.model.bean.Video;
 import com.whut.umrhamster.graduationproject.presenter.ILivePresenter;
 import com.whut.umrhamster.graduationproject.presenter.LivePresenterCompl;
+import com.whut.umrhamster.graduationproject.utils.other.AdaptionUtil;
 import com.whut.umrhamster.graduationproject.view.IInitWidgetView;
 import com.whut.umrhamster.graduationproject.view.ILiveView;
 
@@ -34,9 +35,11 @@ public class HomeFragment extends Fragment implements IInitWidgetView,ILiveView 
 
     private ILivePresenter livePresenter;
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        AdaptionUtil.setCustomDensity(getActivity(),getActivity().getApplication());
         View view = inflater.inflate(R.layout.fg_home,container,false);
         initView(view);
         initEvent();
@@ -91,5 +94,10 @@ public class HomeFragment extends Fragment implements IInitWidgetView,ILiveView 
     @Override
     public void onAllLiveFail(int code) {
 //        Toast.makeText(getActivity(),"失败",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onTypeLiveSuccess(List<Live> liveList) {
+
     }
 }

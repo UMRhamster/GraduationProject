@@ -3,6 +3,7 @@ package com.whut.umrhamster.graduationproject;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -29,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
 import com.whut.umrhamster.graduationproject.adapter.MainFragmentPagerAdapter;
 import com.whut.umrhamster.graduationproject.fragment.ClassifyFragment;
 import com.whut.umrhamster.graduationproject.fragment.CollectionFragment;
@@ -42,6 +44,7 @@ import com.whut.umrhamster.graduationproject.fragment.WatchFragment;
 import com.whut.umrhamster.graduationproject.model.bean.Student;
 import com.whut.umrhamster.graduationproject.model.biz.IUserBiz;
 import com.whut.umrhamster.graduationproject.utils.http.RetrofitUtil;
+import com.whut.umrhamster.graduationproject.utils.other.AdaptionUtil;
 import com.whut.umrhamster.graduationproject.utils.other.TimeUtil;
 import com.whut.umrhamster.graduationproject.utils.save.SPUtil;
 import com.whut.umrhamster.graduationproject.view.CircleImageView;
@@ -94,7 +97,6 @@ public class MainActivity extends AppCompatActivity implements IInitWidgetView {
 
         setDefaultFragment();
         initView();
-        initData();
         initEvent();
     }
 
@@ -192,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements IInitWidgetView {
 //        for (int i = 0; i<titles.length;i++){
 //            tabLayout.getTabAt(i).setCustomView(getTabView(i));
 //        }
+        initData();
     }
 
     @Override
@@ -260,6 +263,8 @@ public class MainActivity extends AppCompatActivity implements IInitWidgetView {
     private void initData(){
         student = SPUtil.loadStudent(MainActivity.this);
         if (student != null){
+            Picasso.get().load(student.getAvatar()).placeholder(R.drawable.default_user_icon).error(R.drawable.default_user_icon).
+                    config(Bitmap.Config.RGB_565).into(civIcon);
             textViewNickname.setText(student.getNickname());
             textViewInfo.setVisibility(View.VISIBLE);
             textViewInfo.setText(String.format(getString(R.string.header_study_time),TimeUtil.int2header(student.getDuration())));
@@ -314,6 +319,8 @@ public class MainActivity extends AppCompatActivity implements IInitWidgetView {
 
             student = data.getParcelableExtra("student");
             if (student != null){
+                Picasso.get().load(student.getAvatar()).
+                        config(Bitmap.Config.RGB_565).into(civIcon);
                 textViewNickname.setText(student.getNickname());
                 textViewInfo.setVisibility(View.VISIBLE);
                 textViewInfo.setText(String.format(getString(R.string.header_study_time),TimeUtil.int2header(student.getDuration())));

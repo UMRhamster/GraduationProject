@@ -1,6 +1,7 @@
 package com.whut.umrhamster.graduationproject.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -58,6 +59,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 //        holder.roundedImageView.setCornerRadius(AdaptionUtil.dp2px(context,8),AdaptionUtil.dp2px(context,8),0,0);
         Picasso.get()
                 .load(liveList.get(position).getCover())
+                .resize(AdaptionUtil.dp2px(context,360),AdaptionUtil.dp2px(context,101))
+                .config(Bitmap.Config.RGB_565)
                 .into(holder.rivCover);
         holder.tvTitle.setText(liveList.get(position).getTitle());
         holder.tvTeacher.setText(liveList.get(position).getTeacher().getNickname());

@@ -1,6 +1,7 @@
 package com.whut.umrhamster.graduationproject.fragment;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
 import com.whut.umrhamster.graduationproject.HistoryActivity;
 import com.whut.umrhamster.graduationproject.LoginActivity;
 import com.whut.umrhamster.graduationproject.MainActivity;
@@ -27,6 +29,7 @@ import com.whut.umrhamster.graduationproject.adapter.MainFragmentPagerAdapter;
 import com.whut.umrhamster.graduationproject.model.bean.Student;
 import com.whut.umrhamster.graduationproject.model.biz.IUserBiz;
 import com.whut.umrhamster.graduationproject.utils.http.RetrofitUtil;
+import com.whut.umrhamster.graduationproject.utils.other.AdaptionUtil;
 import com.whut.umrhamster.graduationproject.utils.other.TimeUtil;
 import com.whut.umrhamster.graduationproject.utils.save.SPUtil;
 import com.whut.umrhamster.graduationproject.view.CircleImageView;
@@ -62,7 +65,6 @@ public class MainFragment extends Fragment implements IInitWidgetView {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fg_main,container,false);
         initView(view);
-        initData();
         initEvent();
         return view;
     }
@@ -77,6 +79,11 @@ public class MainFragment extends Fragment implements IInitWidgetView {
     }
 
     private void initData(){
+        student = SPUtil.loadStudent(getActivity());
+        if (student != null){
+            Picasso.get().load(student.getAvatar()).placeholder(R.drawable.default_user_icon).error(R.drawable.default_user_icon).
+                    config(Bitmap.Config.RGB_565).into(civMenu);
+        }
     }
 
     @Override
@@ -134,6 +141,7 @@ public class MainFragment extends Fragment implements IInitWidgetView {
         for (int i = 0; i<titles.length;i++){
             tabLayout.getTabAt(i).setCustomView(getTabView(i));
         }
+        initData();
     }
 
     @Override

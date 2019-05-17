@@ -88,4 +88,29 @@ public class WatchFragment extends Fragment implements IInitWidgetView,IWatchVie
     public void onWatchFail(int code) {
 
     }
+
+    @Override
+    public void onWatchExist(boolean exist) {
+
+    }
+
+    @Override
+    public void onAddWatchSuccess() {
+
+    }
+
+    @Override
+    public void onDeleteWatchSuccess() {
+
+    }
+
+    @Override
+    public void onGetNumStudents(List<Watch> watchList) {
+
+    }
+
+    @Override
+    public void onGetNumTeachers(List<Watch> watchList) {
+
+    }
 }

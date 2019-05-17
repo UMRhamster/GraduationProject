@@ -42,6 +42,136 @@ public class WatchPresenter implements IWatchPresenter {
     }
 
     @Override
+    public void isWatchExist(int studentId, int teacherId) {
+        watchBiz.isWatchExist(studentId, teacherId, new IWatchBiz.OnWatchListener() {
+            @Override
+            public void onSuccess(List<Watch> watchList) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        watchView.onWatchExist(true);
+                    }
+                });
+            }
+
+            @Override
+            public void onFail(int code) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        watchView.onWatchExist(false);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void doAddWatch(int studentId, int teacherId) {
+        watchBiz.addWatch(studentId, teacherId, new IWatchBiz.OnWatchListener() {
+            @Override
+            public void onSuccess(final List<Watch> watchList) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        watchView.onAddWatchSuccess();
+                    }
+                });
+            }
+
+            @Override
+            public void onFail(final int code) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        watchView.onWatchFail(code);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void doDeleteWatchById(int watchId) {
+        watchBiz.deleteWatchById(watchId, new IWatchBiz.OnWatchListener() {
+            @Override
+            public void onSuccess(List<Watch> watchList) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        watchView.onDeleteWatchSuccess();
+                    }
+                });
+            }
+
+            @Override
+            public void onFail(final int code) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        watchView.onWatchFail(code);
+                    }
+                });
+            }
+        });
+    }
+
+
+    @Override
+    public void doDeleteWatchBySaT(int studentId, int teacherId) {
+        watchBiz.deleteWatchBySaT(studentId, teacherId, new IWatchBiz.OnWatchListener() {
+            @Override
+            public void onSuccess(List<Watch> watchList) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        watchView.onDeleteWatchSuccess();
+                    }
+                });
+            }
+
+            @Override
+            public void onFail(final int code) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        watchView.onWatchFail(code);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void doGetNumOfWatch(final int idf, int id) {  //1-获取教师数 2-获取学生数
+        watchBiz.getNumOfWatch(idf, id, new IWatchBiz.OnWatchListener() {
+            @Override
+            public void onSuccess(final List<Watch> watchList) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (idf == 1){
+                            watchView.onGetNumTeachers(watchList);
+                        }else if (idf == 2){
+                            watchView.onGetNumStudents(watchList);
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onFail(final int code) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        watchView.onWatchFail(code);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
     public void onDestroy() {
         watchView = null;
     }

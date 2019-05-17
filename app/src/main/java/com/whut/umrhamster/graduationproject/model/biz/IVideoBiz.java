@@ -9,6 +9,8 @@ public interface IVideoBiz {
 
     void getVideoByType(int type, OnVideoListener onVideoListener);
 
+    void getVideoByTeacher(int teacherId,OnVideoListener onVideoListener);
+
     public interface OnVideoListener{
         void onSuccess(List<Video> videoList);
         void onFail(int code);

@@ -12,5 +12,6 @@ import retrofit2.http.Query;
 public interface VerificationService {
 
     @GET("verification")  //待确认
-    Call<HttpData<Verification>> getVerificationFromEmail(@Query("email") String email);
+    //type: 1-登录，2-注册
+    Call<HttpData<Verification>> getVerificationFromEmail(@Query("type")int type,@Query("email") String email);
 }

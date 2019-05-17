@@ -44,4 +44,24 @@ public class TimeKeepPresenter implements ITimeKeepPresenter {
             }
         });
     }
+
+    @Override
+    public void doUploadTimeKeep(int studentId, int typeId, int time) {
+        timeKeepBiz.uploadTimeKeep(studentId, time, typeId, new ITimeKeepBiz.OnTimeKeepListener() {
+            @Override
+            public void timeKeepSuccess(List<InfoGroupBean> groupBeanList) {
+
+            }
+
+            @Override
+            public void timeKeepFail(int code) {
+                timeKeepView.onTimeKeepFail(code);
+            }
+        });
+    }
+
+    @Override
+    public void onDestroy() {
+
+    }
 }

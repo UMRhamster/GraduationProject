@@ -35,8 +35,6 @@ import com.whut.umrhamster.graduationproject.utils.verification.VerifyUtil;
 import com.whut.umrhamster.graduationproject.view.ILoginView;
 import com.whut.umrhamster.graduationproject.view.TextDrawable;
 
-import com.whut.umrhamster.graduationproject.utils.verification.VerifyUtil.VerifyStatus;
-
 
 public class LoginFragmentPw extends Fragment implements ILoginView {
     private TextInputEditText inputAccount;     //用户名输入框

@@ -33,7 +33,9 @@
             android:name=".StudentInfoActivity"
             android:theme="@style/FullScreenTheme" />
         <activity android:name=".VideoPlayerActivity" />
-        <activity android:name=".ClassifyActivity"></activity>
+        <activity android:name=".ClassifyActivity" />
+        <activity android:name=".ForeshowActivity" />
+        <activity android:name=".TeacherInfoActivity"></activity>
     </application>
 
 </manifest>

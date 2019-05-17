@@ -33,4 +33,21 @@ public class TimeKeepBiz implements ITimeKeepBiz {
             }
         });
     }
+
+    @Override
+    public void uploadTimeKeep(int studentId, int time, int typeId, final OnTimeKeepListener onTimeKeepListener) {
+        TimeKeepService service = RetrofitUtil.retrofit.create(TimeKeepService.class);
+        Call<HttpData<List<InfoGroupBean>>> call = service.uploadTimeKeep(studentId,typeId,time);
+        call.enqueue(new Callback<HttpData<List<InfoGroupBean>>>() {
+            @Override
+            public void onResponse(Call<HttpData<List<InfoGroupBean>>> call, Response<HttpData<List<InfoGroupBean>>> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<HttpData<List<InfoGroupBean>>> call, Throwable t) {
+                onTimeKeepListener.timeKeepFail(-1);
+            }
+        });
+    }
 }

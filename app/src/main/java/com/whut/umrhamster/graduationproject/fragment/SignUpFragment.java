@@ -79,38 +79,27 @@ public class SignUpFragment extends Fragment implements IVerifyView {
         iVerifyPresenter = new VerifyPresenter(this);
     }
 
+    TextDrawable drawable;
+
     @SuppressLint("ClickableViewAccessibility")
     public void initEvent(){
         inputPassword.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                final TextDrawable drawable = (TextDrawable) inputPassword.getCompoundDrawables()[2];
+                drawable = (TextDrawable) inputPassword.getCompoundDrawables()[2];
                 if (drawable == null)
                     return false;
                 if (event.getAction() == MotionEvent.ACTION_UP){
                     if (event.getX() > inputAccount.getWidth() - inputAccount.getPaddingEnd()-drawable.getIntrinsicWidth()){
                         if (!isVerify){
                             isVerify = true;
-                            iVerifyPresenter.doEmailVerify(inputAccount.getText().toString());
-                            Toast.makeText(getActivity(),"已发送验证码",Toast.LENGTH_SHORT).show();
-                            CountDownTimer timer = new CountDownTimer(60000,1000) {
-                                @Override
-                                public void onTick(long millisUntilFinished) {
-                                    int second = (int) (millisUntilFinished/1000);
-                                    if (second <= 1){
-                                        drawable.setText("| 获取验证码");
-                                        isVerify = false;
-                                    }else{
-                                        drawable.setText("| "+second+"秒后重发");
-                                    }
-                                }
-
-                                @Override
-                                public void onFinish() {
-
-                                }
-                            };
-                            timer.start();
+                            if (VerifyUtil.localEmailVerify(inputAccount.getText().toString())){
+                                iVerifyPresenter.doEmailVerify(2,inputAccount.getText().toString());
+                            }else {
+                                Toast.makeText(getActivity(),"邮箱错误，请确认邮箱",Toast.LENGTH_SHORT).show();
+                                isVerify = false;
+                            }
+//                            Toast.makeText(getActivity(),"已发送验证码",Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -171,5 +160,37 @@ public class SignUpFragment extends Fragment implements IVerifyView {
     @Override
     public void onVerification(int code) {
         verifyCode = code;
+        CountDownTimer timer = new CountDownTimer(60000,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                int second = (int) (millisUntilFinished/1000);
+                if (drawable != null){
+                    if (second <= 1){
+                        drawable.setText("| 获取验证码");
+                        isVerify = false;
+                    }else{
+                        drawable.setText("| "+second+"秒后重发");
+                    }
+                }else {
+                    isVerify = false;
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                isVerify = false;
+            }
+        };
+        timer.start();
+    }
+
+    @Override
+    public void onVerifyFail(int code) {
+        if (code == 2044){
+            Toast.makeText(getActivity(),"邮箱错误，请确认邮箱",Toast.LENGTH_SHORT).show();
+        }else if (code == 2045){
+            Toast.makeText(getActivity(),"此邮箱已注册",Toast.LENGTH_SHORT).show();
+        }
+        isVerify = false;
     }
 }

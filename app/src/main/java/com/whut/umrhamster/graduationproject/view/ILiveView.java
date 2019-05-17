@@ -9,4 +9,6 @@ import java.util.List;
 public interface ILiveView {
     void onAllLiveSuccess(List<Live> liveList);
     void onAllLiveFail(int code);
+
+    void onTypeLiveSuccess(List<Live> liveList);
 }

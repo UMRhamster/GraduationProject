@@ -45,23 +45,25 @@
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@id/player_interact_tb_tv_nof"
                     android:layout_alignTop="@id/player_interact_tb_tv_nof"
+                    android:layout_marginStart="8dp"
                     android:textSize="12sp"
-                    android:text="学生:10万"/>
+                    android:text="学员:10万"/>
 
             </RelativeLayout>
             <TextView
+                android:id="@+id/player_interact_tv_watch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
                 android:layout_marginEnd="12dp"
-                android:background="@drawable/player_interact_watch_bg_n"
+                android:background="@drawable/text_round_bg_color_theme"
                 android:textColor="@android:color/white"
-                android:text=" + 关注"/>
+                android:text="+ 关注"/>
         </RelativeLayout>
 
     </android.support.v7.widget.Toolbar>

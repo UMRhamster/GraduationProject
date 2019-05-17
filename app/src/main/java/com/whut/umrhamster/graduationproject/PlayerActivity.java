@@ -123,16 +123,17 @@ public class PlayerActivity extends AppCompatActivity implements IInitWidgetView
         initData();
 
         fragmentList = new ArrayList<>(2);
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("teacher",live.getTeacher());
+        bundle.putInt("viewers",live.getViewers());
+        bundle.putInt("liveId",live.getId());
         PlayerInteractFragment interactFragment = new PlayerInteractFragment();
-        if (live != null){
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("teacher",live.getTeacher());
-            bundle.putInt("viewers",live.getViewers());
-            bundle.putInt("liveId",live.getId());
-            interactFragment.setArguments(bundle);
-        }
+        interactFragment.setArguments(bundle);
         fragmentList.add(interactFragment);
-        fragmentList.add(new PlayerHostFragment());
+        PlayerHostFragment hostFragment = new PlayerHostFragment();
+        hostFragment.setArguments(bundle);
+        fragmentList.add(hostFragment);
 
         adapter = new PlayerFragmentPagerAdapter(getSupportFragmentManager(),fragmentList,getResources().getStringArray(R.array.player_tab_titles));
         viewPager.setAdapter(adapter);

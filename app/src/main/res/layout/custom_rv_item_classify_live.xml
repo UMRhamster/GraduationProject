@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/custom_rv_item_classify_live_iv_cover"
@@ -47,6 +47,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="王者荣耀带你看懂二狗"
+        android:lines="2"
+        android:ellipsize="end"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:layout_below="@id/custom_rv_item_classify_live_iv_cover"/>

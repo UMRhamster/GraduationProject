@@ -30,7 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toEndOf="@id/fg_collection_iv_menu"
+                android:layout_toEndOf="@id/fg_setting_iv_menu"
                 android:text="设置"
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
@@ -41,17 +41,19 @@
         android:id="@+id/fg_setting_loginout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="@android:color/white"
         android:gravity="center"
+        android:padding="10dp"
         android:text="退出登录"
         android:textSize="16sp"
-        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fg_collection_tb_top"
+        app:layout_constraintTop_toBottomOf="@+id/fg_setting_tb_top"
         app:layout_constraintVertical_bias="0.0" />
 
 </android.support.constraint.ConstraintLayout>

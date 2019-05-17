@@ -46,6 +46,11 @@ public class SignUpPasswordFragment extends Fragment implements IInitWidgetView 
             public void onClick(View v) {
                 if (!isSignup){
                     isSignup = true;
+                    if (tietPassword.getText().toString().isEmpty() || tietPasswordConfirm.getText().toString().isEmpty()){
+                        Toast.makeText(getActivity(),"密码不能为空",Toast.LENGTH_SHORT).show();
+                        isSignup = false;
+                        return;
+                    }
                     if (!tietPassword.getText().toString().equals(tietPassword.getText().toString())){
                         Toast.makeText(getActivity(),"两次密码不一致",Toast.LENGTH_SHORT).show();
                         isSignup = false;

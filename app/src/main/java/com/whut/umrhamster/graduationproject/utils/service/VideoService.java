@@ -15,4 +15,7 @@ public interface VideoService {
 
     @GET("video")
     Call<HttpData<List<Video>>> getVideoByType(@Query("type")int start);
+
+    @GET("video")
+    Call<HttpData<List<Video>>> getVideoByTeacher(@Query("teacherId")int teacherId);
 }

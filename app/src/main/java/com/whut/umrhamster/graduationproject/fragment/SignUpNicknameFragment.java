@@ -1,5 +1,6 @@
 package com.whut.umrhamster.graduationproject.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.dd.CircularProgressButton;
@@ -25,6 +27,8 @@ public class SignUpNicknameFragment extends Fragment implements IInitWidgetView,
     private CircularProgressButton cpbSave;
 
     ISignupPresenter signupPresenter;
+
+    private boolean isSignUp = false;
 
     @Nullable
     @Override
@@ -45,10 +49,18 @@ public class SignUpNicknameFragment extends Fragment implements IInitWidgetView,
         cpbSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Student student = getArguments().getParcelable("student");
-                student.setNickname(tietNickname.getText().toString());
-                String password = getArguments().getString("password");
-                signupPresenter.doSignUp(student,password);
+                if (!isSignUp){
+                    isSignUp = true;
+                    if (tietNickname.getText().toString().isEmpty()){
+                        Toast.makeText(getActivity(),"昵称不能为空",Toast.LENGTH_SHORT).show();
+                        isSignUp = false;
+                    }else {
+                        Student student = getArguments().getParcelable("student");
+                        student.setNickname(tietNickname.getText().toString());
+                        String password = getArguments().getString("password");
+                        signupPresenter.doSignUp(student,password);
+                    }
+                }
             }
         });
     }
@@ -63,12 +75,24 @@ public class SignUpNicknameFragment extends Fragment implements IInitWidgetView,
 
     @Override
     public void onSignupSuccess(Student student) {
-        Toast.makeText(getActivity(),student.getNickname(),Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(getActivity(),MainActivity.class));
+        isSignUp = false;
+        Intent intent = new Intent();
+        intent.putExtra("student",student);
+        getActivity().setResult(1,intent);
+        InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (manager != null){
+            manager.toggleSoftInput(0,InputMethodManager.HIDE_NOT_ALWAYS);
+//            manager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),0);
+        }
+
+        getActivity().finish();
+//        Toast.makeText(getActivity(),student.getNickname(),Toast.LENGTH_SHORT).show();
+//        startActivity(new Intent(getActivity(),MainActivity.class));
     }
 
     @Override
     public void onSignupFail(int code) {
+        isSignUp = false;
         Toast.makeText(getActivity(),"注册失败",Toast.LENGTH_SHORT).show();
     }
 }

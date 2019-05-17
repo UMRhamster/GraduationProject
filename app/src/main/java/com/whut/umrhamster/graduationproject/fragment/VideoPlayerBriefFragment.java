@@ -1,8 +1,10 @@
 package com.whut.umrhamster.graduationproject.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,17 +14,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.whut.umrhamster.graduationproject.ForeshowActivity;
 import com.whut.umrhamster.graduationproject.R;
+import com.whut.umrhamster.graduationproject.TeacherInfoActivity;
+import com.whut.umrhamster.graduationproject.model.bean.Student;
 import com.whut.umrhamster.graduationproject.model.bean.Teacher;
 import com.whut.umrhamster.graduationproject.model.bean.Video;
+import com.whut.umrhamster.graduationproject.model.bean.Watch;
+import com.whut.umrhamster.graduationproject.presenter.IWatchPresenter;
+import com.whut.umrhamster.graduationproject.presenter.WatchPresenter;
+import com.whut.umrhamster.graduationproject.utils.other.TimeUtil;
+import com.whut.umrhamster.graduationproject.utils.save.SPUtil;
 import com.whut.umrhamster.graduationproject.view.CircleImageView;
 import com.whut.umrhamster.graduationproject.view.IInitWidgetView;
+import com.whut.umrhamster.graduationproject.view.IWatchView;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -30,7 +42,7 @@ import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
-public class VideoPlayerBriefFragment extends Fragment implements IInitWidgetView {
+public class VideoPlayerBriefFragment extends Fragment implements IInitWidgetView,IWatchView {
     private CircleImageView civIcon;
     private TextView tvNickname;
     private TextView tvStudents;
@@ -38,7 +50,12 @@ public class VideoPlayerBriefFragment extends Fragment implements IInitWidgetVie
     private TextView tvTitle;
     private TextView tvViewers;
     private TextView tvBrief;
+    private TextView tvDate;
+    //
+    private ConstraintLayout constraintLayout;
 
+    private IWatchPresenter watchPresenter;
+    Student me;
     Teacher teacher;
     Video video;
     @Nullable
@@ -60,37 +77,35 @@ public class VideoPlayerBriefFragment extends Fragment implements IInitWidgetVie
         tvWatch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("tes","tttttttttttttttt");
-                OkHttpClient client = new OkHttpClient.Builder()
-                        .build();
-                String url = "ws://192.168.1.233:8080/websocket/aaa|qwer";
-                Request request = new Request.Builder().url(url).build();
-                WebSocket webSocket = client.newWebSocket(request, new WebSocketListener() {
-                    @Override
-                    public void onOpen(WebSocket webSocket, Response response) {
-                        super.onOpen(webSocket, response);
-                        Log.d("websocket","open");
+                if (tvWatch.getText().toString().equals("+ 关注")){
+                    if (me != null){
+                        watchPresenter.doAddWatch(me.getId(),teacher.getId());
+                    }else {
+                        Toast.makeText(getActivity(),"登录之后可关注教师",Toast.LENGTH_SHORT).show();
                     }
+                    //点击进行关注
+                }else {
+                    if (me != null){
+                        watchPresenter.doDeleteWatchBySaT(me.getId(),teacher.getId());
+                    }
+                }
+            }
+        });
 
-                    @Override
-                    public void onMessage(WebSocket webSocket, String text) {
-                        super.onMessage(webSocket, text);
-                    }
-
-                    @Override
-                    public void onClosed(WebSocket webSocket, int code, String reason) {
-                        super.onClosed(webSocket, code, reason);
-                    }
-                });
-                webSocket.request();
+        constraintLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),TeacherInfoActivity.class);
+                intent.putExtra("teacher",teacher);
+                startActivity(intent);
             }
         });
     }
 
     @Override
     public void initView(View view) {
-        teacher = getArguments().getParcelable("teacher");
         video = getArguments().getParcelable("video");
+        teacher = video.getUploader();
         civIcon = view.findViewById(R.id.fg_video_player_brief_civ_icon);
         tvNickname = view.findViewById(R.id.fg_video_player_brief_tv_nickname);
         tvStudents = view.findViewById(R.id.fg_video_player_brief_tv_students);
@@ -98,11 +113,14 @@ public class VideoPlayerBriefFragment extends Fragment implements IInitWidgetVie
         tvTitle = view.findViewById(R.id.fg_video_player_brief_tv_title);
         tvViewers = view.findViewById(R.id.fg_video_player_brief_tv_nop);
         tvBrief = view.findViewById(R.id.fg_video_player_brief_tv_brief);
+        constraintLayout = view.findViewById(R.id.fg_video_player_cl_info);
+        tvDate = view.findViewById(R.id.fg_video_player_brief_tv_date);
         initData();
 
     }
 
     public void initData(){
+        tvDate.setText(TimeUtil.uptime2string(video.getUploadtime()));
         if (teacher != null){
             Picasso.get().load(teacher.getAvatar()).into(civIcon);
             tvNickname.setText(teacher.getNickname());
@@ -112,5 +130,58 @@ public class VideoPlayerBriefFragment extends Fragment implements IInitWidgetVie
             tvViewers.setText(""+video.getViewers());
             tvBrief.setText(video.getBrief());
         }
+        me = SPUtil.loadStudent(getActivity());
+
+        watchPresenter = new WatchPresenter(this);
+        if (me != null){
+            watchPresenter.isWatchExist(me.getId(),teacher.getId());
+        }
+        watchPresenter.doGetNumOfWatch(2,teacher.getId());
+
+    }
+
+    @Override
+    public void onWatchSuccess(List<Watch> watchList) {
+
+    }
+
+    @Override
+    public void onWatchFail(int code) {
+
+    }
+
+    @Override
+    public void onWatchExist(boolean exist) {
+        if (exist){
+            tvWatch.setText("已关注");
+            tvWatch.setBackgroundResource(R.drawable.text_round_bg_color_light_gray);
+        }else {
+            tvWatch.setText("+ 关注");
+            tvWatch.setBackgroundResource(R.drawable.text_round_bg_color_theme);
+        }
+    }
+
+    @Override
+    public void onAddWatchSuccess() {
+        Toast.makeText(getActivity(),"关注成功",Toast.LENGTH_SHORT).show();
+        tvWatch.setText("已关注");
+        tvWatch.setBackgroundResource(R.drawable.text_round_bg_color_light_gray);
+    }
+
+    @Override
+    public void onDeleteWatchSuccess() {
+        Toast.makeText(getActivity(),"取消关注成功",Toast.LENGTH_SHORT).show();
+        tvWatch.setText("+ 关注");
+        tvWatch.setBackgroundResource(R.drawable.text_round_bg_color_theme);
+    }
+
+    @Override
+    public void onGetNumStudents(List<Watch> watchList) {
+        tvStudents.setText(watchList.size()+"学员");
+    }
+
+    @Override
+    public void onGetNumTeachers(List<Watch> watchList) {
+
     }
 }

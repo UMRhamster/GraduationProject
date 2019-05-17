@@ -17,21 +17,26 @@ import java.util.List;
 public class ClassifyLiveAdapter extends RecyclerView.Adapter<ClassifyLiveAdapter.ItemViewHolder> {
     private List<Live> liveList;
 
+    private OnItemClickListener onItemClickListener;
+
     public ClassifyLiveAdapter(List<Live> liveList){
         this.liveList = liveList;
     }
     @NonNull
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_rv_item_classify_live,parent,false);
-        ItemViewHolder holder = new ItemViewHolder(view);
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_rv_item_classify_live,parent,false);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                onItemClickListener.onItemClick((Integer) view.getTag());
             }
         });
-        return holder;
+        return new ItemViewHolder(view);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     @Override
@@ -41,6 +46,7 @@ public class ClassifyLiveAdapter extends RecyclerView.Adapter<ClassifyLiveAdapte
         holder.tvNickname.setText(live.getTeacher().getNickname());
         holder.tvNov.setText(""+live.getViewers());
         holder.tvTitle.setText(live.getTitle());
+        holder.itemView.setTag(position);
     }
 
     @Override
@@ -60,5 +66,9 @@ public class ClassifyLiveAdapter extends RecyclerView.Adapter<ClassifyLiveAdapte
             tvNov = itemView.findViewById(R.id.custom_rv_item_classify_live_rl_tv_nop);
             tvTitle = itemView.findViewById(R.id.custom_rv_item_classify_live_tv_title);
         }
+    }
+
+    public interface OnItemClickListener{
+        void onItemClick(int position);
     }
 }

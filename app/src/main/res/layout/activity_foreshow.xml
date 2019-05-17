@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ForeshowActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/themeColor"
+        app:contentInsetStart="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/ac_foreshow_iv_back"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerVertical="true"
+                android:padding="12dp"
+                android:src="@drawable/player_back"/>
+            <TextView
+                android:id="@+id/ac_foreshow_tb_tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/ac_foreshow_iv_back"
+                android:text="高等数学"
+                android:lines="1"
+                android:ellipsize="end"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/foreshow_tb_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/foreshow_iv_cover"
+                android:layout_width="match_parent"
+                android:layout_height="202dp"
+                android:scaleType="fitXY"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <View
+                android:id="@+id/foreshow_v_title"
+                android:layout_width="4dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:background="@drawable/text_round_bg_color_theme"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/foreshow_tv_title_name"
+                app:layout_constraintBottom_toBottomOf="@+id/foreshow_tv_title_name"/>
+
+            <TextView
+                android:id="@+id/foreshow_tv_title_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="标题"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/foreshow_v_title"
+                app:layout_constraintTop_toBottomOf="@+id/foreshow_iv_cover" />
+
+            <TextView
+                android:id="@+id/foreshow_tv_title_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="标题内容"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/foreshow_tv_title_name"
+                app:layout_constraintTop_toBottomOf="@id/foreshow_tv_title_name" />
+
+            <View
+                android:id="@+id/foreshow_v_brief"
+                android:layout_width="4dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:background="@drawable/text_round_bg_color_theme"
+                app:layout_constraintBottom_toBottomOf="@+id/foreshow_brief_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/foreshow_brief_title" />
+
+            <TextView
+                android:id="@+id/foreshow_brief_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:text="简介"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@id/foreshow_v_brief"
+                app:layout_constraintTop_toBottomOf="@+id/foreshow_tv_title_content" />
+
+            <TextView
+                android:id="@+id/foreshow_brief_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="ceshiyugaoceshiyugaoceshiyugaoceshiyugaoceshiyugaoceshiyugaoceshiyugaoceshiyugaoceshiyugaoceshiyugaoceshiyugaoceshiyugaoceshiyugaoceshiyugaoceshiyugaoceshiyugao"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/foreshow_brief_title"
+                app:layout_constraintTop_toBottomOf="@id/foreshow_brief_title" />
+            <View
+                android:id="@+id/foreshow_v_starttime"
+                android:layout_width="4dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:background="@drawable/text_round_bg_color_theme"
+                app:layout_constraintBottom_toBottomOf="@+id/foreshow_tv_starttime_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/foreshow_tv_starttime_title" />
+
+            <TextView
+                android:id="@+id/foreshow_tv_starttime_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:text="开始时间"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/foreshow_v_starttime"
+                app:layout_constraintTop_toBottomOf="@+id/foreshow_brief_content" />
+            <TextView
+                android:id="@+id/foreshow_tv_starttime_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="2019年05月14日 20：30"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/foreshow_tv_starttime_title"
+                app:layout_constraintTop_toBottomOf="@id/foreshow_tv_starttime_title"/>
+            <View
+                android:id="@+id/foreshow_v_duration"
+                android:layout_width="4dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:background="@drawable/text_round_bg_color_theme"
+                app:layout_constraintBottom_toBottomOf="@+id/foreshow_tv_duration_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/foreshow_tv_duration_title" />
+            <TextView
+                android:id="@+id/foreshow_tv_duration_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:text="持续时间"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/foreshow_v_duration"
+                app:layout_constraintTop_toBottomOf="@+id/foreshow_tv_starttime_content" />
+            <TextView
+                android:id="@+id/foreshow_tv_duration_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="2小时"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/foreshow_tv_duration_title"
+                app:layout_constraintTop_toBottomOf="@id/foreshow_tv_duration_title"/>
+            <View
+                android:id="@+id/foreshow_v_type"
+                android:layout_width="4dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:background="@drawable/text_round_bg_color_theme"
+                app:layout_constraintBottom_toBottomOf="@+id/foreshow_tv_type_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/foreshow_tv_type_title" />
+            <TextView
+                android:id="@+id/foreshow_tv_type_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:text="分类"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/foreshow_v_duration"
+                app:layout_constraintTop_toBottomOf="@+id/foreshow_tv_duration_content" />
+            <TextView
+                android:id="@+id/foreshow_tv_type_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="高等数学"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/foreshow_tv_type_title"
+                app:layout_constraintTop_toBottomOf="@id/foreshow_tv_type_title"/>
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/foreshow_tb_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:contentInsetStart="0dp"
+        android:background="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.whut.umrhamster.graduationproject.view.CircleImageView
+                android:id="@+id/ac_foreshow_host_civ_icon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:padding="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/ac_foreshow_host_tv_nickname"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="丢丢恍若梦呓"
+                android:textColor="@android:color/black"
+                app:layout_constraintEnd_toStartOf="@+id/ac_foreshow_host_tv_watch"
+                app:layout_constraintStart_toEndOf="@+id/ac_foreshow_host_civ_icon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/ac_foreshow_host_tv_liveid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="房间号:54321"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/ac_foreshow_host_civ_icon"
+                app:layout_constraintStart_toEndOf="@+id/ac_foreshow_host_civ_icon"
+                app:layout_constraintTop_toBottomOf="@+id/ac_foreshow_host_tv_nickname" />
+
+            <TextView
+                android:id="@+id/ac_foreshow_host_tv_students"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="学员:7445"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/ac_foreshow_host_civ_icon"
+                app:layout_constraintEnd_toStartOf="@+id/ac_foreshow_host_tv_watch"
+                app:layout_constraintStart_toEndOf="@+id/ac_foreshow_host_tv_liveid"
+                app:layout_constraintTop_toBottomOf="@+id/ac_foreshow_host_tv_nickname" />
+
+            <TextView
+                android:id="@+id/ac_foreshow_host_tv_watch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="+ 关注"
+                android:background="@drawable/text_round_bg_color_theme"
+                android:padding="2dp"
+                android:textColor="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/ac_foreshow_host_civ_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.Toolbar>
+</android.support.constraint.ConstraintLayout>

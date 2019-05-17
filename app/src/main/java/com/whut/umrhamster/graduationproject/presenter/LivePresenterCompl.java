@@ -46,4 +46,34 @@ public class LivePresenterCompl implements ILivePresenter {
             }
         });
     }
+
+    @Override
+    public void doGetTypeLive(int type) {
+        liveBiz.getTypeLive(type, new ILiveBiz.OnLiveListener() {
+            @Override
+            public void onLiveSuccess(final List<Live> liveList) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        liveView.onTypeLiveSuccess(liveList);
+                    }
+                });
+            }
+
+            @Override
+            public void onLiveFail(final int code) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        liveView.onAllLiveFail(code);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void onDestroy() {
+
+    }
 }

@@ -46,7 +46,7 @@ public class ClassifyActivity extends AppCompatActivity implements IInitWidgetVi
     public void initView() {
         classify = getIntent().getParcelableExtra("classify");
         ivBack = findViewById(R.id.ac_classify_iv_back);
-        tvTitle = findViewById(R.id.ac_classify_tb_tv_title);
+        tvTitle = findViewById(R.id.ac_classify_tb_tv_title); tvTitle.setText(classify.getName());
         tabLayout = findViewById(R.id.ac_classify_tb);
         viewPager = findViewById(R.id.ac_classify_vp);
         fragmentList = new ArrayList<>();
@@ -65,7 +65,12 @@ public class ClassifyActivity extends AppCompatActivity implements IInitWidgetVi
 
     @Override
     public void initEvent() {
-
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     @Override

@@ -1,11 +1,12 @@
 package com.whut.umrhamster.graduationproject.model.biz;
 
 public interface IVerificationBiz {
-    void emailVerification(String email, OnVerifyListener onVerifyListener);
+    void emailVerification(int type, String email, OnVerifyListener onVerifyListener);
     void phoneVerification(String phone, OnVerifyListener onVerifyListener);
 
     public interface OnVerifyListener {
-        void onVerifyResult(int code);
+        void onVerifySuccess(int verifycode);
+        void onVerifyFail(int code);
     }
 
 }
