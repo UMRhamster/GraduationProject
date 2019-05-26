@@ -53,7 +53,7 @@ public class VideoPlayerCommentFragment extends Fragment implements IInitWidgetV
     public void initView(View view) {
         recyclerView = view.findViewById(R.id.fg_video_player_comment_rv);
         commentList = new ArrayList<>();
-        adapter = new CommentAdapter(commentList);
+        adapter = new CommentAdapter(commentList,getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         initData();

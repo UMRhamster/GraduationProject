@@ -50,7 +50,7 @@ public class CollectAdapter extends RecyclerView.Adapter<CollectAdapter.ItemView
     @Override
     public void onBindViewHolder(@NonNull final ItemViewHolder holder, int position) {
         Video video = videoList.get(position).getVideo();
-        Picasso.get().load(video.getCover())  //此处注意，placeholder可能会导致OOM
+        Picasso.with(context).load(video.getCover())  //此处注意，placeholder可能会导致OOM
                 .placeholder(R.drawable.default_cover)
                 .config(Bitmap.Config.RGB_565)
                 .resize(AdaptionUtil.dp2px(context,120),AdaptionUtil.dp2px(context,75))

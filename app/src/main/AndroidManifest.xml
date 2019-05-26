@@ -5,6 +5,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -26,16 +29,40 @@
         <activity android:name=".LoginActivity" />
         <activity
             android:name=".PlayerActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity android:name=".HistoryActivity" />
         <activity android:name=".WatchedActivity" />
         <activity
             android:name=".StudentInfoActivity"
             android:theme="@style/FullScreenTheme" />
-        <activity android:name=".VideoPlayerActivity" />
+        <activity android:name=".VideoPlayerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity android:name=".ClassifyActivity" />
         <activity android:name=".ForeshowActivity" />
-        <activity android:name=".TeacherInfoActivity"></activity>
+        <activity android:name=".TeacherInfoActivity" />
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tencent101560817" />
+            </intent-filter>
+        </activity>
+
+        <!-- SDK_V2.0引入了AssistActivity，开发者需在androidManifest.xml中注册。代码如下： -->
+
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".AccountDataActivity" />
     </application>
 
 </manifest>

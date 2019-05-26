@@ -1,5 +1,6 @@
 package com.whut.umrhamster.graduationproject.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import java.util.List;
 
 public class WatchAdapter extends RecyclerView.Adapter<WatchAdapter.ItemViewHolder> {
     private List<Watch> watchList;
+    private Context context;
 
     public WatchAdapter(List<Watch> watchList){
         this.watchList = watchList;
@@ -39,7 +41,7 @@ public class WatchAdapter extends RecyclerView.Adapter<WatchAdapter.ItemViewHold
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Teacher teacher = watchList.get(position).getTeacher();
-        Picasso.get().load(teacher.getAvatar()).into(holder.civIcon);
+        Picasso.with(context).load(teacher.getAvatar()).into(holder.civIcon);
         holder.tvNickname.setText(teacher.getNickname());
 //        holder.tvBrief.setText();
         holder.tvWatch.setOnClickListener(new View.OnClickListener() {

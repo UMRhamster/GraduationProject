@@ -2,6 +2,7 @@ package com.whut.umrhamster.graduationproject.utils.save;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -43,6 +44,26 @@ public class SPUtil {
 
     public static void clearStudent(Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences("student",Context.MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
+    }
+
+    //保存搜索历史记录
+    public static void saveHistory(Context context, String histories){
+//        Log.d("saveHistory",histories+"  a");
+        SharedPreferences sharedPreferences = context.getSharedPreferences("histories",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("history",histories);
+        editor.apply();
+    }
+
+    public static String loadHistory(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("histories",Context.MODE_PRIVATE);
+        String history = sharedPreferences.getString("history",null);
+        return history;
+    }
+
+    public static void clearHistory(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("histories",Context.MODE_PRIVATE);
         sharedPreferences.edit().clear().apply();
     }
 }

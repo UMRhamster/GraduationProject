@@ -1,5 +1,6 @@
 package com.whut.umrhamster.graduationproject.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,11 +18,13 @@ import java.util.List;
 
 public class ClassifyVideoAdapter extends RecyclerView.Adapter<ClassifyVideoAdapter.ItemViewHolder> {
     private List<Video> videoList;
+    private Context context;
 
     private OnItemClickListener onItemClickListener;
 
-    public ClassifyVideoAdapter(List<Video> videoList){
+    public ClassifyVideoAdapter(List<Video> videoList,Context context){
         this.videoList = videoList;
+        this.context = context;
     }
     @NonNull
     @Override
@@ -43,7 +46,7 @@ public class ClassifyVideoAdapter extends RecyclerView.Adapter<ClassifyVideoAdap
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Video video = videoList.get(position);
-        Picasso.get().load(video.getCover()).into(holder.rivCover);
+        Picasso.with(context).load(video.getCover()).into(holder.rivCover);
         holder.tvTitle.setText(video.getTitle());
         holder.tvNickname.setText(video.getUploader().getNickname());
         holder.tvNop.setText(""+video.getViewers());

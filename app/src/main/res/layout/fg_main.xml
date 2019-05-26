@@ -43,6 +43,7 @@
                 android:src="@drawable/default_user_icon"
                 android:layout_centerVertical="true"/>
             <ImageView
+                android:id="@+id/main_tb_rl_iv_search"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:paddingStart="8dp"

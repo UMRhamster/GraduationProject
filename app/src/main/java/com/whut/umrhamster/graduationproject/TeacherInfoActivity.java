@@ -2,11 +2,18 @@ package com.whut.umrhamster.graduationproject;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -14,7 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.whut.umrhamster.graduationproject.adapter.TeacherInfoFragmentPagerAdapter;
 import com.whut.umrhamster.graduationproject.adapter.TeacherVideoAdapter;
+import com.whut.umrhamster.graduationproject.fragment.TeacherEvaluationFragment;
+import com.whut.umrhamster.graduationproject.fragment.TeacherVideoFragment;
 import com.whut.umrhamster.graduationproject.model.bean.Student;
 import com.whut.umrhamster.graduationproject.model.bean.Teacher;
 import com.whut.umrhamster.graduationproject.model.bean.Video;
@@ -42,13 +52,17 @@ public class TeacherInfoActivity extends AppCompatActivity implements IInitWidge
     private CircleImageView civIcon; //圆形头像
     private ImageView ivBack;        //返回键
 
-    private RecyclerView recyclerView;
-    private List<Video> videoList;
-    private TeacherVideoAdapter adapter;
+//    private RecyclerView recyclerView;
+//    private List<Video> videoList;
+//    private TeacherVideoAdapter adapter;
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
+    private TeacherInfoFragmentPagerAdapter adapter;
+    private List<Fragment> fragmentList;
 
     private Teacher teacher;
     Student student;
-    private IVideoPresenter videoPresenter;
+//    private IVideoPresenter videoPresenter;
     private IWatchPresenter watchPresenter;
 
     @Override
@@ -61,10 +75,10 @@ public class TeacherInfoActivity extends AppCompatActivity implements IInitWidge
     }
 
     public void initData(){
-        videoPresenter = new VideoPresenter(this);
+//        videoPresenter = new VideoPresenter(this);
         watchPresenter = new WatchPresenter(this);
 
-        videoPresenter.doGetVideoByTeacher(teacher.getId());
+//        videoPresenter.doGetVideoByTeacher(teacher.getId());
         student = SPUtil.loadStudent(TeacherInfoActivity.this);
         if (student != null){
             watchPresenter.isWatchExist(student.getId(),teacher.getId());
@@ -83,15 +97,31 @@ public class TeacherInfoActivity extends AppCompatActivity implements IInitWidge
         civIcon = findViewById(R.id.ac_teacher_info_civ_icon);
         ivBack = findViewById(R.id.ac_teacher_info_iv_back);
         //
-        recyclerView = findViewById(R.id.ac_teacher_info_rv);
-        videoList = new ArrayList<>();
-        adapter = new TeacherVideoAdapter(videoList,TeacherInfoActivity.this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(TeacherInfoActivity.this));
-        recyclerView.setAdapter(adapter);
+        viewPager = findViewById(R.id.ac_teacher_info_vp);
+        tabLayout = findViewById(R.id.ac_teacher_info_tb);
+        fragmentList = new ArrayList<>();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("teacher",teacher);
+        TeacherVideoFragment teacherVideoFragment = new TeacherVideoFragment();
+        teacherVideoFragment.setArguments(bundle);
+        TeacherEvaluationFragment evaluationFragment = new TeacherEvaluationFragment();
+        evaluationFragment.setArguments(bundle);
+        fragmentList.add(teacherVideoFragment);
+        fragmentList.add(evaluationFragment);
+        adapter = new TeacherInfoFragmentPagerAdapter(getSupportFragmentManager(),fragmentList);
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
+
+//        recyclerView = findViewById(R.id.ac_teacher_info_rv);
+//        videoList = new ArrayList<>();
+//        adapter = new TeacherVideoAdapter(videoList,TeacherInfoActivity.this);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(TeacherInfoActivity.this));
+//        recyclerView.setAdapter(adapter);
         //
-        Picasso.get().load(teacher.getAvatar()).config(Bitmap.Config.RGB_565).into(civIcon);
+        Picasso.with(TeacherInfoActivity.this).load(teacher.getAvatar()).config(Bitmap.Config.RGB_565).into(civIcon);
         tvTopNickname.setText(teacher.getNickname());
         tvNickname.setText(teacher.getNickname());
+        tvBrief.setText(teacher.getBrief());
         initData();
 
     }
@@ -123,14 +153,14 @@ public class TeacherInfoActivity extends AppCompatActivity implements IInitWidge
             }
         });
 
-        adapter.setOnItemClickListener(new TeacherVideoAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                Intent intent = new Intent(TeacherInfoActivity.this,VideoPlayerActivity.class);
-                intent.putExtra("video",videoList.get(position));
-                startActivity(intent);
-            }
-        });
+//        adapter.setOnItemClickListener(new TeacherVideoAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(int position) {
+//                Intent intent = new Intent(TeacherInfoActivity.this,VideoPlayerActivity.class);
+//                intent.putExtra("video",videoList.get(position));
+//                startActivity(intent);
+//            }
+//        });
     }
 
     @Override
@@ -155,8 +185,8 @@ public class TeacherInfoActivity extends AppCompatActivity implements IInitWidge
 
     @Override
     public void onVideoTeacherSuccess(List<Video> videoList) {
-        this.videoList.addAll(videoList);
-        adapter.notifyDataSetChanged();
+//        this.videoList.addAll(videoList);
+//        adapter.notifyDataSetChanged();
 
     }
 
@@ -197,7 +227,10 @@ public class TeacherInfoActivity extends AppCompatActivity implements IInitWidge
 
     @Override
     public void onGetNumStudents(List<Watch> watchList) {
-        tvStudents.setText(watchList.size()+"学员");
+        SpannableString spannableString = new SpannableString(watchList.size()+"学员");
+        spannableString.setSpan(new ForegroundColorSpan(Color.parseColor("#000000")),0,spannableString.length()-2,SpannableString.SPAN_EXCLUSIVE_INCLUSIVE);
+        spannableString.setSpan(new RelativeSizeSpan(1.2f),0,spannableString.length()-2,SpannableString.SPAN_EXCLUSIVE_INCLUSIVE);
+        tvStudents.setText(spannableString);
     }
 
     @Override

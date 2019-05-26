@@ -39,4 +39,26 @@ public class LiveBiz implements ILiveBiz {
             }
         });
     }
+
+    @Override
+    public void getLiveByKeyword(String keyword, final OnLiveListener onLiveListener) {
+        LiveService service = RetrofitUtil.retrofit.create(LiveService.class);
+        Call<HttpData<List<Live>>> call = service.getLiveByKeyword(keyword);
+        call.enqueue(new Callback<HttpData<List<Live>>>() {
+            @Override
+            public void onResponse(Call<HttpData<List<Live>>> call, Response<HttpData<List<Live>>> response) {
+                HttpData<List<Live>> data = response.body();
+                if (data != null){
+                    onLiveListener.onLiveSuccess(data.getData());
+                }else {
+                    onLiveListener.onLiveFail(-1);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HttpData<List<Live>>> call, Throwable t) {
+                onLiveListener.onLiveFail(-1);
+            }
+        });
+    }
 }

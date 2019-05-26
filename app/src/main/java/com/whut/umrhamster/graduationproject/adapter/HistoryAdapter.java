@@ -121,8 +121,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 ((ViewHolder)holder).view.setVisibility(View.VISIBLE);
                 ((ViewHolder)holder).tvTitle.setText(history.getTitle());
                 ((ViewHolder)holder).tvTime.setText(String.format(context.getResources().getString(R.string.history_progress),
-                        TimeUtil.int2String(history.getWatchedTime()),
-                        TimeUtil.int2String(history.getTotalTime())));
+                        TimeUtil.millint2String(history.getWatchedTime()),
+                        TimeUtil.millint2String(history.getTotalTime())));
 
                 ((ViewHolder)holder).progressBar.setMax(history.getTotalTime());
                 ((ViewHolder)holder).progressBar.setProgress(history.getWatchedTime());
@@ -134,8 +134,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 ((ViewHolder)holder).tvTitle.setText(history.getTitle());
                 if (history.getStatus() == 0){
                     ((ViewHolder) holder).tvStatus.setText("未开播");
+                    ((ViewHolder) holder).tvStatus.setBackgroundResource(R.drawable.text_round_bg_color_gray);
                 }else {
                     ((ViewHolder) holder).tvStatus.setText("直播中");
+                    ((ViewHolder) holder).tvStatus.setBackgroundResource(R.drawable.text_round_bg_color_theme);
                 }
             }
             if (isEdit){
@@ -152,7 +154,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }else {
                 ((ViewHolder) holder).checkBox.setVisibility(View.GONE);
             }
-            Picasso.get().load(history.getCover()).into(((ViewHolder) holder).rivCover);
+            Picasso.with(context).load(history.getCover()).into(((ViewHolder) holder).rivCover);
             //今天
             Calendar todayC = Calendar.getInstance();
             todayC.set(Calendar.HOUR_OF_DAY,0);

@@ -1,5 +1,6 @@
 package com.whut.umrhamster.graduationproject.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,15 +12,18 @@ import com.squareup.picasso.Picasso;
 import com.whut.umrhamster.graduationproject.R;
 import com.whut.umrhamster.graduationproject.model.bean.Comment;
 import com.whut.umrhamster.graduationproject.model.bean.Student;
+import com.whut.umrhamster.graduationproject.utils.other.TimeUtil;
 import com.whut.umrhamster.graduationproject.view.CircleImageView;
 
 import java.util.List;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ItemViewHolder> {
     private List<Comment> commentList;
+    private Context context;
 
-    public CommentAdapter(List<Comment> commentList){
+    public CommentAdapter(List<Comment> commentList,Context context){
         this.commentList = commentList;
+        this.context = context;
     }
 
     @NonNull
@@ -31,9 +35,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ItemView
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Student student = commentList.get(position).getStudent();
-        Picasso.get().load(student.getAvatar()).into(holder.civIcon);
+        Picasso.with(context).load(student.getAvatar()).into(holder.civIcon);
         holder.tvNickname.setText(student.getNickname());
         holder.tvContent.setText(commentList.get(position).getContent());
+        holder.tvDate.setText(TimeUtil.uptime2string(commentList.get(position).getDate()));
     }
 
     @Override

@@ -21,8 +21,8 @@ public class TimeKeepPresenter implements ITimeKeepPresenter {
         handler = new Handler(Looper.getMainLooper());
     }
     @Override
-    public void doGetTimeKeepById(int studentId) {
-        timeKeepBiz.getTimeKeepById(studentId, new ITimeKeepBiz.OnTimeKeepListener() {
+    public void doGetTimeKeepById(int studentId, boolean onlyTime) {
+        timeKeepBiz.getTimeKeepById(studentId,onlyTime, new ITimeKeepBiz.OnTimeKeepListener() {
             @Override
             public void timeKeepSuccess(final List<InfoGroupBean> groupBeanList) {
                 handler.post(new Runnable() {

@@ -1,6 +1,7 @@
 package com.whut.umrhamster.graduationproject.fragment;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.whut.umrhamster.graduationproject.MainActivity;
 import com.whut.umrhamster.graduationproject.R;
+import com.whut.umrhamster.graduationproject.VideoPlayerActivity;
 import com.whut.umrhamster.graduationproject.adapter.CollectAdapter;
 import com.whut.umrhamster.graduationproject.model.bean.Collection;
 import com.whut.umrhamster.graduationproject.model.bean.Student;
@@ -69,7 +71,9 @@ public class CollectionFragment extends Fragment implements IInitWidgetView,ICol
         adapter.setOnItemClickListener(new CollectAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Toast.makeText(getActivity(),"tesitem",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(),VideoPlayerActivity.class);
+                intent.putExtra("video",videoList.get(position).getVideo());
+                startActivity(intent);
             }
 
             @Override

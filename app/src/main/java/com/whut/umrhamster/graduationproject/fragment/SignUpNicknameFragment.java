@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.dd.CircularProgressButton;
@@ -24,7 +25,7 @@ import com.whut.umrhamster.graduationproject.view.ISignupView;
 
 public class SignUpNicknameFragment extends Fragment implements IInitWidgetView,ISignupView {
     private TextInputEditText tietNickname;
-    private CircularProgressButton cpbSave;
+    private Button cpbSave;
 
     ISignupPresenter signupPresenter;
 

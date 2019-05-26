@@ -66,7 +66,7 @@ public class ForeshowActivity extends AppCompatActivity implements IInitWidgetVi
 
     }
     public void initData(){
-        Picasso.get().load(foreshow.getLive().getCover()).config(Bitmap.Config.RGB_565).into(ivCover);
+        Picasso.with(ForeshowActivity.this).load(foreshow.getLive().getCover()).config(Bitmap.Config.RGB_565).into(ivCover);
         tvTitle.setText(foreshow.getLive().getTitle());
         tvBrief.setText(foreshow.getLive().getBrief());
         tvStartTime.setText(new SimpleDateFormat("yyyy年MM月dd日 HH:mm").format(foreshow.getStartTime()));
@@ -75,7 +75,7 @@ public class ForeshowActivity extends AppCompatActivity implements IInitWidgetVi
         //
         tvTopTitle.setText(foreshow.getLive().getTitle());
         //
-        Picasso.get().load(foreshow.getLive().getTeacher().getAvatar()).config(Bitmap.Config.RGB_565).into(civIcon);
+        Picasso.with(ForeshowActivity.this).load(foreshow.getLive().getTeacher().getAvatar()).config(Bitmap.Config.RGB_565).into(civIcon);
         tvNickname.setText(foreshow.getLive().getTeacher().getNickname());
         tvRoom.setText("房间号:"+foreshow.getLive().getId());
 

@@ -73,6 +73,31 @@ public class LivePresenterCompl implements ILivePresenter {
     }
 
     @Override
+    public void doGetLiveByKeyword(String keyword) {
+        liveBiz.getLiveByKeyword(keyword, new ILiveBiz.OnLiveListener() {
+            @Override
+            public void onLiveSuccess(final List<Live> liveList) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        liveView.onAllLiveSuccess(liveList); //借用，不再添加方法了，两个接口不会有同时被调用的场景
+                    }
+                });
+            }
+
+            @Override
+            public void onLiveFail(final int code) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        liveView.onAllLiveFail(code);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
     public void onDestroy() {
 
     }

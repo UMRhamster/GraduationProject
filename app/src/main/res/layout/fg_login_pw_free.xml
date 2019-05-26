@@ -135,7 +135,7 @@
             android:textSize="12sp" />
     </android.support.design.widget.TextInputLayout>
 
-    <com.dd.CircularProgressButton
+    <Button
         android:id="@+id/login_pw_free_cpb_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -145,14 +145,9 @@
         android:layout_marginBottom="8dp"
         android:textColor="@android:color/white"
         android:textSize="18sp"
+        android:text="@string/login_words"
         style="?android:attr/borderlessButtonStyle"
-        app:cpb_cornerRadius="48dp"
-        app:cpb_textIdle="@string/login_words"
-        app:cpb_iconComplete="@drawable/complete"
-        app:cpb_iconError="@drawable/error"
-        app:cpb_selectorIdle="@drawable/cpb_idle_state_selector"
-        app:cpb_selectorComplete="@drawable/cpb_complete_state_selector"
-        app:cpb_selectorError="@drawable/cpb_error_state_selector"
+        android:background="@drawable/btn_bg_round_color_theme"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

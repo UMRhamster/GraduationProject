@@ -19,10 +19,19 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dd.CircularProgressButton;
+import com.squareup.picasso.Picasso;
+import com.tencent.connect.UserInfo;
+import com.tencent.connect.auth.QQToken;
+import com.tencent.connect.common.Constants;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.Tencent;
+import com.tencent.tauth.UiError;
 import com.whut.umrhamster.graduationproject.LoginActivity;
 import com.whut.umrhamster.graduationproject.MainActivity;
 import com.whut.umrhamster.graduationproject.R;
@@ -37,6 +46,9 @@ import com.whut.umrhamster.graduationproject.view.ILoginView;
 import com.whut.umrhamster.graduationproject.view.IVerifyView;
 import com.whut.umrhamster.graduationproject.view.TextDrawable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class LoginFragmentPwFree extends Fragment implements ILoginView,IVerifyView {
     private TextInputEditText inputAccount;     //用户名输入框
     private TextInputEditText inputPassword;    //密  码输入框
@@ -47,7 +59,7 @@ public class LoginFragmentPwFree extends Fragment implements ILoginView,IVerifyV
     private TextView textViewErrorAccount;
     private TextView textViewErrorPassword;
 
-    private CircularProgressButton cpbLogin;
+    private Button cpbLogin;
 
 
     ILoginPresenter iLoginPresenter;
@@ -59,11 +71,66 @@ public class LoginFragmentPwFree extends Fragment implements ILoginView,IVerifyV
     private boolean isVerify;
 
     private int verification = -1;
+    //第三方登录
+    private ImageView ivQQ; //qq
+    private ImageView ivWeixin;
+    Tencent tencent;
+    private IUiListener  iUiListener = new IUiListener() {
+        @Override
+        public void onComplete(Object o) {
+            try {
+                JSONObject jsonObject = (JSONObject) o;
+                tencent.setOpenId(jsonObject.getString("openid"));
+                tencent.setAccessToken(jsonObject.getString("access_token"),jsonObject.getString("expires_in"));
+                QQToken qqToken = tencent.getQQToken();
+                UserInfo userInfo = new UserInfo(getActivity().getApplicationContext(),qqToken);
+                userInfo.getUserInfo(new IUiListener() {
+                    @Override
+                    public void onComplete(Object o) {
+                        Log.d("信息",""+o.toString());
+                        JSONObject object = (JSONObject) o;
+
+                        try {
+                            Picasso.with(getActivity()).load(((JSONObject) o).getString("figureurl_qq_1")).into(ivWeixin);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(UiError uiError) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+                });
+                Toast.makeText(getActivity(),"AA"+o.toString(),Toast.LENGTH_SHORT).show();
+                Log.d("qq-login","complete");
+                Log.d("qq-login","111"+o.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onError(UiError uiError) {
+            Log.d("qq-login","error");
+        }
+
+        @Override
+        public void onCancel() {
+            Log.d("qq-login","cancel");
+        }
+    };
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fg_login_pw_free,container,false);
+        tencent = Tencent.createInstance("101560817",getActivity().getApplicationContext());
         initView(view);
         initEvent();
         return view;
@@ -77,10 +144,12 @@ public class LoginFragmentPwFree extends Fragment implements ILoginView,IVerifyV
         textViewErrorPassword = view.findViewById(R.id.login_pw_free_til_tv_password);
 
         cpbLogin = view.findViewById(R.id.login_pw_free_cpb_login);
-        cpbLogin.setIndeterminateProgressMode(true);
+//        cpbLogin.setIndeterminateProgressMode(true);
 
         textViewPwLogin = view.findViewById(R.id.login_pw_free_tb_rl_tv_pw);
         textViewSignUp = view.findViewById(R.id.login_pw_free_rl_tv_signup);
+        ivQQ = view.findViewById(R.id.login_pw_free_iv_qq);
+        ivWeixin = view.findViewById(R.id.login_pw_free_iv_weixin);
 
         TextDrawable textDrawable = new TextDrawable(getActivity());
         textDrawable.setText("| 获取验证码");
@@ -156,13 +225,13 @@ public class LoginFragmentPwFree extends Fragment implements ILoginView,IVerifyV
                         isLogining = false;
                         return;
                     }
-                    cpbLogin.setProgress(0);
-                    cpbLogin.setProgress(50);
+//                    cpbLogin.setProgress(0);
+//                    cpbLogin.setProgress(50);
                     if (verification == Integer.valueOf(inputPassword.getText().toString())){
                         iLoginPresenter.doLoginWithVerification(inputAccount.getText().toString());
                     }else {
                         Toast.makeText(getActivity(),"验证码错误",Toast.LENGTH_SHORT).show();
-                        cpbLogin.setProgress(-1);
+//                        cpbLogin.setProgress(-1);
                         isLogining = false;
                     }
 //                    iLoginPresenter.doLogin(inputAccount.getText().toString(),inputPassword.getText().toString());
@@ -177,12 +246,31 @@ public class LoginFragmentPwFree extends Fragment implements ILoginView,IVerifyV
                 loginActivity.signUp();
             }
         });
+
+        ivQQ.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!tencent.isSessionValid()){
+                    Log.d("test","ddddddddddddddddddd");
+                    tencent.login(LoginFragmentPwFree.this, "get_user_info",iUiListener );
+                }
+                Log.d("test","aaaaaaaaaaaaaa");
+            }
+        });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == Constants.REQUEST_LOGIN){
+            Tencent.onActivityResultData(requestCode,resultCode,data,iUiListener);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
 
     @Override
     public void onSuccess(Student student) {
-        cpbLogin.setProgress(100);
+//        cpbLogin.setProgress(100);
         isLogining = !isLogining;
         Intent intent = new Intent();
         intent.putExtra("student",student);
@@ -203,7 +291,7 @@ public class LoginFragmentPwFree extends Fragment implements ILoginView,IVerifyV
         }else if (code == 1){
             Toast.makeText(getActivity(),"服务器异常",Toast.LENGTH_SHORT).show();
         }
-        cpbLogin.setProgress(-1);
+//        cpbLogin.setProgress(-1);
         isLogining = !isLogining;
     }
 

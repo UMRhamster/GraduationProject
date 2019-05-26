@@ -1,5 +1,6 @@
 package com.whut.umrhamster.graduationproject;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
@@ -106,7 +107,7 @@ public class StudentInfoActivity extends AppCompatActivity implements IInitWidge
 //            加载学习时长数据
 //            timeKeepPresenter.doGetTimeKeepById(student.getId());
             //加载用户信息数据
-            Picasso.get().load(student.getAvatar()).placeholder(R.drawable.default_user_icon).error(R.drawable.default_user_icon)
+            Picasso.with(StudentInfoActivity.this).load(student.getAvatar()).placeholder(R.drawable.default_user_icon).error(R.drawable.default_user_icon)
                     .config(Bitmap.Config.RGB_565).into(civIcon); //加载头像
             tvNickname.setText(student.getNickname());
             tvTopNickname.setText(student.getNickname());
@@ -133,6 +134,13 @@ public class StudentInfoActivity extends AppCompatActivity implements IInitWidge
                 }else{
                     tvTopNickname.setVisibility(View.INVISIBLE);
                 }
+            }
+        });
+        tvData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StudentInfoActivity.this,AccountDataActivity.class);
+                startActivityForResult(intent,1);
             }
         });
     }

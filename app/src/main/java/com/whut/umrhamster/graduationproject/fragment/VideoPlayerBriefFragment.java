@@ -122,7 +122,7 @@ public class VideoPlayerBriefFragment extends Fragment implements IInitWidgetVie
     public void initData(){
         tvDate.setText(TimeUtil.uptime2string(video.getUploadtime()));
         if (teacher != null){
-            Picasso.get().load(teacher.getAvatar()).into(civIcon);
+            Picasso.with(getActivity()).load(teacher.getAvatar()).into(civIcon);
             tvNickname.setText(teacher.getNickname());
         }
         if (video != null){

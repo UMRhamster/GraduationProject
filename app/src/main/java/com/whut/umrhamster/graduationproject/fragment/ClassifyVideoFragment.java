@@ -65,7 +65,7 @@ public class ClassifyVideoFragment extends Fragment implements IInitWidgetView,I
     public void initView(View view) {
         recyclerView = view.findViewById(R.id.fg_classify_video_rv);
         videoList = new ArrayList<>();
-        adapter = new ClassifyVideoAdapter(videoList);
+        adapter = new ClassifyVideoAdapter(videoList,getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         initData();

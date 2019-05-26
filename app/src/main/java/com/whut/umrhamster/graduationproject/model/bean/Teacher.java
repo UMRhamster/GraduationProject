@@ -9,6 +9,7 @@ public class Teacher implements Parcelable {
     private String avatar;
     private String phone;
     private String email;
+    private String brief;
     private int type;
 
     public Teacher(){}
@@ -66,6 +67,14 @@ public class Teacher implements Parcelable {
         this.email = email;
     }
 
+    public String getBrief() {
+        return brief;
+    }
+
+    public void setBrief(String brief) {
+        this.brief = brief;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -78,6 +87,7 @@ public class Teacher implements Parcelable {
         dest.writeString(this.avatar);
         dest.writeString(this.phone);
         dest.writeString(this.email);
+        dest.writeString(this.brief);
         dest.writeInt(this.type);
     }
 
@@ -87,6 +97,7 @@ public class Teacher implements Parcelable {
         this.avatar = in.readString();
         this.phone = in.readString();
         this.email = in.readString();
+        this.brief = in.readString();
         this.type = in.readInt();
     }
 

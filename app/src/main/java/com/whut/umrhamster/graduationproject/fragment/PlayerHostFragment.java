@@ -30,6 +30,7 @@ public class PlayerHostFragment extends Fragment implements IInitWidgetView,IWat
     private TextView tvLiveId;
     private TextView tvStudents;
     private TextView tvWatch;
+    private TextView tvBrief;
 
 
     private Teacher teacher;
@@ -48,9 +49,10 @@ public class PlayerHostFragment extends Fragment implements IInitWidgetView,IWat
         student = SPUtil.loadStudent(getActivity());
         teacher = getArguments().getParcelable("teacher");
         if (teacher != null){
-            Picasso.get().load(teacher.getAvatar()).into(civIcon);
+            Picasso.with(getActivity()).load(teacher.getAvatar()).into(civIcon);
             tvTeachername.setText(teacher.getNickname());
             tvLiveId.setText("房间号:"+getArguments().getInt("liveId"));
+            tvBrief.setText(teacher.getBrief());
             //xue yuan shu
         }else {
             Toast.makeText(getActivity(),"数据传递失败",Toast.LENGTH_SHORT).show();
@@ -95,6 +97,7 @@ public class PlayerHostFragment extends Fragment implements IInitWidgetView,IWat
         tvLiveId = view.findViewById(R.id.fg_player_host_tv_liveid);
         tvStudents = view.findViewById(R.id.fg_player_host_tv_students);
         tvWatch = view.findViewById(R.id.fg_player_host_tv_watch);
+        tvBrief = view.findViewById(R.id.fg_player_host_tv_brief);
         initData();
     }
 

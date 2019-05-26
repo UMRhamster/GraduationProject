@@ -74,7 +74,7 @@ public class InfoMainFragment extends Fragment implements IInitWidgetView,ITimeK
         timeKeepPresenter = new TimeKeepPresenter(this);
         Student student = SPUtil.loadStudent(getActivity());
         if (student != null){
-            timeKeepPresenter.doGetTimeKeepById(student.getId());
+            timeKeepPresenter.doGetTimeKeepById(student.getId(),false);
         }
     }
 

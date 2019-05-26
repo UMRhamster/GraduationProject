@@ -78,4 +78,43 @@ public class VideoBiz implements IVideoBiz {
             }
         });
     }
+
+    @Override
+    public void getVideoByKeyword(String keyword, final OnVideoListener onVideoListener) {
+        VideoService service = RetrofitUtil.retrofit.create(VideoService.class);
+        Call<HttpData<List<Video>>> call = service.getVideoByKeyword(keyword);
+        call.enqueue(new Callback<HttpData<List<Video>>>() {
+            @Override
+            public void onResponse(Call<HttpData<List<Video>>> call, Response<HttpData<List<Video>>> response) {
+                HttpData<List<Video>> data = response.body();
+                if (data != null){
+                    onVideoListener.onSuccess(data.getData());
+                }else {
+                    onVideoListener.onFail(-1);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HttpData<List<Video>>> call, Throwable t) {
+                onVideoListener.onFail(-1);
+            }
+        });
+    }
+
+    @Override
+    public void addNumOfPlay(int videoId, final OnVideoListener onVideoListener) {
+        VideoService service = RetrofitUtil.retrofit.create(VideoService.class);
+        Call<HttpData> call = service.addNumOfPlay(videoId);
+        call.enqueue(new Callback<HttpData>() {
+            @Override
+            public void onResponse(Call<HttpData> call, Response<HttpData> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<HttpData> call, Throwable t) {
+                onVideoListener.onFail(-1);
+            }
+        });
+    }
 }

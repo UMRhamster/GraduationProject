@@ -95,6 +95,46 @@ public class VideoPresenter implements IVideoPresenter {
     }
 
     @Override
+    public void doGetVideoByKeyWord(String keyword) {
+        videoBiz.getVideoByKeyword(keyword, new IVideoBiz.OnVideoListener() {
+            @Override
+            public void onSuccess(final List<Video> videoList) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        videoView.onVideoSuccess(videoList);
+                    }
+                });
+            }
+
+            @Override
+            public void onFail(final int code) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        videoView.onVideoFail(code);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void doAddNumOfPlay(int videoId) {
+        videoBiz.addNumOfPlay(videoId, new IVideoBiz.OnVideoListener() {
+            @Override
+            public void onSuccess(List<Video> videoList) {
+
+            }
+
+            @Override
+            public void onFail(int code) {
+                videoView.onVideoFail(code);
+            }
+        });
+    }
+
+    @Override
     public void onDestroy() {
         videoView = null;
     }

@@ -12,12 +12,17 @@ import com.whut.umrhamster.graduationproject.model.biz.IUserBiz;
 import com.whut.umrhamster.graduationproject.model.biz.IVerificationBiz;
 import com.whut.umrhamster.graduationproject.utils.service.HistoryService;
 import com.whut.umrhamster.graduationproject.utils.service.LiveService;
+import com.whut.umrhamster.graduationproject.utils.service.PhotoService;
 import com.whut.umrhamster.graduationproject.utils.service.StudentService;
 import com.whut.umrhamster.graduationproject.utils.service.VerificationService;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -179,6 +184,25 @@ public class RetrofitUtil {
             public void onFailure(Call<HttpData<List<History>>> call, Throwable t) {
                 t.printStackTrace();
                 onHistoryListener.onHistoryFail(0);
+            }
+        });
+    }
+
+    public static void uploadFilr(String filePath){
+        File file = new File(filePath);
+        RequestBody  requestFile = RequestBody.create(MediaType.parse("multipart/form-data"),filePath);
+        MultipartBody.Part mFile = MultipartBody.Part.createFormData("file",file.getName(),requestFile);
+        PhotoService service = retrofit.create(PhotoService.class);
+        Call<HttpData> call = service.uploadPhoto(1,mFile);
+        call.enqueue(new Callback<HttpData>() {
+            @Override
+            public void onResponse(Call<HttpData> call, Response<HttpData> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<HttpData> call, Throwable t) {
+
             }
         });
     }

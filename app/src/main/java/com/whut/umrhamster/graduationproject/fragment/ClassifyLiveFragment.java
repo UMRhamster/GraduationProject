@@ -69,7 +69,7 @@ public class ClassifyLiveFragment extends Fragment implements IInitWidgetView,IL
     public void initView(View view) {
         recyclerView = view.findViewById(R.id.fg_classify_live_rv);
         liveList = new ArrayList<>();
-        adapter = new ClassifyLiveAdapter(liveList);
+        adapter = new ClassifyLiveAdapter(liveList,getActivity());
         GridLayoutManager manager = new GridLayoutManager(getActivity(),2);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);

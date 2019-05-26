@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +41,7 @@ public class SignUpFragment extends Fragment implements IVerifyView {
     private TextView textViewErrorAccount;
     private TextView textViewErrorPassword;
 
-    private CircularProgressButton cpbSignUp;
+    private Button cpbSignUp;
     private boolean isLogining;
     private boolean isVerify;
 
@@ -64,7 +65,7 @@ public class SignUpFragment extends Fragment implements IVerifyView {
         textViewErrorAccount = view.findViewById(R.id.signup_til_tv_username);
         textViewErrorPassword = view.findViewById(R.id.signup_til_tv_password);
         cpbSignUp = view.findViewById(R.id.signup_cpb_signup);
-        cpbSignUp.setIndeterminateProgressMode(true);
+//        cpbSignUp.setIndeterminateProgressMode(true);
 
 
         TextDrawable textDrawable = new TextDrawable(getActivity());

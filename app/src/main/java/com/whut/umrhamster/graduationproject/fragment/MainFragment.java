@@ -25,6 +25,7 @@ import com.whut.umrhamster.graduationproject.HistoryActivity;
 import com.whut.umrhamster.graduationproject.LoginActivity;
 import com.whut.umrhamster.graduationproject.MainActivity;
 import com.whut.umrhamster.graduationproject.R;
+import com.whut.umrhamster.graduationproject.SearchActivity;
 import com.whut.umrhamster.graduationproject.adapter.MainFragmentPagerAdapter;
 import com.whut.umrhamster.graduationproject.model.bean.Student;
 import com.whut.umrhamster.graduationproject.model.biz.IUserBiz;
@@ -54,6 +55,7 @@ public class MainFragment extends Fragment implements IInitWidgetView {
     private Toolbar toolbar;
     private ImageView imageViewMenu;
     private CircleImageView civMenu;
+    private ImageView ivSearch;
 
     private int[] icons;                    //图标
     private String[] titles;                //标题
@@ -81,7 +83,7 @@ public class MainFragment extends Fragment implements IInitWidgetView {
     private void initData(){
         student = SPUtil.loadStudent(getActivity());
         if (student != null){
-            Picasso.get().load(student.getAvatar()).placeholder(R.drawable.default_user_icon).error(R.drawable.default_user_icon).
+            Picasso.with(getActivity()).load(student.getAvatar()).placeholder(R.drawable.default_user_icon).error(R.drawable.default_user_icon).
                     config(Bitmap.Config.RGB_565).into(civMenu);
         }
     }
@@ -108,6 +110,12 @@ public class MainFragment extends Fragment implements IInitWidgetView {
                 ((MainActivity)getActivity()).openDrawer();
             }
         });
+        ivSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(),SearchActivity.class));
+            }
+        });
 
     }
 
@@ -126,6 +134,7 @@ public class MainFragment extends Fragment implements IInitWidgetView {
         toolbar = view.findViewById(R.id.main_cl_tb_top);
         imageViewMenu = view.findViewById(R.id.main_tb_rl_iv_menu);
         civMenu = view.findViewById(R.id.main_tb_rl_civ_icon);
+        ivSearch = view.findViewById(R.id.main_tb_rl_iv_search);
         //底部tab数据源
         icons = new int[]{R.drawable.custom_tab_iv_home,R.drawable.custom_tab_iv_classify,R.drawable.custom_tab_iv_video,R.drawable.custom_tab_iv_foreshow};
         titles = getResources().getStringArray(R.array.tab_titles);

@@ -1,5 +1,6 @@
 package com.whut.umrhamster.graduationproject.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,11 +17,13 @@ import java.util.List;
 
 public class ClassifyLiveAdapter extends RecyclerView.Adapter<ClassifyLiveAdapter.ItemViewHolder> {
     private List<Live> liveList;
+    private Context context;
 
     private OnItemClickListener onItemClickListener;
 
-    public ClassifyLiveAdapter(List<Live> liveList){
+    public ClassifyLiveAdapter(List<Live> liveList,Context context){
         this.liveList = liveList;
+        this.context = context;
     }
     @NonNull
     @Override
@@ -42,7 +45,7 @@ public class ClassifyLiveAdapter extends RecyclerView.Adapter<ClassifyLiveAdapte
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Live live = liveList.get(position);
-        Picasso.get().load(live.getCover()).into(holder.rivCover);
+        Picasso.with(context).load(live.getCover()).into(holder.rivCover);
         holder.tvNickname.setText(live.getTeacher().getNickname());
         holder.tvNov.setText(""+live.getViewers());
         holder.tvTitle.setText(live.getTitle());

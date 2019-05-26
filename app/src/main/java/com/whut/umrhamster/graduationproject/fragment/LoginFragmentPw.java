@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,7 +45,7 @@ public class LoginFragmentPw extends Fragment implements ILoginView {
     private TextView textViewErrorAccount;
     private TextView textViewErrorPassword;
 
-    private CircularProgressButton cpbLogin;
+    private Button cpbLogin;
     private TextView textViewForget;
 
 
@@ -73,7 +74,7 @@ public class LoginFragmentPw extends Fragment implements ILoginView {
         textViewErrorPassword = view.findViewById(R.id.login_pw_til_tv_password);
 
         cpbLogin = view.findViewById(R.id.login_pw_cpb_login);
-        cpbLogin.setIndeterminateProgressMode(true);
+//        cpbLogin.setIndeterminateProgressMode(true);
 
         iLoginPresenter = new LoginPresenterCompl(this);
 
@@ -137,8 +138,8 @@ public class LoginFragmentPw extends Fragment implements ILoginView {
                         Toast.makeText(getActivity(),"请求出错，请检查网络",Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    cpbLogin.setProgress(0);
-                    cpbLogin.setProgress(50);
+//                    cpbLogin.setProgress(0);
+//                    cpbLogin.setProgress(50);
                     iLoginPresenter.doLogin(inputAccount.getText().toString(),inputPassword.getText().toString());
                 }
             }
@@ -169,7 +170,7 @@ public class LoginFragmentPw extends Fragment implements ILoginView {
     @Override
     public void onSuccess(Student student) {
 //        Toast.makeText(getActivity(),student.getNickname(),Toast.LENGTH_SHORT).show();
-        cpbLogin.setProgress(100);
+//        cpbLogin.setProgress(100);
         isLogining = !isLogining;
         Intent intent = new Intent();
         intent.putExtra("student",student);
@@ -193,7 +194,7 @@ public class LoginFragmentPw extends Fragment implements ILoginView {
         }else if (code == 2){
             Toast.makeText(getActivity(),"用户名或密码错误",Toast.LENGTH_SHORT).show();
         }
-        cpbLogin.setProgress(-1);
+//        cpbLogin.setProgress(-1);
         isLogining = !isLogining;
     }
 }

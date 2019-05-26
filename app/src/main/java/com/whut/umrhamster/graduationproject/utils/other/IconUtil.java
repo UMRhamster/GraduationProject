@@ -16,6 +16,12 @@ public class IconUtil {
                 return R.drawable.icon_classify_czxt;
             case 1005:
                 return R.drawable.icon_classify_sfdl;
+            case 1006:
+                return R.drawable.icon_classify_sjjg;
+            case 1007:
+                return R.drawable.icon_classify_szfx;
+            case 1008:
+                return R.drawable.icon_classify_jsjwl;
             case 2001:
                 return R.drawable.icon_classify_qdkf;
             case 2002:
@@ -37,7 +43,7 @@ public class IconUtil {
             case 3006:
                 return R.drawable.icon_classify_syjc;
         }
-        return -1;
+        return R.drawable.icon_classify_unknow;
     }
 
     public static int getLevelResourceByInt(int level){

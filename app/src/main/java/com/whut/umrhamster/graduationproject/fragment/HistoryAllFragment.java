@@ -145,6 +145,8 @@ public class HistoryAllFragment extends Fragment implements IInitWidgetView,IHis
                         allSelectedListener.onAllSelected(false);
                         setAllSelectedState(false);
                     }
+                }else {
+                    Toast.makeText(getActivity(),"test"+position,Toast.LENGTH_SHORT).show();
                 }
 //                Toast.makeText(getActivity(),"dianji  "+checkSet.size()+" "+historyList.size()+" "+NumOfDecor,Toast.LENGTH_SHORT).show();
             }

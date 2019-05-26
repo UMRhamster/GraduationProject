@@ -59,12 +59,12 @@ public class ForeshowAdapter extends RecyclerView.Adapter<ForeshowAdapter.ViewHo
             holder.rlBackground.setBackgroundResource(R.drawable.custom_rv_item_foreshow_bg_green);
         }
         Live live = foreshowList.get(position).getLive();
-        Picasso.get()
+        Picasso.with(context)
                 .load(live.getCover())
                 .resize(AdaptionUtil.dp2px(context,360),AdaptionUtil.dp2px(context,101))
                 .config(Bitmap.Config.RGB_565)
                 .into(holder.rivCover);
-        Picasso.get().load(live.getTeacher().getAvatar()).into(holder.civIcon);
+        Picasso.with(context).load(live.getTeacher().getAvatar()).into(holder.civIcon);
         holder.tvNickname.setText(live.getTeacher().getNickname());
         holder.tvTitle.setText(live.getTitle());
         holder.itemView.setTag(position);

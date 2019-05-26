@@ -88,7 +88,7 @@
             android:textSize="12sp" />
     </android.support.design.widget.TextInputLayout>
 
-    <com.dd.CircularProgressButton
+    <Button
         android:id="@+id/signup_nickname_cpb_signup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -99,13 +99,8 @@
         android:textColor="@android:color/white"
         android:textSize="18sp"
         style="?android:attr/borderlessButtonStyle"
-        app:cpb_cornerRadius="48dp"
-        app:cpb_textIdle="保 存"
-        app:cpb_iconComplete="@drawable/complete"
-        app:cpb_iconError="@drawable/error"
-        app:cpb_selectorIdle="@drawable/cpb_idle_state_selector"
-        app:cpb_selectorComplete="@drawable/cpb_complete_state_selector"
-        app:cpb_selectorError="@drawable/cpb_error_state_selector"
+        android:text="保 存"
+        android:background="@drawable/btn_bg_round_color_theme"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -13,9 +13,9 @@ import retrofit2.Response;
 
 public class TimeKeepBiz implements ITimeKeepBiz {
     @Override
-    public void getTimeKeepById(int studentId, final OnTimeKeepListener onTimeKeepListener) {
+    public void getTimeKeepById(int studentId, boolean onlyTime, final OnTimeKeepListener onTimeKeepListener) {
         TimeKeepService service = RetrofitUtil.retrofit.create(TimeKeepService.class);
-        Call<HttpData<List<InfoGroupBean>>> call = service.getTimeKeepById(studentId);
+        Call<HttpData<List<InfoGroupBean>>> call = service.getTimeKeepById(studentId, onlyTime);
         call.enqueue(new Callback<HttpData<List<InfoGroupBean>>>() {
             @Override
             public void onResponse(Call<HttpData<List<InfoGroupBean>>> call, Response<HttpData<List<InfoGroupBean>>> response) {
@@ -37,15 +37,15 @@ public class TimeKeepBiz implements ITimeKeepBiz {
     @Override
     public void uploadTimeKeep(int studentId, int time, int typeId, final OnTimeKeepListener onTimeKeepListener) {
         TimeKeepService service = RetrofitUtil.retrofit.create(TimeKeepService.class);
-        Call<HttpData<List<InfoGroupBean>>> call = service.uploadTimeKeep(studentId,typeId,time);
-        call.enqueue(new Callback<HttpData<List<InfoGroupBean>>>() {
+        Call<HttpData> call = service.uploadTimeKeep(studentId,typeId,time);
+        call.enqueue(new Callback<HttpData>() {
             @Override
-            public void onResponse(Call<HttpData<List<InfoGroupBean>>> call, Response<HttpData<List<InfoGroupBean>>> response) {
+            public void onResponse(Call<HttpData> call, Response<HttpData> response) {
 
             }
 
             @Override
-            public void onFailure(Call<HttpData<List<InfoGroupBean>>> call, Throwable t) {
+            public void onFailure(Call<HttpData> call, Throwable t) {
                 onTimeKeepListener.timeKeepFail(-1);
             }
         });

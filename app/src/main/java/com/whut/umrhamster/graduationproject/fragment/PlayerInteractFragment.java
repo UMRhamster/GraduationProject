@@ -147,7 +147,7 @@ public class PlayerInteractFragment extends Fragment implements IInitWidgetView,
         teacher = getArguments().getParcelable("teacher");
         student = SPUtil.loadStudent(getActivity());
         if (teacher != null){
-            Picasso.get().load(teacher.getAvatar()).into(civAvatar);
+            Picasso.with(getActivity()).load(teacher.getAvatar()).into(civAvatar);
             tvTeachername.setText(teacher.getNickname());
             tvViewers.setText("观看人数:"+getArguments().getInt("viewers"));
         }else {

@@ -49,7 +49,7 @@ public class TeacherVideoAdapter extends RecyclerView.Adapter<TeacherVideoAdapte
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Video video = videoList.get(position);
-        Picasso.get()
+        Picasso.with(context)
                 .load(video.getCover())
                 .resize(AdaptionUtil.dp2px(context,120),AdaptionUtil.dp2px(context,75))
                 .config(Bitmap.Config.RGB_565)

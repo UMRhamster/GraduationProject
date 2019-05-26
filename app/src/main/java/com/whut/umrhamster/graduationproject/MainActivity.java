@@ -41,14 +41,18 @@ import com.whut.umrhamster.graduationproject.fragment.InfoCollectFragment;
 import com.whut.umrhamster.graduationproject.fragment.MainFragment;
 import com.whut.umrhamster.graduationproject.fragment.SettingFragment;
 import com.whut.umrhamster.graduationproject.fragment.WatchFragment;
+import com.whut.umrhamster.graduationproject.model.bean.InfoGroupBean;
 import com.whut.umrhamster.graduationproject.model.bean.Student;
 import com.whut.umrhamster.graduationproject.model.biz.IUserBiz;
+import com.whut.umrhamster.graduationproject.presenter.ITimeKeepPresenter;
+import com.whut.umrhamster.graduationproject.presenter.TimeKeepPresenter;
 import com.whut.umrhamster.graduationproject.utils.http.RetrofitUtil;
 import com.whut.umrhamster.graduationproject.utils.other.AdaptionUtil;
 import com.whut.umrhamster.graduationproject.utils.other.TimeUtil;
 import com.whut.umrhamster.graduationproject.utils.save.SPUtil;
 import com.whut.umrhamster.graduationproject.view.CircleImageView;
 import com.whut.umrhamster.graduationproject.view.IInitWidgetView;
+import com.whut.umrhamster.graduationproject.view.ITimeKeepView;
 import com.whut.umrhamster.graduationproject.view.VideoPlayerIJK;
 import com.whut.umrhamster.graduationproject.view.VideoPlayerListener;
 import com.whut.umrhamster.graduationproject.widget.NoScrollViewPager;
@@ -59,7 +63,7 @@ import java.util.List;
 import tv.danmaku.ijk.media.exo.IjkExoMediaPlayer;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 
-public class MainActivity extends AppCompatActivity implements IInitWidgetView {
+public class MainActivity extends AppCompatActivity implements IInitWidgetView,ITimeKeepView {
     public static final int MAIN=0,HISTORY=1,COLLECTION=2,WATCH=3,SETTING=4;
     ConstraintLayout constraintLayout;
     private DrawerLayout drawerLayout;      //菜单栏控制
@@ -89,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements IInitWidgetView {
     //数据
     private Student student;
     private long exitTime = 0;
+
+    private ITimeKeepPresenter timeKeepPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -261,19 +267,20 @@ public class MainActivity extends AppCompatActivity implements IInitWidgetView {
 
     }
     private void initData(){
+        timeKeepPresenter = new TimeKeepPresenter(this);
         student = SPUtil.loadStudent(MainActivity.this);
         if (student != null){
-            Picasso.get().load(student.getAvatar()).placeholder(R.drawable.default_user_icon).error(R.drawable.default_user_icon).
+            Picasso.with(MainActivity.this).load(student.getAvatar()).placeholder(R.drawable.default_user_icon).error(R.drawable.default_user_icon).
                     config(Bitmap.Config.RGB_565).into(civIcon);
             textViewNickname.setText(student.getNickname());
             textViewInfo.setVisibility(View.VISIBLE);
             textViewInfo.setText(String.format(getString(R.string.header_study_time),TimeUtil.int2header(student.getDuration())));
-            RetrofitUtil.loginWithoutPassword(student.getEmail(), new IUserBiz.OnLoginListener() {
+            RetrofitUtil.loginWithoutPassword(student.getEmail(), new IUserBiz.OnLoginListener() {  //更新学生信息
                 @Override
                 public void onLoginSuccess(Student student) {
                     textViewNickname.setText(student.getNickname());
                     textViewInfo.setVisibility(View.VISIBLE);
-                    textViewInfo.setText(String.format(getString(R.string.header_study_time),TimeUtil.int2header(student.getDuration())));
+//                    textViewInfo.setText(String.format(getString(R.string.header_study_time),TimeUtil.int2header(student.getDuration())));
                     SPUtil.saveStudent(MainActivity.this,student);
                 }
 
@@ -282,6 +289,7 @@ public class MainActivity extends AppCompatActivity implements IInitWidgetView {
 
                 }
             });
+            timeKeepPresenter.doGetTimeKeepById(student.getId(),true);
         }
     }
 
@@ -319,13 +327,29 @@ public class MainActivity extends AppCompatActivity implements IInitWidgetView {
 
             student = data.getParcelableExtra("student");
             if (student != null){
-                Picasso.get().load(student.getAvatar()).
+                Picasso.with(MainActivity.this).load(student.getAvatar()).
                         config(Bitmap.Config.RGB_565).into(civIcon);
                 textViewNickname.setText(student.getNickname());
                 textViewInfo.setVisibility(View.VISIBLE);
                 textViewInfo.setText(String.format(getString(R.string.header_study_time),TimeUtil.int2header(student.getDuration())));
                 SPUtil.saveStudent(MainActivity.this,student);
+                timeKeepPresenter.doGetTimeKeepById(student.getId(),true);
             }
         }
+    }
+
+    @Override
+    public void onTimeKeepSuccess(List<InfoGroupBean> groupBeanList) {
+        textViewInfo.setText(String.format(getString(R.string.header_study_time),TimeUtil.int2header(groupBeanList.get(0).getTotalTime())));
+        Student student = SPUtil.loadStudent(MainActivity.this);
+        if (student != null){
+            student.setDuration(groupBeanList.get(0).getTotalTime());
+            SPUtil.saveStudent(MainActivity.this,student);
+        }
+    }
+
+    @Override
+    public void onTimeKeepFail(int code) {
+
     }
 }

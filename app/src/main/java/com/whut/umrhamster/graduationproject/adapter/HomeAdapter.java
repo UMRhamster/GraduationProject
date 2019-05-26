@@ -57,7 +57,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         //test for donothing
 //        holder.roundedImageView.setCornerRadius(AdaptionUtil.dp2px(context,8),AdaptionUtil.dp2px(context,8),0,0);
-        Picasso.get()
+        Picasso.with(context)
                 .load(liveList.get(position).getCover())
                 .resize(AdaptionUtil.dp2px(context,360),AdaptionUtil.dp2px(context,101))
                 .config(Bitmap.Config.RGB_565)

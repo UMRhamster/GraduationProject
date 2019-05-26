@@ -11,6 +11,10 @@ public interface IVideoBiz {
 
     void getVideoByTeacher(int teacherId,OnVideoListener onVideoListener);
 
+    void getVideoByKeyword(String keyword, OnVideoListener onVideoListener);
+
+    void addNumOfPlay(int videoId, OnVideoListener onVideoListener);
+
     public interface OnVideoListener{
         void onSuccess(List<Video> videoList);
         void onFail(int code);
