@@ -46,6 +46,52 @@ public class CommentPresenter implements ICommentPresenter {
     }
 
     @Override
+    public void doGetCommentsLimit10(int videoId, int start) {
+        commentBiz.getCommentLimit10(videoId, start, new ICommentBiz.OnCommentListener() {
+            @Override
+            public void onSuccess(final List<Comment> commentList) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        commentView.onGetCommentSuccess(commentList);
+                    }
+                });
+            }
+
+            @Override
+            public void onFail(final int code) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        commentView.onGetCommentFail(code);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void doInsertComment(int videoId, int studentId, String content) {
+        commentBiz.insertComment(videoId, studentId, content, new ICommentBiz.OnCommentListener() {
+            @Override
+            public void onSuccess(List<Comment> commentList) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        //biz中并没有回调该方法
+//                        commentView.onGetCommentFail();
+                    }
+                });
+            }
+
+            @Override
+            public void onFail(int code) {
+                commentView.onGetCommentFail(code);
+            }
+        });
+    }
+
+    @Override
     public void onDestroy() {
         commentView =null;
     }

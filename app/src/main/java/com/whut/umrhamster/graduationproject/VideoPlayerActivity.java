@@ -218,9 +218,9 @@ public class VideoPlayerActivity extends AppCompatActivity implements IInitWidge
 
 
     static class MyHandler extends Handler{
-        WeakReference<VideoPlayerActivity> weakReference;
-
+        WeakReference<VideoPlayerActivity> weakReference;  //弱引用
         public MyHandler(VideoPlayerActivity videoPlayerActivity){
+            //用过构造方法持有Activity弱引用
             weakReference = new WeakReference<>(videoPlayerActivity);
         }
         @Override
@@ -229,18 +229,19 @@ public class VideoPlayerActivity extends AppCompatActivity implements IInitWidge
             VideoPlayerActivity activity = weakReference.get();
             if (activity != null){
                 switch (msg.what){
-                    case TAG:
-                        activity.seekBar.setProgress((int) activity.ijkMediaPlayer.getCurrentPosition());
+                    case TAG:  //处理TAG标志的消息，更新进度条和时间
+                        activity.seekBar.setProgress((int) activity.ijkMediaPlayer.getCurrentPosition()); //更新正在播放的进度条
+                        //更新缓存到的进度条
                         activity.seekBar.setSecondaryProgress((int) (activity.ijkMediaPlayer.getVideoCachedDuration()+activity.ijkMediaPlayer.getCurrentPosition()));
                         activity.tvTime.setText(TimeUtil.millint2String(activity.ijkMediaPlayer.getCurrentPosition())+"/"+TimeUtil.millint2String(activity.video.getTotaltime()));
                         if (activity.isPlay){  //播放状态中，8秒后自动收起播放控制器及状态栏隐藏
                             activity.timeToInv++;
-                            if (activity.timeToInv == 8){
+                            if (activity.timeToInv == 8){ //无用户操作后8秒后自动收起上下控制器
                                 activity.showController(false);
                                 activity.timeToInv = 0;
                             }
                         }else {
-                            activity.timeToInv=0;
+                            activity.timeToInv=0; //从暂停中恢复，需要重新从0开始计时
                         }
                         break;
                 }
@@ -472,15 +473,8 @@ public class VideoPlayerActivity extends AppCompatActivity implements IInitWidge
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("aaaa","pause");
+//        Log.d("aaaa","pause");
         stopCountTimer();
-        if (student != null){
-            timeKeepPresenter.doUploadTimeKeep(student.getId(),video.getClassify().getId(),delay);
-            historyPresenter.insertHistory(student.getId(),1,video.getId(), (int) ijkMediaPlayer.getCurrentPosition()); //type: 1-视频
-        }
-        if (delay > 10){ //观看时长大于10秒，进行视频播放量加一
-            videoPresenter.doAddNumOfPlay(video.getId());
-        }
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         if (ijkMediaPlayer != null && ijkMediaPlayer.isPlaying()){
             ijkMediaPlayer.pause();
@@ -492,16 +486,23 @@ public class VideoPlayerActivity extends AppCompatActivity implements IInitWidge
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d("aaaa","stop");
+//        Log.d("aaaa","stop");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        if (student != null){
+            timeKeepPresenter.doUploadTimeKeep(student.getId(),video.getClassify().getId(),delay);
+            historyPresenter.insertHistory(student.getId(),1,video.getId(), (int) ijkMediaPlayer.getCurrentPosition()); //type: 1-视频
+        }
+        if (delay > 10){ //观看时长大于10秒，进行视频播放量加一
+            videoPresenter.doAddNumOfPlay(video.getId());
+        }
         release();
         isDestroy = false;
         timer.cancel();
+
     }
 
     @Override

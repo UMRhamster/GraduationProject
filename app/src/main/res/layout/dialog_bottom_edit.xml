@@ -1,24 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/fg_video_player_srl"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/fg_video_player_tb">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/fg_video_player_comment_rv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </android.support.v4.widget.SwipeRefreshLayout>
-
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="@android:color/white"
+    android:focusableInTouchMode="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <android.support.v7.widget.Toolbar
-        android:id="@+id/fg_video_player_tb"
+        android:id="@+id/dialog_edit_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:contentInsetStart="0dp"
@@ -26,29 +17,29 @@
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/fg_video_player_et_message"
+
+            <EditText
+                android:id="@+id/dialog_edit_et"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/video_comment_et_bg"
-                android:hint="说点什么吧"
+                android:background="@drawable/player_interact_et_bg"
+                android:hint="发个弹幕呗~"
                 android:paddingStart="16dp"
                 android:paddingTop="6dp"
                 android:paddingEnd="16dp"
                 android:paddingBottom="6dp"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/fg_video_player_iv_send"
+                app:layout_constraintEnd_toStartOf="@+id/dialog_edit_iv_send"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
             <ImageView
-                android:id="@+id/fg_video_player_iv_send"
+                android:id="@+id/dialog_edit_iv_send"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:focusable="false"
-                android:clickable="false"
                 android:layout_marginEnd="8dp"
                 android:src="@drawable/send_message"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -57,4 +48,4 @@
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.Toolbar>
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

@@ -17,18 +17,18 @@ import com.whut.umrhamster.graduationproject.view.CircleImageView;
 import java.util.List;
 
 public class WatchAdapter extends RecyclerView.Adapter<WatchAdapter.ItemViewHolder> {
-    private List<Watch> watchList;
-    private Context context;
-
+    private List<Watch> watchList;  //存放数据的集合
+    private Context context;   //上下文
+    //通过构造方法绑定集合
     public WatchAdapter(List<Watch> watchList){
         this.watchList = watchList;
     }
 
     @NonNull
     @Override
-    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {  //创建ViewHolder用于复用控件，避免重复findviewbyid
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_rv_item_watch,parent,false);
-        view.setOnClickListener(new View.OnClickListener() {
+        view.setOnClickListener(new View.OnClickListener() { //处理选项卡的点击事件
             @Override
             public void onClick(View v) {
 
@@ -41,10 +41,10 @@ public class WatchAdapter extends RecyclerView.Adapter<WatchAdapter.ItemViewHold
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Teacher teacher = watchList.get(position).getTeacher();
-        Picasso.with(context).load(teacher.getAvatar()).into(holder.civIcon);
-        holder.tvNickname.setText(teacher.getNickname());
+        Picasso.with(context).load(teacher.getAvatar()).into(holder.civIcon); //使用picasso加载图片
+        holder.tvNickname.setText(teacher.getNickname());  //显示昵称
 //        holder.tvBrief.setText();
-        holder.tvWatch.setOnClickListener(new View.OnClickListener() {
+        holder.tvWatch.setOnClickListener(new View.OnClickListener() {  //菜单点击事件
             @Override
             public void onClick(View v) {
 

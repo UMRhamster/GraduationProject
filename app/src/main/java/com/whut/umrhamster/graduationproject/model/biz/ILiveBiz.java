@@ -9,6 +9,8 @@ public interface ILiveBiz {
 
     void getTypeLive(int type,OnLiveListener onLiveListener);
     void getLiveByKeyword(String keyword, OnLiveListener onLiveListener);
+    void getLiveLimit10(int start, OnLiveListener onLiveListener);
+    void updateLiveViewers(int liveId,int operation, OnLiveListener onLiveListener);
 
     interface OnLiveListener{
         void onLiveSuccess(List<Live> liveList);

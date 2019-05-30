@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -32,16 +33,32 @@ public class ForeshowFragment extends Fragment implements IInitWidgetView,IFores
     private List<Foreshow> foreshowList;
     private ForeshowAdapter adapter;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private IForeshowPresenter foreshowPresenter;
+
+    private int lastItemPosition = 0;
+    private boolean isLoading = false;
+    private boolean status = false;
+
+    private int start = 0;
+
+    //复用
+    private View mView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fg_foreshow,container,false);
-        initView(view);
-        initEvent();
-        return view;
+        if (mView == null){
+            mView = inflater.inflate(R.layout.fg_foreshow,container,false);
+            initView(mView);
+            initEvent();
+        }
+        return mView;
+//        View view = inflater.inflate(R.layout.fg_foreshow,container,false);
+//        initView(view);
+//        initEvent();
+//        return view;
     }
 
     public void initData(){
@@ -64,10 +81,38 @@ public class ForeshowFragment extends Fragment implements IInitWidgetView,IFores
                 startActivity(intent);
             }
         });
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                start = 0;
+                status = true;
+                foreshowPresenter.doGetForeshowLimit10(0);
+            }
+        });
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                lastItemPosition = manager.findLastVisibleItemPosition();
+                if (newState != RecyclerView.SCROLL_STATE_IDLE && !isLoading && lastItemPosition == foreshowList.size()-1){
+                    isLoading = true;
+                    foreshowPresenter.doGetForeshowLimit10(start);
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 
     @Override
     public void initView(View view) {
+        swipeRefreshLayout = view.findViewById(R.id.fg_foreshow_srl);
+        swipeRefreshLayout.setColorSchemeResources(R.color.themeColor);
         recyclerView = view.findViewById(R.id.foreshow_rv_show);
         foreshowList = new ArrayList<>();
 
@@ -80,13 +125,32 @@ public class ForeshowFragment extends Fragment implements IInitWidgetView,IFores
 
     @Override
     public void onGetForeshowSuccess(List<Foreshow> foreshowList) {
-//        Log.d("test",""+foreshowList.size());
+        if (status){ //true-下拉刷新操作
+            swipeRefreshLayout.setRefreshing(false);
+            this.foreshowList.clear();
+            status = false;
+            start = 0;
+        }
+//        Log.d("dddddd","ss"+start);
+        start = start+(foreshowList == null ?0:foreshowList.size());
+//        Log.d("dddddd","ssaaaaa"+start);
         this.foreshowList.addAll(foreshowList);
         adapter.notifyDataSetChanged();
+        isLoading = false;
     }
 
     @Override
     public void onGetForeshowFail(int code) {
-//        Log.d("tes","shibai"+code);
+        swipeRefreshLayout.setRefreshing(false);
+        isLoading = false;
+        status = false;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mView != null){
+            ((ViewGroup)mView.getParent()).removeView(mView);
+        }
     }
 }

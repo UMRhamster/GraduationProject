@@ -98,7 +98,47 @@ public class LivePresenterCompl implements ILivePresenter {
     }
 
     @Override
-    public void onDestroy() {
+    public void doGetLiveLimit10(int start) {
+        liveBiz.getLiveLimit10(start, new ILiveBiz.OnLiveListener() {
+            @Override
+            public void onLiveSuccess(final List<Live> liveList) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        liveView.onAllLiveSuccess(liveList);
+                    }
+                });
+            }
 
+            @Override
+            public void onLiveFail(final int code) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        liveView.onAllLiveFail(code);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void doUpdateLiveViewers(int liveId, int operation) {
+        liveBiz.updateLiveViewers(liveId, operation, new ILiveBiz.OnLiveListener() {
+            @Override
+            public void onLiveSuccess(List<Live> liveList) {
+                //不做处理，因为不在客户端进行更新
+            }
+
+            @Override
+            public void onLiveFail(int code) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onDestroy() {
+        liveView = null;
     }
 }

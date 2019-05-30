@@ -28,14 +28,26 @@ import android.widget.Toast;
 import com.whut.umrhamster.graduationproject.adapter.PlayerFragmentPagerAdapter;
 import com.whut.umrhamster.graduationproject.fragment.PlayerHostFragment;
 import com.whut.umrhamster.graduationproject.fragment.PlayerInteractFragment;
+import com.whut.umrhamster.graduationproject.model.bean.History;
+import com.whut.umrhamster.graduationproject.model.bean.InfoGroupBean;
 import com.whut.umrhamster.graduationproject.model.bean.Live;
 import com.whut.umrhamster.graduationproject.model.bean.Student;
 import com.whut.umrhamster.graduationproject.model.bean.Teacher;
+import com.whut.umrhamster.graduationproject.presenter.HistoryPresenter;
+import com.whut.umrhamster.graduationproject.presenter.IHistoryPresenter;
+import com.whut.umrhamster.graduationproject.presenter.ILivePresenter;
+import com.whut.umrhamster.graduationproject.presenter.ITimeKeepPresenter;
+import com.whut.umrhamster.graduationproject.presenter.LivePresenterCompl;
+import com.whut.umrhamster.graduationproject.presenter.TimeKeepPresenter;
 import com.whut.umrhamster.graduationproject.utils.other.AdaptionUtil;
+import com.whut.umrhamster.graduationproject.utils.other.AndroidBug5497Workaround;
 import com.whut.umrhamster.graduationproject.utils.other.KeyboardHeightObserver;
 import com.whut.umrhamster.graduationproject.utils.other.KeyboardHeightProvider;
 import com.whut.umrhamster.graduationproject.utils.other.TimeUtil;
+import com.whut.umrhamster.graduationproject.view.IHistoryView;
 import com.whut.umrhamster.graduationproject.view.IInitWidgetView;
+import com.whut.umrhamster.graduationproject.view.ILiveView;
+import com.whut.umrhamster.graduationproject.view.ITimeKeepView;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -47,7 +59,7 @@ import java.util.TimerTask;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
-public class PlayerActivity extends AppCompatActivity implements IInitWidgetView {
+public class PlayerActivity extends AppCompatActivity implements IInitWidgetView,ITimeKeepView,IHistoryView,ILiveView {
     private final static int TAG = 0;
 
     private ViewPager viewPager;
@@ -69,6 +81,10 @@ public class PlayerActivity extends AppCompatActivity implements IInitWidgetView
     private RelativeLayout bottomController;//底部控制器
 
     private TextureView textureView; //播放界面
+
+    private ITimeKeepPresenter timeKeepPresenter;
+    private IHistoryPresenter historyPresenter;
+    private ILivePresenter livePresenter;
 
     //播放器
     IjkMediaPlayer mediaPlayer;
@@ -121,6 +137,62 @@ public class PlayerActivity extends AppCompatActivity implements IInitWidgetView
         }
 
     }
+
+    @Override
+    public void onHistorySuccess(List<History> historyList) {
+
+    }
+
+    @Override
+    public void onHistoryFail(int code) {
+
+    }
+
+    @Override
+    public void existResult(int code) {
+
+    }
+
+    @Override
+    public void insertResult(int code) {
+
+    }
+
+    @Override
+    public void updateResult(int code) {
+
+    }
+
+    @Override
+    public void deleteResult(int code) {
+
+    }
+
+    @Override
+    public void onTimeKeepSuccess(List<InfoGroupBean> groupBeanList) {
+
+    }
+
+    @Override
+    public void onTimeKeepFail(int code) {
+
+    }
+
+    @Override
+    public void onAllLiveSuccess(List<Live> liveList) {
+
+    }
+
+    @Override
+    public void onAllLiveFail(int code) {
+
+    }
+
+    @Override
+    public void onTypeLiveSuccess(List<Live> liveList) {
+
+    }
+
     static class MyHandler extends Handler {
         WeakReference<PlayerActivity> weakReference;
 
@@ -156,6 +228,7 @@ public class PlayerActivity extends AppCompatActivity implements IInitWidgetView
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //不显示状态栏
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         setContentView(R.layout.activity_player);
+//        AndroidBug5497Workaround.assistActivity(this);
         live = getIntent().getParcelableExtra("live");
         initView();
         initEvent();
@@ -181,11 +254,11 @@ public class PlayerActivity extends AppCompatActivity implements IInitWidgetView
                 @Override
                 public void onPrepared(IMediaPlayer iMediaPlayer) {
                     mediaPlayer.start();
+                    startCountTimer();
                 }
             });
-            mediaPlayer.prepareAsync();
             handler = new MyHandler(this);
-            startCountTimer();
+            mediaPlayer.prepareAsync();
 //            mediaPlayer.start();
         }
     }
@@ -239,9 +312,12 @@ public class PlayerActivity extends AppCompatActivity implements IInitWidgetView
     }
 
     private void initData(){
+        timeKeepPresenter = new TimeKeepPresenter(this);
+        historyPresenter = new HistoryPresenter(this);
+        livePresenter = new LivePresenterCompl(this);
         if (live != null){
             tvTitle.setText(live.getTitle());
-
+            livePresenter.doUpdateLiveViewers(live.getId(),0);
         }
     }
 
@@ -334,8 +410,20 @@ public class PlayerActivity extends AppCompatActivity implements IInitWidgetView
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        stopCountTimer();
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (student != null){
+            timeKeepPresenter.doUploadTimeKeep(student.getId(),live.getClassify().getId(),delay);
+            historyPresenter.insertHistory(student.getId(),0,live.getId(), 0); //type: 1-视频,0-1直播,直播的watchedTime字段不计时
+        }
+        livePresenter.doUpdateLiveViewers(live.getId(),1);
         release();
     }
 

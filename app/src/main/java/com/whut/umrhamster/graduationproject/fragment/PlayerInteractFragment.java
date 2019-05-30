@@ -1,5 +1,8 @@
 package com.whut.umrhamster.graduationproject.fragment;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,9 +14,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,6 +29,7 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.whut.umrhamster.graduationproject.R;
 import com.whut.umrhamster.graduationproject.TeacherInfoActivity;
+import com.whut.umrhamster.graduationproject.VideoPlayerActivity;
 import com.whut.umrhamster.graduationproject.adapter.InteractAdapter;
 import com.whut.umrhamster.graduationproject.model.bean.Interact;
 import com.whut.umrhamster.graduationproject.model.bean.Student;
@@ -30,6 +37,8 @@ import com.whut.umrhamster.graduationproject.model.bean.Teacher;
 import com.whut.umrhamster.graduationproject.model.bean.Watch;
 import com.whut.umrhamster.graduationproject.presenter.IWatchPresenter;
 import com.whut.umrhamster.graduationproject.presenter.WatchPresenter;
+import com.whut.umrhamster.graduationproject.utils.other.AdaptionUtil;
+import com.whut.umrhamster.graduationproject.utils.other.AndroidBug5497Workaround;
 import com.whut.umrhamster.graduationproject.utils.other.KeyboardHeightObserver;
 import com.whut.umrhamster.graduationproject.utils.other.KeyboardHeightProvider;
 import com.whut.umrhamster.graduationproject.utils.save.SPUtil;
@@ -53,6 +62,7 @@ public class PlayerInteractFragment extends Fragment implements IInitWidgetView,
     private TextView tvViewers;
     private CircleImageView civAvatar;
     private EditText etMessage;
+    private TextView tvMessage;
     private ImageView ivSend;//消息发送按钮
     private TextView tvWatch;
     private TextView tvStudents;
@@ -71,15 +81,21 @@ public class PlayerInteractFragment extends Fragment implements IInitWidgetView,
 
     private WebSocket webSocket;
     private Handler handler = new Handler(Looper.getMainLooper());
+    private View mView;
+
+    private StringBuilder stringBuilder = new StringBuilder(); //暂存字符串
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fg_player_interact,container,false);
+        if (mView == null){
+            mView = inflater.inflate(R.layout.fg_player_interact,container,false);
+//            AndroidBug5497Workaround.assistActivity(getActivity());
 //        AdaptionUtil.setCustomDensity(getActivity(),getActivity().getApplication());
-        initView(view);
-        initEvent();
-        return view;
+            initView(mView);
+            initEvent();
+        }
+        return mView;
     }
 
     @Override
@@ -89,21 +105,21 @@ public class PlayerInteractFragment extends Fragment implements IInitWidgetView,
 
     @Override
     public void initEvent() {
-        ivSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (student == null){
-                    Toast.makeText(getActivity(),"登录之后可聊天互动",Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (webSocket != null){
-                    if (!etMessage.getText().toString().isEmpty()){
-                        webSocket.send(etMessage.getText().toString());
-                        etMessage.setText("");
-                    }
-                }
-            }
-        });
+//        ivSend.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (student == null){
+//                    Toast.makeText(getActivity(),"登录之后可聊天互动",Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                if (webSocket != null){
+//                    if (!etMessage.getText().toString().isEmpty()){
+//                        webSocket.send(etMessage.getText().toString());
+//                        etMessage.setText("");
+//                    }
+//                }
+//            }
+//        });
         toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,15 +146,80 @@ public class PlayerInteractFragment extends Fragment implements IInitWidgetView,
             }
         });
         //edittext焦点事件
-        etMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//        etMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus){
+//                    if (student == null){
+//                        Toast.makeText(getActivity(),"登录之后可进行聊天互动",Toast.LENGTH_SHORT).show();
+//                        etMessage.clearFocus();
+//                    }
+//                }
+//            }
+//        });
+        tvMessage.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus){
-                    if (student == null){
-                        Toast.makeText(getActivity(),"登录之后可进行聊天互动",Toast.LENGTH_SHORT).show();
-                        etMessage.clearFocus();
+            public void onClick(View v) {
+                Dialog mDialog = new Dialog(getActivity(),R.style.EditDialog);
+                View view = View.inflate(getActivity(),R.layout.dialog_bottom_edit,null);
+                mDialog.setContentView(view);
+
+                final EditText et = mDialog.findViewById(R.id.dialog_edit_et);
+                et.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if (hasFocus){
+                            if (student == null){
+                                Toast.makeText(getActivity(),"登陆之后可进行聊天互动",Toast.LENGTH_SHORT).show();
+                                et.clearFocus();
+                                InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                manager.hideSoftInputFromWindow(mView.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+                            }
+                        }
                     }
-                }
+                });
+                ImageView ivSend = mDialog.findViewById(R.id.dialog_edit_iv_send);
+                ivSend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (student == null){
+                            Toast.makeText(getActivity(),"登陆之后可进行聊天互动",Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        if (webSocket != null){
+                            if (!et.getText().toString().isEmpty()){
+                                webSocket.send(et.getText().toString());
+                                et.setText("");
+                            }
+                        }
+                    }
+                });
+                Window window = mDialog.getWindow();
+                window.setGravity(Gravity.BOTTOM);
+                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+                mDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialog) {
+                        if (student != null){
+                            et.setText(stringBuilder.toString());
+                            et.setSelection(stringBuilder.length());
+                            et.requestFocus();
+                            InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            manager.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT,InputMethodManager.HIDE_NOT_ALWAYS);
+                        }
+                    }
+                });
+                mDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        stringBuilder.replace(0,stringBuilder.length(),et.getText().toString());
+                        et.clearFocus();
+//                        et.setFocusable(false);
+                        InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        manager.hideSoftInputFromWindow(mView.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+                    }
+                });
+                mDialog.show();
             }
         });
     }
@@ -166,7 +247,8 @@ public class PlayerInteractFragment extends Fragment implements IInitWidgetView,
         tvTeachername = view.findViewById(R.id.player_interact_tb_tv_nickname);
         tvViewers = view.findViewById(R.id.player_interact_tb_tv_nof);
         civAvatar = view.findViewById(R.id.player_interact_tb_civ_icon);
-        etMessage = view.findViewById(R.id.player_interact_et);
+//        etMessage = view.findViewById(R.id.player_interact_et);
+        tvMessage = view.findViewById(R.id.player_interact_et);
         ivSend = view.findViewById(R.id.player_interact_iv_send);
         toolbar = view.findViewById(R.id.player_interact_tb);
         tvWatch = view.findViewById(R.id.player_interact_tv_watch);
@@ -277,5 +359,13 @@ public class PlayerInteractFragment extends Fragment implements IInitWidgetView,
     @Override
     public void onGetNumTeachers(List<Watch> watchList) {
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mView != null){
+            ((ViewGroup)mView.getParent()).removeView(mView);
+        }
     }
 }
