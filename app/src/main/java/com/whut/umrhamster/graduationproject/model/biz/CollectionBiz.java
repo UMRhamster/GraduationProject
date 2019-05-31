@@ -41,6 +41,28 @@ public class CollectionBiz implements ICollectionBiz {
     }
 
     @Override
+    public void getCollectionLimit10(int start, int studentId, final OnCollectionListener onCollectionListener) {
+        CollectionService service = RetrofitUtil.retrofit.create(CollectionService.class);
+        Call<HttpData<List<Collection>>> call = service.getCollectionLimit10(start,studentId);
+        call.enqueue(new Callback<HttpData<List<Collection>>>() {
+            @Override
+            public void onResponse(Call<HttpData<List<Collection>>> call, Response<HttpData<List<Collection>>> response) {
+                HttpData<List<Collection>> data = response.body();
+                if (data != null){
+                    onCollectionListener.onSuccess(data.getData());
+                }else {
+                    onCollectionListener.onFail(-1);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HttpData<List<Collection>>> call, Throwable t) {
+                onCollectionListener.onFail(-1);
+            }
+        });
+    }
+
+    @Override
     public void isCollectionExist(int studentId, int videoId, final OnCollectionListener onCollectionListener) {
         CollectionService service = RetrofitUtil.retrofit.create(CollectionService.class);
         Call<HttpData> call = service.isCollectionExist(true,studentId,videoId);

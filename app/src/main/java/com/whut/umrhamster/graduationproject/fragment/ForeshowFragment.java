@@ -86,6 +86,7 @@ public class ForeshowFragment extends Fragment implements IInitWidgetView,IFores
             public void onRefresh() {
                 start = 0;
                 status = true;
+                isLoading = false;
                 foreshowPresenter.doGetForeshowLimit10(0);
             }
         });
@@ -131,12 +132,15 @@ public class ForeshowFragment extends Fragment implements IInitWidgetView,IFores
             status = false;
             start = 0;
         }
+        isLoading = false;
+        if (foreshowList == null || foreshowList.size() == 0){
+            isLoading = true;
+        }
 //        Log.d("dddddd","ss"+start);
         start = start+(foreshowList == null ?0:foreshowList.size());
 //        Log.d("dddddd","ssaaaaa"+start);
         this.foreshowList.addAll(foreshowList);
         adapter.notifyDataSetChanged();
-        isLoading = false;
     }
 
     @Override

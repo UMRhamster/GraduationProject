@@ -15,6 +15,10 @@ import retrofit2.http.Query;
 public interface CollectionService {
     @GET("collection")
     Call<HttpData<List<Collection>>> getCollectionById(@Query("studentId") int studentId);
+
+    @GET("collection")
+    Call<HttpData<List<Collection>>> getCollectionLimit10(@Query("start")int start,@Query("studentId")int studentId);
+
     @GET("collection")
     Call<HttpData> isCollectionExist(@Query("isExist")boolean isExist,@Query("studentId")int studentId,@Query("videoId")int videoId);
 

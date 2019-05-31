@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface ICollectionBiz {
     void getCollectionById(int studentId, OnCollectionListener onCollectionListener);
+    void getCollectionLimit10(int start,int studentId,OnCollectionListener onCollectionListener);
     void isCollectionExist(int studentId,int videoId,OnCollectionListener onCollectionListener);
 
     void insertCollection(int studentId,int videoId,OnCollectionListener onCollectionListener);

@@ -88,6 +88,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="#fafafa"
+        app:tabIndicatorColor="@color/themeColor"
         android:layout_below="@id/video_player_txv">
     </android.support.design.widget.TabLayout>
     <android.support.v4.view.ViewPager

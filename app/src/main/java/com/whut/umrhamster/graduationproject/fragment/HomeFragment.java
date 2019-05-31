@@ -90,6 +90,7 @@ public class HomeFragment extends Fragment implements IInitWidgetView,ILiveView 
                 start = 0;
                 livePresenter.doGetLiveLimit10(start);
                 status = true;
+                isLoading = false;
             }
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -139,9 +140,14 @@ public class HomeFragment extends Fragment implements IInitWidgetView,ILiveView 
             start = 0;
         }
         isLoading = false;
+        if (liveList == null || liveList.size() == 0){
+            isLoading = true;//无更多数据
+            return;
+        }
         this.liveList.addAll(liveList);
-        start = start+(liveList == null ? 0:liveList.size());
+        start = start+liveList.size();
         adapter.notifyDataSetChanged();
+//        if (liveList.size() == 0)
     }
 
     @Override

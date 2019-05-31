@@ -48,6 +48,31 @@ public class CollectionPresenter implements ICollectionPresenter {
     }
 
     @Override
+    public void doGetCollectionLimit10(int start, int studentId) {
+        collectionBiz.getCollectionLimit10(start, studentId, new ICollectionBiz.OnCollectionListener() {
+            @Override
+            public void onSuccess(final List<Collection> videoList) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        collectionView.onCollectionSuccess(videoList);
+                    }
+                });
+            }
+
+            @Override
+            public void onFail(final int code) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        collectionView.onCollectionFail(code);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
     public void doIsCollectionExist(int studentId, int videoId) {
         collectionBiz.isCollectionExist(studentId, videoId, new ICollectionBiz.OnCollectionListener() {
             @Override

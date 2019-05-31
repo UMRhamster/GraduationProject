@@ -111,6 +111,7 @@ public class VideoFragment extends Fragment implements IInitWidgetView,IVideoVie
                 start = 0;
                 videoPresenter.doGetVideoLimit10(0); //下拉刷新从0开始重新获取
                 status = true;//表示这是刷新动作
+                isLoading = false;
             }
         });
     }
@@ -138,6 +139,10 @@ public class VideoFragment extends Fragment implements IInitWidgetView,IVideoVie
             start=0;
         }
         isLoading = false;
+        if (videoList == null || videoList.size() == 0){
+            isLoading = true;
+            return;
+        }
         this.videoList.addAll(videoList);
         start = start+(videoList == null ? 0:videoList.size());
         adapter.notifyDataSetChanged();

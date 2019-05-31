@@ -142,10 +142,9 @@ public class WatchFragment extends Fragment implements IInitWidgetView,IWatchVie
             start=0;
             status = false;
         }
-        if (watchList.size() == 0){ //如果已经没有更多数据，就不在触发上拉加载
+        isLoading = false;
+        if (watchList == null || watchList.size() == 0) { //如果已经没有更多数据，就不在触发上拉加载
             isLoading = true;
-        }else {
-            isLoading = false;
         }
         this.watchList.addAll(watchList);
         start = start+(watchList == null?0:watchList.size());

@@ -59,6 +59,7 @@ public class HistoryAllFragment extends Fragment implements IInitWidgetView,IHis
     private int scrollState = RecyclerView.SCROLL_STATE_IDLE;
     private int lastItemPosition = -1;
     private boolean isLoading = false;
+    private boolean status = false;
 
     private TextEditListener textEditListener;
     private AllSelectedListener allSelectedListener;
@@ -179,12 +180,14 @@ public class HistoryAllFragment extends Fragment implements IInitWidgetView,IHis
             @Override
             public void onRefresh() {
                 Student student = SPUtil.loadStudent(getActivity());
+                isLoading = false;
+                status = true;
+                adapter.outEditing();
+                textEditListener.onTextEdit("编辑");
                 if (student != null){
-                    start = 0;timeDecor = 0;NumOfDecor=0;
-                    adapter.outEditing();
-                    historyList.clear();
+//                    start = 0;timeDecor = 0;NumOfDecor=0;
+//                    historyList.clear();
                     historyPresenter.doHistory(start,student.getId(),0);
-                    textEditListener.onTextEdit("编辑");
                 }
             }
         });
@@ -218,6 +221,7 @@ public class HistoryAllFragment extends Fragment implements IInitWidgetView,IHis
         checkSet = new TreeSet<>();
         recyclerView = view.findViewById(R.id.history_all_rv);
         sRefresh = view.findViewById(R.id.history_all_srl);
+        sRefresh.setColorSchemeResources(R.color.themeColor);
         adapter = new HistoryAdapter(historyList,checkSet,getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 //        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL));
@@ -237,9 +241,21 @@ public class HistoryAllFragment extends Fragment implements IInitWidgetView,IHis
 
     @Override
     public void onHistorySuccess(List<History> historyList) {
+        if (status){
+            start = 0;
+            timeDecor = 0;
+            NumOfDecor = 0;
+            status = false;
+            this.historyList.clear();
+            sRefresh.setRefreshing(false);
+        }
+        if (historyList == null || historyList.size() == 0){
+            isLoading = true;
+            return;
+        }
 //        Log.d("dasda",""+historyList.size());
         start+=historyList.size();
-        Collections.sort(historyList,new HistoryComparator());
+//        Collections.sort(historyList,new HistoryComparator());
         Calendar todayC = Calendar.getInstance();
         todayC.set(Calendar.HOUR_OF_DAY,0);
         todayC.set(Calendar.MINUTE,0);
@@ -277,12 +293,13 @@ public class HistoryAllFragment extends Fragment implements IInitWidgetView,IHis
         }
         adapter.notifyDataSetChanged();
         sRefresh.setRefreshing(false);
-        isLoading = false;
     }
 
     @Override
     public void onHistoryFail(int code) {
         sRefresh.setRefreshing(false);
+        status = false;
+        isLoading = false;
         Toast.makeText(getActivity(),"获取历史记录失败 ",Toast.LENGTH_SHORT).show();
     }
 

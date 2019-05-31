@@ -54,6 +54,8 @@ public class HistoryLiveFragment extends Fragment implements IInitWidgetView,IHi
     private int scrollState = RecyclerView.SCROLL_STATE_IDLE;
     private int lastItemPosition = -1;
     private boolean isLoading = false;
+    private boolean status = false;
+
 
     private TextEditListener textEditListener;
     private AllSelectedListener allSelectedListener;
@@ -160,12 +162,14 @@ public class HistoryLiveFragment extends Fragment implements IInitWidgetView,IHi
             @Override
             public void onRefresh() {
                 Student student = SPUtil.loadStudent(getActivity());
+                start = 0;timeDecor = 0;NumOfDecor=0;
+                status = true;
+                isLoading = false;
+                adapter.outEditing();
+                textEditListener.onTextEdit("编辑");
                 if (student != null){
-                    start = 0;timeDecor = 0;NumOfDecor=0;
-                    adapter.outEditing();
-                    historyList.clear();
+//                    historyList.clear();
                     historyPresenter.doHistory(start,student.getId(),2);
-                    textEditListener.onTextEdit("编辑");
                 }
             }
         });
@@ -200,6 +204,7 @@ public class HistoryLiveFragment extends Fragment implements IInitWidgetView,IHi
         checkSet = new TreeSet<>();
         recyclerView = view.findViewById(R.id.history_live_rv);
         sRefresh = view.findViewById(R.id.history_live_srl);
+        sRefresh.setColorSchemeResources(R.color.themeColor);
         adapter = new HistoryAdapter(historyList,checkSet,getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
@@ -218,8 +223,20 @@ public class HistoryLiveFragment extends Fragment implements IInitWidgetView,IHi
 
     @Override
     public void onHistorySuccess(List<History> historyList) {
+        if (status){
+            start = 0;
+            timeDecor = 0;
+            NumOfDecor = 0;
+            status = false;
+            this.historyList.clear();
+            sRefresh.setRefreshing(false);
+        }
+        if (historyList == null || historyList.size() == 0){
+            isLoading = true;
+            return;
+        }
         start+=historyList.size();
-        Collections.sort(historyList,new HistoryComparator());
+//        Collections.sort(historyList,new HistoryComparator());
         Calendar todayC = Calendar.getInstance();
         todayC.set(Calendar.HOUR_OF_DAY,0);
         todayC.set(Calendar.MINUTE,0);
@@ -262,6 +279,8 @@ public class HistoryLiveFragment extends Fragment implements IInitWidgetView,IHi
     @Override
     public void onHistoryFail(int code) {
         sRefresh.setRefreshing(false);
+        isLoading = false;
+        status = false;
     }
 
     @Override

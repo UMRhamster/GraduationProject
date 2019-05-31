@@ -40,11 +40,16 @@ public class CollectionFragment extends Fragment implements IInitWidgetView,ICol
 
     //
     private ImageView ivMenu;
+    Student student;
+
+    private int start = 0;
+    private boolean isLoading = false;
 
     //sj
     private ICollectionPresenter collectionPresenter;
 
     private int item2Delete = -1;
+    private int lastItemPosition = 0;
 
     @Nullable
     @Override
@@ -57,9 +62,10 @@ public class CollectionFragment extends Fragment implements IInitWidgetView,ICol
 
     public void initData(){
         collectionPresenter = new CollectionPresenter(this);
-        Student student = SPUtil.loadStudent(getActivity());
+        student = SPUtil.loadStudent(getActivity());
         if (student != null){
-            collectionPresenter.doCollectionById(student.getId());
+            start = 0;
+            collectionPresenter.doGetCollectionLimit10(0,student.getId());
         }
     }
 
@@ -81,6 +87,24 @@ public class CollectionFragment extends Fragment implements IInitWidgetView,ICol
             @Override
             public void onMenuClick(int position) {
                 showBottomDialog(position);
+            }
+        });
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                lastItemPosition = manager.findLastVisibleItemPosition();
+                if (newState != RecyclerView.SCROLL_STATE_IDLE && !isLoading && lastItemPosition == collectionList.size()-1 && student != null){
+                    isLoading = true;
+                    collectionPresenter.doGetCollectionLimit10(start,student.getId());
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
             }
         });
 
@@ -134,6 +158,11 @@ public class CollectionFragment extends Fragment implements IInitWidgetView,ICol
 
     @Override
     public void onCollectionSuccess(List<Collection> collectionList) {
+        isLoading = false;
+        if (collectionList != null && collectionList.size() == 0){
+            isLoading = true;//阻止继续加载，已经没有更多数据
+        }
+        start = start+(collectionList == null?0:collectionList.size());
         this.collectionList.addAll(collectionList);
         adapter.notifyDataSetChanged();
     }
@@ -144,6 +173,8 @@ public class CollectionFragment extends Fragment implements IInitWidgetView,ICol
             collectionList.remove(item2Delete);
             adapter.notifyItemRemoved(item2Delete);
             item2Delete = -1;
+        }else if (code == -1){
+            isLoading = false;
         }
 //        Toast.makeText(getActivity(),""+code,Toast.LENGTH_SHORT).show();
     }
