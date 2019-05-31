@@ -48,6 +48,86 @@ public class CollectionPresenter implements ICollectionPresenter {
     }
 
     @Override
+    public void doIsCollectionExist(int studentId, int videoId) {
+        collectionBiz.isCollectionExist(studentId, videoId, new ICollectionBiz.OnCollectionListener() {
+            @Override
+            public void onSuccess(List<Collection> videoList) {
+
+            }
+
+            @Override
+            public void onFail(final int code) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        collectionView.onCollectionFail(code);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void doInsertCollection(int studentId, int videoId) {
+        collectionBiz.insertCollection(studentId, videoId, new ICollectionBiz.OnCollectionListener() {
+            @Override
+            public void onSuccess(List<Collection> videoList) {
+
+            }
+
+            @Override
+            public void onFail(final int code) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        collectionView.onCollectionFail(code);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void doDeleteCollectionById(int id) {
+        collectionBiz.deleteCollectionById(id, new ICollectionBiz.OnCollectionListener() {
+            @Override
+            public void onSuccess(List<Collection> videoList) {
+
+            }
+
+            @Override
+            public void onFail(final int code) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        collectionView.onCollectionFail(code);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void doDeleteCollectionBySaV(int studentId, int videoId) {
+        collectionBiz.deleteCollectionBySaV(studentId, videoId, new ICollectionBiz.OnCollectionListener() {
+            @Override
+            public void onSuccess(List<Collection> videoList) {
+
+            }
+
+            @Override
+            public void onFail(final int code) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        collectionView.onCollectionFail(code);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
     public void onDestroy() {
         collectionView = null;
         System.gc(); //并不会立即回收

@@ -35,6 +35,28 @@ public class WatchBiz implements IWatchBiz {
     }
 
     @Override
+    public void getWatchLimit20(int studentId, int start, final OnWatchListener onWatchListener) {
+        WatchService service = RetrofitUtil.retrofit.create(WatchService.class);
+        Call<HttpData<List<Watch>>> call = service.getWatchLimit20(studentId,start);
+        call.enqueue(new Callback<HttpData<List<Watch>>>() {
+            @Override
+            public void onResponse(Call<HttpData<List<Watch>>> call, Response<HttpData<List<Watch>>> response) {
+                HttpData<List<Watch>> data = response.body();
+                if (data != null){
+                    onWatchListener.onSuccess(data.getData());
+                }else {
+                    onWatchListener.onFail(-1);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HttpData<List<Watch>>> call, Throwable t) {
+                onWatchListener.onFail(-1);
+            }
+        });
+    }
+
+    @Override
     public void addWatch(int studentId, int teacherId, final OnWatchListener onWatchListener) {
         WatchService service = RetrofitUtil.retrofit.create(WatchService.class);
         Call<HttpData> call = service.addWatch(studentId,teacherId);

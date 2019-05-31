@@ -36,13 +36,15 @@ import java.util.List;
 public class CollectionFragment extends Fragment implements IInitWidgetView,ICollectionView {
     private RecyclerView recyclerView;
     private CollectAdapter adapter;
-    private List<Collection> videoList;
+    private List<Collection> collectionList;
 
     //
     private ImageView ivMenu;
 
     //sj
     private ICollectionPresenter collectionPresenter;
+
+    private int item2Delete = -1;
 
     @Nullable
     @Override
@@ -72,7 +74,7 @@ public class CollectionFragment extends Fragment implements IInitWidgetView,ICol
             @Override
             public void onItemClick(int position) {
                 Intent intent = new Intent(getActivity(),VideoPlayerActivity.class);
-                intent.putExtra("video",videoList.get(position).getVideo());
+                intent.putExtra("video",collectionList.get(position).getVideo());
                 startActivity(intent);
             }
 
@@ -95,15 +97,15 @@ public class CollectionFragment extends Fragment implements IInitWidgetView,ICol
         recyclerView = view.findViewById(R.id.fg_collection_rv);
         ivMenu = view.findViewById(R.id.fg_collection_iv_menu);
 
-        videoList = new ArrayList<>();
-        adapter = new CollectAdapter(videoList,getActivity());
+        collectionList = new ArrayList<>();
+        adapter = new CollectAdapter(collectionList,getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         initData();
     }
 
     public void showBottomDialog(final int position){
-        Dialog dialog = new Dialog(getActivity(),R.style.CustomDialog);
+        final Dialog dialog = new Dialog(getActivity(),R.style.CustomDialog);
         View view = View.inflate(getActivity(),R.layout.dialog_collection_remove,null);
         dialog.setContentView(view);
 
@@ -115,27 +117,35 @@ public class CollectionFragment extends Fragment implements IInitWidgetView,ICol
         dialog.findViewById(R.id.dialog_collection_remove_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(),"dianjiquxiao"+position,Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
             }
         });
 
         dialog.findViewById(R.id.dialog_collection_tv_remove).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(),"dianjishanchu"+position,Toast.LENGTH_SHORT).show();
+                item2Delete = position;
+                collectionPresenter.doDeleteCollectionById(collectionList.get(position).getId());
+                dialog.dismiss();
+//                Toast.makeText(getActivity(),"dianjishanchu"+position,Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
-    public void onCollectionSuccess(List<Collection> videoList) {
-        this.videoList.addAll(videoList);
+    public void onCollectionSuccess(List<Collection> collectionList) {
+        this.collectionList.addAll(collectionList);
         adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onCollectionFail(int code) {
-        Toast.makeText(getActivity(),""+code,Toast.LENGTH_SHORT).show();
+        if (code == 2072){
+            collectionList.remove(item2Delete);
+            adapter.notifyItemRemoved(item2Delete);
+            item2Delete = -1;
+        }
+//        Toast.makeText(getActivity(),""+code,Toast.LENGTH_SHORT).show();
     }
 
     @Override

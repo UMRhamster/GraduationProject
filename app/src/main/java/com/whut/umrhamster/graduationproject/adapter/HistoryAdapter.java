@@ -14,6 +14,8 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 import com.whut.umrhamster.graduationproject.R;
 import com.whut.umrhamster.graduationproject.model.bean.History;
+import com.whut.umrhamster.graduationproject.model.bean.Live;
+import com.whut.umrhamster.graduationproject.model.bean.Video;
 import com.whut.umrhamster.graduationproject.utils.other.TimeUtil;
 import com.whut.umrhamster.graduationproject.widget.SmoothCheckBox;
 
@@ -101,7 +103,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (position == resultList.size()){
             return FOOT;
         }
-        if (resultList.get(position).getTotalTime() == -1){
+        if (resultList.get(position).getTag() != null){
             return SIGN;
         }else {
             return ITEM;
@@ -111,7 +113,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof SignViewHolder){
-            ((SignViewHolder) holder).textView.setText(resultList.get(position).getTitle());
+            ((SignViewHolder) holder).textView.setText(resultList.get(position).getTag());
         }else if (holder instanceof ViewHolder){
             History history = resultList.get(position);
             if (history.getType() == 1){  //视频
@@ -119,20 +121,24 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 ((ViewHolder)holder).progressBar.setVisibility(View.VISIBLE);
                 ((ViewHolder)holder).tvTime.setVisibility(View.VISIBLE);
                 ((ViewHolder)holder).view.setVisibility(View.VISIBLE);
-                ((ViewHolder)holder).tvTitle.setText(history.getTitle());
+                Video video = history.getVideo();
+                Picasso.with(context).load(video.getCover()).into(((ViewHolder) holder).rivCover);
+                ((ViewHolder)holder).tvTitle.setText(video.getTitle());
                 ((ViewHolder)holder).tvTime.setText(String.format(context.getResources().getString(R.string.history_progress),
                         TimeUtil.millint2String(history.getWatchedTime()),
-                        TimeUtil.millint2String(history.getTotalTime())));
+                        TimeUtil.millint2String(video.getTotaltime())));
 
-                ((ViewHolder)holder).progressBar.setMax(history.getTotalTime());
+                ((ViewHolder)holder).progressBar.setMax(video.getTotaltime());
                 ((ViewHolder)holder).progressBar.setProgress(history.getWatchedTime());
             }else if (history.getType() == 0){  //直播
+                Live live = history.getLive();
+                Picasso.with(context).load(live.getCover()).into(((ViewHolder) holder).rivCover);
                 ((ViewHolder)holder).tvStatus.setVisibility(View.VISIBLE);
                 ((ViewHolder)holder).progressBar.setVisibility(View.INVISIBLE);
                 ((ViewHolder)holder).tvTime.setVisibility(View.INVISIBLE);
                 ((ViewHolder)holder).view.setVisibility(View.INVISIBLE);
-                ((ViewHolder)holder).tvTitle.setText(history.getTitle());
-                if (history.getStatus() == 0){
+                ((ViewHolder)holder).tvTitle.setText(live.getTitle());
+                if (live.getStatus() == 0){
                     ((ViewHolder) holder).tvStatus.setText("未开播");
                     ((ViewHolder) holder).tvStatus.setBackgroundResource(R.drawable.text_round_bg_color_gray);
                 }else {
@@ -154,7 +160,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }else {
                 ((ViewHolder) holder).checkBox.setVisibility(View.GONE);
             }
-            Picasso.with(context).load(history.getCover()).into(((ViewHolder) holder).rivCover);
             //今天
             Calendar todayC = Calendar.getInstance();
             todayC.set(Calendar.HOUR_OF_DAY,0);
@@ -204,7 +209,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 //        activeAllSelected = true;
         if (isEdit){
             for (int i=0;i<resultList.size();i++){
-                if (resultList.get(i).getTotalTime() != -1){
+                if (resultList.get(i).getTag() == null){
                     checkSet.add(i);
                 }
             }

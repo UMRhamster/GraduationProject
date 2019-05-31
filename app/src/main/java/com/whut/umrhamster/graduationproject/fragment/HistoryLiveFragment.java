@@ -1,5 +1,6 @@
 package com.whut.umrhamster.graduationproject.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.whut.umrhamster.graduationproject.PlayerActivity;
 import com.whut.umrhamster.graduationproject.R;
+import com.whut.umrhamster.graduationproject.VideoPlayerActivity;
 import com.whut.umrhamster.graduationproject.adapter.HistoryAdapter;
 import com.whut.umrhamster.graduationproject.comparator.HistoryComparator;
 import com.whut.umrhamster.graduationproject.interfaces.AllSelectedListener;
@@ -137,6 +140,10 @@ public class HistoryLiveFragment extends Fragment implements IInitWidgetView,IHi
                         allSelectedListener.onAllSelected(false);
                         setAllSelectedState(false);
                     }
+                }else {
+                    Intent intent = new Intent(getActivity(),PlayerActivity.class);
+                    intent.putExtra("live",historyList.get(position).getLive());
+                    startActivity(intent);
                 }
 //                Toast.makeText(getActivity(),"dianji  "+checkSet.size()+" "+historyList.size()+" "+NumOfDecor,Toast.LENGTH_SHORT).show();
             }
@@ -226,19 +233,19 @@ public class HistoryLiveFragment extends Fragment implements IInitWidgetView,IHi
         for (History history : historyList){
             if (history.getLastTime().after(todayC.getTime())){
                 if (timeDecor == 0) {
-                    this.historyList.add(new History("今天",-1));
+                    this.historyList.add(new History("今天"));
                     timeDecor++;
                     NumOfDecor++;
                 }
             }else if (history.getLastTime().after(yesterdayC.getTime())){
                 if (timeDecor == 0 || timeDecor == 1){
-                    this.historyList.add(new History("昨天",-1));
+                    this.historyList.add(new History("昨天"));
                     timeDecor+=2;
                     NumOfDecor++;
                 }
             }else {
                 if (timeDecor == 0 || timeDecor == 1 || timeDecor == 2 || timeDecor == 3){
-                    this.historyList.add(new History("更早",-1));
+                    this.historyList.add(new History("更早"));
                     timeDecor+=4;
                     NumOfDecor++;
                 }
@@ -277,7 +284,7 @@ public class HistoryLiveFragment extends Fragment implements IInitWidgetView,IHi
         if (code == 2081){ //2081-删除成功
             //此处带修改
             for (int i=historyList.size()-1;i>=0;i--){
-                if (historyList.get(i).getTotalTime() == -1){ //删除时间标志
+                if (historyList.get(i).getTag() != null){ //删除时间标志
                     historyList.remove(i);
                     i--;
                 }
@@ -303,21 +310,21 @@ public class HistoryLiveFragment extends Fragment implements IInitWidgetView,IHi
                 History history = historyList.get(i);
                 if (history.getLastTime().after(todayC.getTime())){
                     if (timeDecor == 0) {
-                        this.historyList.add(i,new History("今天",-1));
+                        this.historyList.add(i,new History("今天"));
                         i++;
                         timeDecor++;
                         NumOfDecor++;
                     }
                 }else if (history.getLastTime().after(yesterdayC.getTime())){
                     if (timeDecor == 0 || timeDecor == 1){
-                        this.historyList.add(i,new History("昨天",-1));
+                        this.historyList.add(i,new History("昨天"));
                         i++;
                         timeDecor+=2;
                         NumOfDecor++;
                     }
                 }else {
                     if (timeDecor == 0 || timeDecor == 1 || timeDecor == 2 || timeDecor == 3){
-                        this.historyList.add(i,new History("更早",-1));
+                        this.historyList.add(i,new History("更早"));
                         i++;
                         timeDecor+=4;
                         NumOfDecor++;

@@ -7,6 +7,11 @@ import java.util.List;
 
 public interface ICollectionBiz {
     void getCollectionById(int studentId, OnCollectionListener onCollectionListener);
+    void isCollectionExist(int studentId,int videoId,OnCollectionListener onCollectionListener);
+
+    void insertCollection(int studentId,int videoId,OnCollectionListener onCollectionListener);
+    void deleteCollectionById(int id,OnCollectionListener onCollectionListener);
+    void deleteCollectionBySaV(int studentId,int videoId,OnCollectionListener onCollectionListener);
 
     public interface OnCollectionListener{
         void onSuccess(List<Collection> videoList);

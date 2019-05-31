@@ -39,4 +39,86 @@ public class CollectionBiz implements ICollectionBiz {
         });
 
     }
+
+    @Override
+    public void isCollectionExist(int studentId, int videoId, final OnCollectionListener onCollectionListener) {
+        CollectionService service = RetrofitUtil.retrofit.create(CollectionService.class);
+        Call<HttpData> call = service.isCollectionExist(true,studentId,videoId);
+        call.enqueue(new Callback<HttpData>() {
+            @Override
+            public void onResponse(Call<HttpData> call, Response<HttpData> response) {
+                HttpData data = response.body();
+                if (data != null){
+                    onCollectionListener.onFail(data.getCode());  //赶工，不添加新了
+                }else {
+                    onCollectionListener.onFail(-1);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HttpData> call, Throwable t) {
+                onCollectionListener.onFail(-1);
+            }
+        });
+    }
+
+    @Override
+    public void insertCollection(int studentId, int videoId, final OnCollectionListener onCollectionListener) {
+        CollectionService service = RetrofitUtil.retrofit.create(CollectionService.class);
+        Call<HttpData> call = service.insertCollection(studentId,videoId);
+        call.enqueue(new Callback<HttpData>() {
+            @Override
+            public void onResponse(Call<HttpData> call, Response<HttpData> response) {
+                HttpData data = response.body();
+                if (data != null){
+                    onCollectionListener.onFail(data.getCode());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HttpData> call, Throwable t) {
+                onCollectionListener.onFail(-1);
+            }
+        });
+    }
+
+    @Override
+    public void deleteCollectionById(int id, final OnCollectionListener onCollectionListener) {
+        CollectionService service = RetrofitUtil.retrofit.create(CollectionService.class);
+        Call<HttpData> call = service.deleteCollectionById(id);
+        call.enqueue(new Callback<HttpData>() {
+            @Override
+            public void onResponse(Call<HttpData> call, Response<HttpData> response) {
+                HttpData data = response.body();
+                if (data != null){
+                    onCollectionListener.onFail(data.getCode());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HttpData> call, Throwable t) {
+                onCollectionListener.onFail(-1);
+            }
+        });
+    }
+
+    @Override
+    public void deleteCollectionBySaV(int studentId, int videoId, final OnCollectionListener onCollectionListener) {
+        CollectionService service = RetrofitUtil.retrofit.create(CollectionService.class);
+        Call<HttpData> call = service.deleteCollectionBySaV(studentId,videoId);
+        call.enqueue(new Callback<HttpData>() {
+            @Override
+            public void onResponse(Call<HttpData> call, Response<HttpData> response) {
+                HttpData data = response.body();
+                if (data != null){
+                    onCollectionListener.onFail(data.getCode());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HttpData> call, Throwable t) {
+                onCollectionListener.onFail(-1);
+            }
+        });
+    }
 }

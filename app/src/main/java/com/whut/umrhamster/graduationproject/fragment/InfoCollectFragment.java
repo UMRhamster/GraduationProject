@@ -34,10 +34,13 @@ import java.util.List;
 public class InfoCollectFragment extends Fragment implements IInitWidgetView,ICollectionView {
     private RecyclerView recyclerView;
     private CollectAdapter adapter;
-    private List<Collection> videoList;
+    private List<Collection> collectionList;
 
     //sj
     private ICollectionPresenter collectionPresenter;
+    Student student;
+
+    private int item2Delete = -1; //也可以直接对本地显示数据进行删除，而不是对服务器返回的结果进行响应
 
     @Nullable
     @Override
@@ -50,7 +53,7 @@ public class InfoCollectFragment extends Fragment implements IInitWidgetView,ICo
 
     public void initData(){
         collectionPresenter = new CollectionPresenter(this);
-        Student student = SPUtil.loadStudent(getActivity());
+        student = SPUtil.loadStudent(getActivity());
         if (student != null){
             collectionPresenter.doCollectionById(student.getId());
         }
@@ -67,7 +70,7 @@ public class InfoCollectFragment extends Fragment implements IInitWidgetView,ICo
             @Override
             public void onItemClick(int position) {
                 Intent intent = new Intent(getActivity(),VideoPlayerActivity.class);
-                intent.putExtra("video",videoList.get(position).getVideo());
+                intent.putExtra("video",collectionList.get(position).getVideo());
                 startActivity(intent);
             }
 
@@ -82,15 +85,15 @@ public class InfoCollectFragment extends Fragment implements IInitWidgetView,ICo
     @Override
     public void initView(View view) {
         recyclerView = view.findViewById(R.id.fg_info_collection_rv);
-        videoList = new ArrayList<>();
-        adapter = new CollectAdapter(videoList,getActivity());
+        collectionList = new ArrayList<>();
+        adapter = new CollectAdapter(collectionList,getActivity());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         initData();
     }
 
     public void showBottomDialog(final int position){
-        Dialog dialog = new Dialog(getActivity(),R.style.CustomDialog);
+        final Dialog dialog = new Dialog(getActivity(),R.style.CustomDialog);
         View view = View.inflate(getActivity(),R.layout.dialog_collection_remove,null);
         dialog.setContentView(view);
 
@@ -102,25 +105,29 @@ public class InfoCollectFragment extends Fragment implements IInitWidgetView,ICo
         dialog.findViewById(R.id.dialog_collection_remove_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(),"dianjiquxiao"+position,Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+//                Toast.makeText(getActivity(),"dianjiquxiao"+position,Toast.LENGTH_SHORT).show();
             }
         });
 
         dialog.findViewById(R.id.dialog_collection_tv_remove).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(),"dianjishanchu"+position,Toast.LENGTH_SHORT).show();
+                item2Delete = position;
+                collectionPresenter.doDeleteCollectionById(collectionList.get(position).getId());
+                dialog.dismiss();
+//                Toast.makeText(getActivity(),"dianjishanchu"+position,Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
-    public void onCollectionSuccess(List<Collection> videoList) {
-        Log.d("dsa",""+videoList.size());
-        this.videoList.addAll(videoList);
+    public void onCollectionSuccess(List<Collection> collectionList) {
+        Log.d("dsa",""+collectionList.size());
+        this.collectionList.addAll(collectionList);
         adapter.notifyDataSetChanged();
-//        for (int i=0;i<videoList.size();i++){
-//            Video video = videoList.get(i);
+//        for (int i=0;i<collectionList.size();i++){
+//            Video video = collectionList.get(i);
 //            Log.d("test",""+video.getCover());
 //            Log.d("test",""+video.getPath());
 //            Log.d("test",""+video.getTitle());
@@ -131,7 +138,12 @@ public class InfoCollectFragment extends Fragment implements IInitWidgetView,ICo
 
     @Override
     public void onCollectionFail(int code) {
-        Toast.makeText(getActivity(),""+code,Toast.LENGTH_SHORT).show();
+        if (code == 2072){
+            collectionList.remove(item2Delete);
+            adapter.notifyItemRemoved(item2Delete);
+            item2Delete = -1;
+        }
+//        Toast.makeText(getActivity(),""+code,Toast.LENGTH_SHORT).show();
     }
 
     @Override

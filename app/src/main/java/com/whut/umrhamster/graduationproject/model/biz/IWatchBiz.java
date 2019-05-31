@@ -7,6 +7,8 @@ import java.util.List;
 public interface IWatchBiz {
     void getWatchByStudentId(int studentId, OnWatchListener onWatchListener);
 
+    void getWatchLimit20(int studentId,int start,OnWatchListener onWatchListener);
+
     void addWatch(int studentId,int teacherId,OnWatchListener onWatchListener);
 
     void isWatchExist(int studentId, int teacherId, OnWatchListener onWatchListener);

@@ -42,6 +42,31 @@ public class WatchPresenter implements IWatchPresenter {
     }
 
     @Override
+    public void doGetWatchLimit20(int studentId, int start) {
+        watchBiz.getWatchLimit20(studentId, start, new IWatchBiz.OnWatchListener() {
+            @Override
+            public void onSuccess(final List<Watch> watchList) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        watchView.onWatchSuccess(watchList);
+                    }
+                });
+            }
+
+            @Override
+            public void onFail(final int code) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        watchView.onWatchFail(code);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
     public void isWatchExist(int studentId, int teacherId) {
         watchBiz.isWatchExist(studentId, teacherId, new IWatchBiz.OnWatchListener() {
             @Override

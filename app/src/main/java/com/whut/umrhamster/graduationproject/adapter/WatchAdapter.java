@@ -19,9 +19,16 @@ import java.util.List;
 public class WatchAdapter extends RecyclerView.Adapter<WatchAdapter.ItemViewHolder> {
     private List<Watch> watchList;  //存放数据的集合
     private Context context;   //上下文
+
+    private OnItemClickListener onItemClickListener;
+
     //通过构造方法绑定集合
     public WatchAdapter(List<Watch> watchList){
         this.watchList = watchList;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -31,7 +38,7 @@ public class WatchAdapter extends RecyclerView.Adapter<WatchAdapter.ItemViewHold
         view.setOnClickListener(new View.OnClickListener() { //处理选项卡的点击事件
             @Override
             public void onClick(View v) {
-
+                onItemClickListener.onItemClick((Integer) v.getTag());
             }
         });
         ItemViewHolder holder = new ItemViewHolder(view);
@@ -39,7 +46,7 @@ public class WatchAdapter extends RecyclerView.Adapter<WatchAdapter.ItemViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ItemViewHolder holder, int position) {
         Teacher teacher = watchList.get(position).getTeacher();
         Picasso.with(context).load(teacher.getAvatar()).into(holder.civIcon); //使用picasso加载图片
         holder.tvNickname.setText(teacher.getNickname());  //显示昵称
@@ -47,9 +54,10 @@ public class WatchAdapter extends RecyclerView.Adapter<WatchAdapter.ItemViewHold
         holder.tvWatch.setOnClickListener(new View.OnClickListener() {  //菜单点击事件
             @Override
             public void onClick(View v) {
-
+                onItemClickListener.onWatchClick(holder.getAdapterPosition());
             }
         });
+        holder.itemView.setTag(position);
     }
 
     @Override
@@ -70,5 +78,10 @@ public class WatchAdapter extends RecyclerView.Adapter<WatchAdapter.ItemViewHold
             tvBrief = itemView.findViewById(R.id.rv_item_watch_tv_brief);
             tvWatch = itemView.findViewById(R.id.rv_item_watch_tv_watch);
         }
+    }
+
+    public interface OnItemClickListener{
+        void onItemClick(int position);
+        void onWatchClick(int position);
     }
 }

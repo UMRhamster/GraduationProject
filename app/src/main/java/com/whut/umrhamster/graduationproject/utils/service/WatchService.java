@@ -17,6 +17,9 @@ public interface WatchService {
     Call<HttpData<List<Watch>>> getWatchByStudentId(@Query("studentId")int studentId);
 
     @GET("watch")
+    Call<HttpData<List<Watch>>> getWatchLimit20(@Query("studentId")int studentId,@Query("start")int start);
+
+    @GET("watch")
     Call<HttpData> isWatchExist(@Query("exist")boolean exist, @Query("studentId")int studentId, @Query("teacherId")int teacherId);
 
     @POST("watch")

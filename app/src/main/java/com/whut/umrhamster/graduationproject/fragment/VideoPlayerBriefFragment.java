@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,15 +18,19 @@ import com.squareup.picasso.Picasso;
 import com.whut.umrhamster.graduationproject.ForeshowActivity;
 import com.whut.umrhamster.graduationproject.R;
 import com.whut.umrhamster.graduationproject.TeacherInfoActivity;
+import com.whut.umrhamster.graduationproject.model.bean.Collection;
 import com.whut.umrhamster.graduationproject.model.bean.Student;
 import com.whut.umrhamster.graduationproject.model.bean.Teacher;
 import com.whut.umrhamster.graduationproject.model.bean.Video;
 import com.whut.umrhamster.graduationproject.model.bean.Watch;
+import com.whut.umrhamster.graduationproject.presenter.CollectionPresenter;
+import com.whut.umrhamster.graduationproject.presenter.ICollectionPresenter;
 import com.whut.umrhamster.graduationproject.presenter.IWatchPresenter;
 import com.whut.umrhamster.graduationproject.presenter.WatchPresenter;
 import com.whut.umrhamster.graduationproject.utils.other.TimeUtil;
 import com.whut.umrhamster.graduationproject.utils.save.SPUtil;
 import com.whut.umrhamster.graduationproject.view.CircleImageView;
+import com.whut.umrhamster.graduationproject.view.ICollectionView;
 import com.whut.umrhamster.graduationproject.view.IInitWidgetView;
 import com.whut.umrhamster.graduationproject.view.IWatchView;
 
@@ -42,7 +47,7 @@ import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
-public class VideoPlayerBriefFragment extends Fragment implements IInitWidgetView,IWatchView {
+public class VideoPlayerBriefFragment extends Fragment implements IInitWidgetView,IWatchView,ICollectionView {
     private CircleImageView civIcon;
     private TextView tvNickname;
     private TextView tvStudents;
@@ -51,10 +56,15 @@ public class VideoPlayerBriefFragment extends Fragment implements IInitWidgetVie
     private TextView tvViewers;
     private TextView tvBrief;
     private TextView tvDate;
+
+    private FloatingActionButton fabCollect;
     //
     private ConstraintLayout constraintLayout;
 
+    private boolean collect = false;
+
     private IWatchPresenter watchPresenter;
+    private ICollectionPresenter collectionPresenter;
     Student me;
     Teacher teacher;
     Video video;
@@ -100,6 +110,25 @@ public class VideoPlayerBriefFragment extends Fragment implements IInitWidgetVie
                 startActivity(intent);
             }
         });
+
+        fabCollect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (me != null){
+                    if (collect){
+                        collect = false;
+                        fabCollect.setImageResource(R.drawable.collect);
+                        collectionPresenter.doDeleteCollectionBySaV(me.getId(),video.getId());
+                    }else {
+                        collect = true;
+                        fabCollect.setImageResource(R.drawable.collect_selected);
+                        collectionPresenter.doInsertCollection(me.getId(),video.getId());
+                    }
+                }else {
+                    Toast.makeText(getActivity(),"登录之后可进行收藏",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -115,6 +144,7 @@ public class VideoPlayerBriefFragment extends Fragment implements IInitWidgetVie
         tvBrief = view.findViewById(R.id.fg_video_player_brief_tv_brief);
         constraintLayout = view.findViewById(R.id.fg_video_player_cl_info);
         tvDate = view.findViewById(R.id.fg_video_player_brief_tv_date);
+        fabCollect = view.findViewById(R.id.fg_video_player_fab_collect);
         initData();
 
     }
@@ -133,8 +163,10 @@ public class VideoPlayerBriefFragment extends Fragment implements IInitWidgetVie
         me = SPUtil.loadStudent(getActivity());
 
         watchPresenter = new WatchPresenter(this);
+        collectionPresenter = new CollectionPresenter(this);
         if (me != null){
             watchPresenter.isWatchExist(me.getId(),teacher.getId());
+            collectionPresenter.doIsCollectionExist(me.getId(),video.getId());
         }
         watchPresenter.doGetNumOfWatch(2,teacher.getId());
 
@@ -183,5 +215,22 @@ public class VideoPlayerBriefFragment extends Fragment implements IInitWidgetVie
     @Override
     public void onGetNumTeachers(List<Watch> watchList) {
 
+    }
+
+    @Override
+    public void onCollectionSuccess(List<Collection> videoList) {
+
+    }
+
+    @Override
+    public void onCollectionFail(int code) {
+        if (code == 2073){
+            collect = true;
+            fabCollect.setImageResource(R.drawable.collect_selected);
+        }else if (code == 2071){
+            Toast.makeText(getActivity(),"收藏成功",Toast.LENGTH_SHORT).show();
+        }else if (code == 2072){
+            Toast.makeText(getActivity(),"取消收藏成功",Toast.LENGTH_SHORT).show();
+        }
     }
 }

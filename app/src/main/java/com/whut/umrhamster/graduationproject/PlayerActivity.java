@@ -44,6 +44,7 @@ import com.whut.umrhamster.graduationproject.utils.other.AndroidBug5497Workaroun
 import com.whut.umrhamster.graduationproject.utils.other.KeyboardHeightObserver;
 import com.whut.umrhamster.graduationproject.utils.other.KeyboardHeightProvider;
 import com.whut.umrhamster.graduationproject.utils.other.TimeUtil;
+import com.whut.umrhamster.graduationproject.utils.save.SPUtil;
 import com.whut.umrhamster.graduationproject.view.IHistoryView;
 import com.whut.umrhamster.graduationproject.view.IInitWidgetView;
 import com.whut.umrhamster.graduationproject.view.ILiveView;
@@ -230,6 +231,7 @@ public class PlayerActivity extends AppCompatActivity implements IInitWidgetView
         setContentView(R.layout.activity_player);
 //        AndroidBug5497Workaround.assistActivity(this);
         live = getIntent().getParcelableExtra("live");
+        student = SPUtil.loadStudent(PlayerActivity.this);
         initView();
         initEvent();
     }
